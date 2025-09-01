@@ -171,7 +171,7 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className = '' }
                   <label className="text-sm font-medium">Zona Horaria</label>
                   <Select
                     value={settings.general.timezone}
-                    onValueChange={(value) => updateSetting('general', 'timezone', value)}
+                    onValueChange={(value: string) => updateSetting('general', 'timezone', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -188,14 +188,14 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className = '' }
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={settings.general.maintenanceMode}
-                  onCheckedChange={(checked) => updateSetting('general', 'maintenanceMode', checked)}
+                  onCheckedChange={(checked: boolean) => updateSetting('general', 'maintenanceMode', checked)}
                 />
                 <label className="text-sm">Modo Mantenimiento</label>
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={settings.general.debugMode}
-                  onCheckedChange={(checked) => updateSetting('general', 'debugMode', checked)}
+                  onCheckedChange={(checked: boolean) => updateSetting('general', 'debugMode', checked)}
                 />
                 <label className="text-sm">Modo Debug</label>
               </div>
@@ -285,14 +285,14 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className = '' }
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={settings.security.require2FA}
-                  onCheckedChange={(checked) => updateSetting('security', 'require2FA', checked)}
+                  onCheckedChange={(checked: boolean) => updateSetting('security', 'require2FA', checked)}
                 />
                 <label className="text-sm">Requerir 2FA</label>
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={settings.security.enableRateLimiting}
-                  onCheckedChange={(checked) => updateSetting('security', 'enableRateLimiting', checked)}
+                  onCheckedChange={(checked: boolean) => updateSetting('security', 'enableRateLimiting', checked)}
                 />
                 <label className="text-sm">Habilitar Rate Limiting</label>
               </div>
@@ -372,7 +372,7 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className = '' }
                   <label className="text-sm font-medium">Nivel de Log</label>
                   <Select
                     value={settings.monitoring.logLevel}
-                    onValueChange={(value) => updateSetting('monitoring', 'logLevel', value)}
+                    onValueChange={(value: string) => updateSetting('monitoring', 'logLevel', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -397,14 +397,14 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className = '' }
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={settings.monitoring.enableLogging}
-                  onCheckedChange={(checked) => updateSetting('monitoring', 'enableLogging', checked)}
+                  onCheckedChange={(checked: boolean) => updateSetting('monitoring', 'enableLogging', checked)}
                 />
                 <label className="text-sm">Habilitar Logging</label>
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={settings.monitoring.enableMetrics}
-                  onCheckedChange={(checked) => updateSetting('monitoring', 'enableMetrics', checked)}
+                  onCheckedChange={(checked: boolean) => updateSetting('monitoring', 'enableMetrics', checked)}
                 />
                 <label className="text-sm">Habilitar Métricas</label>
               </div>
