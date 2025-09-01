@@ -1,0 +1,298 @@
+{
+  "id": "maya-mathematics-offline",
+  "culture": "maya",
+  "category": "mathematics",
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-19T10:00:00Z",
+  "content": {
+    "numbers": {
+      "basic": {
+        "1": {
+          "maya": "jun",
+          "pronunciation": "jun",
+          "meaning": "uno",
+          "symbol": "•"
+        },
+        "2": {
+          "maya": "ka'i'",
+          "pronunciation": "ka-i",
+          "meaning": "dos",
+          "symbol": "••"
+        },
+        "3": {
+          "maya": "oxi'",
+          "pronunciation": "o-shi",
+          "meaning": "tres",
+          "symbol": "•••"
+        },
+        "4": {
+          "maya": "kaji'",
+          "pronunciation": "ka-hi",
+          "meaning": "cuatro",
+          "symbol": "••••"
+        },
+        "5": {
+          "maya": "wo'o'",
+          "pronunciation": "wo-o",
+          "meaning": "cinco",
+          "symbol": "—"
+        },
+        "6": {
+          "maya": "waqi'",
+          "pronunciation": "wa-ki",
+          "meaning": "seis",
+          "symbol": "—•"
+        },
+        "7": {
+          "maya": "wuqu'",
+          "pronunciation": "wu-ku",
+          "meaning": "siete",
+          "symbol": "—••"
+        },
+        "8": {
+          "maya": "wajxaqi'",
+          "pronunciation": "wa-shka-ki",
+          "meaning": "ocho",
+          "symbol": "—•••"
+        },
+        "9": {
+          "maya": "b'eleje'",
+          "pronunciation": "be-le-he",
+          "meaning": "nueve",
+          "symbol": "—••••"
+        },
+        "10": {
+          "maya": "lajuj",
+          "pronunciation": "la-huj",
+          "meaning": "diez",
+          "symbol": "——"
+        }
+      },
+      "advanced": {
+        "20": {
+          "maya": "k'al",
+          "pronunciation": "kal",
+          "meaning": "veinte",
+          "symbol": "••"
+        },
+        "100": {
+          "maya": "ho'",
+          "pronunciation": "ho",
+          "meaning": "cien",
+          "symbol": "•••••"
+        },
+        "400": {
+          "maya": "bak",
+          "pronunciation": "bak",
+          "meaning": "cuatrocientos",
+          "symbol": "••••"
+        },
+        "8000": {
+          "maya": "pic",
+          "pronunciation": "pik",
+          "meaning": "ocho mil",
+          "symbol": "••••••••"
+        }
+      }
+    },
+    "operations": {
+      "addition": {
+        "title": "Suma Maya",
+        "description": "Aprende a sumar usando el sistema numérico maya",
+        "examples": [
+          {
+            "problem": "¿Cuántos granos de maíz hay en total si tienes 3 mazorcas con 20 granos cada una?",
+            "solution": "3 × 20 = 60 granos",
+            "mayaNumbers": "oxi' × k'al = waqi' bak",
+            "explanation": "Tres mazorcas por veinte granos cada una es igual a sesenta granos"
+          },
+          {
+            "problem": "Si tienes 5 cenotes y cada uno tiene 4 peces, ¿cuántos peces hay en total?",
+            "solution": "5 × 4 = 20 peces",
+            "mayaNumbers": "wo'o' × kaji' = k'al",
+            "explanation": "Cinco cenotes por cuatro peces cada uno es igual a veinte peces"
+          }
+        ]
+      },
+      "subtraction": {
+        "title": "Resta Maya",
+        "description": "Aprende a restar usando el sistema numérico maya",
+        "examples": [
+          {
+            "problem": "Si tienes 10 tortillas y comes 3, ¿cuántas te quedan?",
+            "solution": "10 - 3 = 7 tortillas",
+            "mayaNumbers": "lajuj - oxi' = wuqu'",
+            "explanation": "Diez tortillas menos tres es igual a siete tortillas"
+          }
+        ]
+      },
+      "multiplication": {
+        "title": "Multiplicación Maya",
+        "description": "Aprende a multiplicar usando el sistema numérico maya",
+        "examples": [
+          {
+            "problem": "¿Cuántos días hay en 3 semanas?",
+            "solution": "3 × 7 = 21 días",
+            "mayaNumbers": "oxi' × wuqu' = jun k'al jun",
+            "explanation": "Tres semanas por siete días cada una es igual a veintiún días"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "title": "Calendario Maya",
+      "description": "Sistema de calendario maya y sus cálculos",
+      "components": {
+        "haab": {
+          "name": "Haab",
+          "description": "Calendario solar de 365 días",
+          "months": [
+            "Pop", "Wo", "Sip", "Sotz'", "Sek", "Xul",
+            "Yaxk'in", "Mol", "Ch'en", "Yax", "Sak", "Keh",
+            "Mak", "K'ank'in", "Muwan", "Pax", "K'ayab", "Kumk'u"
+          ]
+        },
+        "tzolkin": {
+          "name": "Tzolkin",
+          "description": "Calendario sagrado de 260 días",
+          "numbers": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+        },
+        "longCount": {
+          "name": "Cuenta Larga",
+          "description": "Sistema de fechas absolutas",
+          "units": {
+            "kin": "día",
+            "winal": "20 días",
+            "tun": "360 días",
+            "k'atun": "7,200 días",
+            "bak'tun": "144,000 días"
+          }
+        }
+      },
+      "calculations": [
+        {
+          "title": "Cálculo de Fechas",
+          "description": "Cómo calcular fechas en el calendario maya",
+          "example": {
+            "gregorian": "2024-12-19",
+            "maya": "13.0.11.17.0",
+            "explanation": "Conversión de fecha gregoriana a maya"
+          }
+        }
+      ]
+    },
+    "geometry": {
+      "title": "Geometría Maya",
+      "description": "Conceptos geométricos en la cultura maya",
+      "shapes": {
+        "pyramid": {
+          "name": "Pirámide",
+          "description": "Forma arquitectónica maya",
+          "properties": {
+            "faces": 4,
+            "vertices": 5,
+            "edges": 8
+          },
+          "culturalSignificance": "Representa la conexión entre la tierra y el cielo"
+        },
+        "circle": {
+          "name": "Círculo",
+          "description": "Forma del calendario maya",
+          "properties": {
+            "faces": 1,
+            "vertices": 0,
+            "edges": 1
+          },
+          "culturalSignificance": "Representa el ciclo del tiempo"
+        }
+      }
+    },
+    "measurements": {
+      "title": "Medidas Mayas",
+      "description": "Sistema de medidas tradicional maya",
+      "units": {
+        "length": {
+          "k'ab": {
+            "name": "K'ab",
+            "description": "Medida de longitud",
+            "equivalent": "aproximadamente 20 cm",
+            "use": "Medir telas y objetos pequeños"
+          },
+          "nik": {
+            "name": "Nik",
+            "description": "Medida de longitud",
+            "equivalent": "aproximadamente 1.5 metros",
+            "use": "Medir distancias cortas"
+          }
+        },
+        "area": {
+          "milpa": {
+            "name": "Milpa",
+            "description": "Unidad de área agrícola",
+            "equivalent": "aproximadamente 1 hectárea",
+            "use": "Medir extensiones de cultivo"
+          }
+        },
+        "volume": {
+          "jícara": {
+            "name": "Jícara",
+            "description": "Medida de volumen",
+            "equivalent": "aproximadamente 1 litro",
+            "use": "Medir líquidos y granos"
+          }
+        }
+      }
+    }
+  },
+  "exercises": [
+    {
+      "id": "maya-math-exercise-001",
+      "title": "Conteo Básico",
+      "description": "Practica contando del 1 al 10 en maya",
+      "type": "multiple-choice",
+      "questions": [
+        {
+          "question": "¿Cómo se dice '5' en maya?",
+          "options": ["kaji'", "wo'o'", "waqi'", "wuqu'"],
+          "correct": 1,
+          "explanation": "Cinco en maya se dice 'wo'o'"
+        },
+        {
+          "question": "¿Cuál es el símbolo maya para '3'?",
+          "options": ["•", "••", "•••", "••••"],
+          "correct": 2,
+          "explanation": "El símbolo para tres son tres puntos"
+        }
+      ]
+    },
+    {
+      "id": "maya-math-exercise-002",
+      "title": "Suma Simple",
+      "description": "Practica sumas usando números mayas",
+      "type": "word-problem",
+      "questions": [
+        {
+          "question": "Si tienes 2 mazorcas de maíz y tu hermano tiene 3, ¿cuántas mazorcas tienen en total?",
+          "solution": "5 mazorcas",
+          "mayaNumbers": "ka'i' + oxi' = wo'o'",
+          "explanation": "Dos más tres es igual a cinco"
+        }
+      ]
+    }
+  ],
+  "accessibility": {
+    "screenReader": true,
+    "highContrast": true,
+    "largeText": true,
+    "audioDescriptions": true,
+    "captions": true,
+    "keyboardNavigation": true
+  },
+  "metadata": {
+    "difficulty": "beginner",
+    "estimatedTime": "45 minutos",
+    "prerequisites": ["conocimiento básico de español"],
+    "culturalSensitivity": "high",
+    "educationalValue": "high"
+  }
+}

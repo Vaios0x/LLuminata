@@ -1,0 +1,266 @@
+{
+  "culture": "nahuatl",
+  "name": "Cultura Náhuatl",
+  "description": "Assets culturales y educativos de la cultura Náhuatl",
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-19T10:00:00Z",
+  "languages": [
+    "nahuatl",
+    "español"
+  ],
+  "regions": [
+    "México",
+    "Puebla",
+    "Morelos",
+    "Tlaxcala",
+    "Hidalgo"
+  ],
+  "assets": {
+    "images": [
+      {
+        "id": "nahuatl-chinampa-001",
+        "name": "Sistema de Chinampas",
+        "description": "Técnica agrícola tradicional náhuatl",
+        "url": "/cultural-assets/nahuatl/chinampa-system.jpg",
+        "category": "agriculture",
+        "tags": ["agricultura", "chinampa", "sostenible", "innovación"],
+        "size": "1.6MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Sistema de chinampas náhuatl en el lago",
+          "description": "Imagen que muestra el sistema tradicional de chinampas náhuatl, técnica agrícola sostenible"
+        }
+      },
+      {
+        "id": "nahuatl-cacao-001",
+        "name": "Comercio del Cacao",
+        "description": "Sistema de comercio y trueque del cacao",
+        "url": "/cultural-assets/nahuatl/cacao-trade.jpg",
+        "category": "trade",
+        "tags": ["comercio", "cacao", "trueque", "economía"],
+        "size": "1.4MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Comercio tradicional de cacao náhuatl",
+          "description": "Representación del sistema de comercio y trueque del cacao en la cultura náhuatl"
+        }
+      },
+      {
+        "id": "nahuatl-eagle-001",
+        "name": "Águila Náhuatl",
+        "description": "Símbolo de valor y libertad en la cultura náhuatl",
+        "url": "/cultural-assets/nahuatl/eagle-symbol.jpg",
+        "category": "symbols",
+        "tags": ["símbolos", "águila", "valor", "libertad"],
+        "size": "1.2MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Símbolo del águila náhuatl",
+          "description": "Símbolo del águila náhuatl que representa valor y libertad"
+        }
+      },
+      {
+        "id": "nahuatl-serpent-001",
+        "name": "Serpiente Náhuatl",
+        "description": "Símbolo de sabiduría y transformación",
+        "url": "/cultural-assets/nahuatl/serpent-symbol.jpg",
+        "category": "symbols",
+        "tags": ["símbolos", "serpiente", "sabiduría", "transformación"],
+        "size": "1.3MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Símbolo de la serpiente náhuatl",
+          "description": "Símbolo de la serpiente náhuatl que representa sabiduría y transformación"
+        }
+      },
+      {
+        "id": "nahuatl-volcano-001",
+        "name": "Volcán Sagrado",
+        "description": "Volcán como elemento sagrado en la cultura náhuatl",
+        "url": "/cultural-assets/nahuatl/sacred-volcano.jpg",
+        "category": "geography",
+        "tags": ["geografía", "volcán", "sagrado", "naturaleza"],
+        "size": "1.8MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Volcán sagrado náhuatl",
+          "description": "Volcán considerado sagrado en la cultura náhuatl"
+        }
+      }
+    ],
+    "audio": [
+      {
+        "id": "nahuatl-greeting-001",
+        "name": "Saludo Náhuatl Tradicional",
+        "description": "Saludo tradicional en idioma náhuatl",
+        "url": "/cultural-assets/nahuatl/audio/greeting.mp3",
+        "category": "language",
+        "tags": ["idioma", "saludo", "tradición"],
+        "size": "2.8MB",
+        "duration": "18s",
+        "language": "nahuatl",
+        "accessibility": {
+          "transcript": "Niltze, niltze",
+          "translation": "Hola, hola",
+          "description": "Saludo tradicional náhuatl usado para saludar"
+        }
+      },
+      {
+        "id": "nahuatl-numbers-001",
+        "name": "Números en Náhuatl",
+        "description": "Conteo del 1 al 10 en idioma náhuatl",
+        "url": "/cultural-assets/nahuatl/audio/numbers.mp3",
+        "category": "mathematics",
+        "tags": ["matemáticas", "números", "conteo"],
+        "size": "7.5MB",
+        "duration": "42s",
+        "language": "nahuatl",
+        "accessibility": {
+          "transcript": "Ce, ome, eyi, nahui, macuilli, chicuace, chicome, chicuēyi, chicnahui, mahtlactli",
+          "translation": "Uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez",
+          "description": "Conteo del 1 al 10 en idioma náhuatl tradicional"
+        }
+      },
+      {
+        "id": "nahuatl-poetry-001",
+        "name": "Poesía Náhuatl",
+        "description": "Poesía tradicional náhuatl",
+        "url": "/cultural-assets/nahuatl/audio/poetry.mp3",
+        "category": "literature",
+        "tags": ["literatura", "poesía", "tradición"],
+        "size": "12.1MB",
+        "duration": "2m 15s",
+        "language": "nahuatl",
+        "accessibility": {
+          "transcript": "Poesía náhuatl tradicional sobre la naturaleza",
+          "translation": "Poesía sobre la belleza de la naturaleza y la vida",
+          "description": "Poesía náhuatl tradicional que celebra la naturaleza y la vida"
+        }
+      }
+    ],
+    "videos": [
+      {
+        "id": "nahuatl-dance-001",
+        "name": "Danza Náhuatl Tradicional",
+        "description": "Danza tradicional náhuatl",
+        "url": "/cultural-assets/nahuatl/video/traditional-dance.mp4",
+        "category": "traditions",
+        "tags": ["tradiciones", "danza", "cultura"],
+        "size": "38.7MB",
+        "duration": "4m 20s",
+        "accessibility": {
+          "captions": true,
+          "audioDescription": true,
+          "transcript": "Danza tradicional náhuatl con trajes coloridos",
+          "description": "Video de danza tradicional náhuatl mostrando movimientos y trajes tradicionales"
+        }
+      }
+    ],
+    "documents": [
+      {
+        "id": "nahuatl-vocabulary-001",
+        "name": "Vocabulario Náhuatl Básico",
+        "description": "Lista de palabras básicas en idioma náhuatl",
+        "url": "/cultural-assets/nahuatl/documents/vocabulary.json",
+        "category": "language",
+        "tags": ["idioma", "vocabulario", "básico"],
+        "size": "0.9MB",
+        "format": "json",
+        "accessibility": {
+          "screenReader": true,
+          "largeText": true,
+          "description": "Documento con vocabulario básico náhuatl organizado por categorías"
+        }
+      }
+    ]
+  },
+  "educationalContent": {
+    "mathematics": {
+      "numbers": {
+        "title": "Sistema Numérico Náhuatl",
+        "description": "Aprendizaje del sistema de numeración náhuatl",
+        "lessons": [
+          {
+            "id": "nahuatl-math-001",
+            "title": "Números del 1 al 20",
+            "content": "Lección sobre los números náhuatl del 1 al 20",
+            "difficulty": "beginner",
+            "estimatedTime": "15 minutos"
+          }
+        ]
+      },
+      "calendar": {
+        "title": "Calendario Azteca",
+        "description": "Sistema de calendario azteca y sus cálculos",
+        "lessons": [
+          {
+            "id": "nahuatl-calendar-001",
+            "title": "Introducción al Calendario Azteca",
+            "content": "Conceptos básicos del calendario azteca",
+            "difficulty": "intermediate",
+            "estimatedTime": "25 minutos"
+          }
+        ]
+      }
+    },
+    "science": {
+      "medicine": {
+        "title": "Medicina Tradicional Náhuatl",
+        "description": "Técnicas medicinales tradicionales náhuatl",
+        "lessons": [
+          {
+            "id": "nahuatl-medicine-001",
+            "title": "Herbolaria Tradicional",
+            "content": "Uso de plantas medicinales en la cultura náhuatl",
+            "difficulty": "intermediate",
+            "estimatedTime": "30 minutos"
+          }
+        ]
+      },
+      "agriculture": {
+        "title": "Agricultura Náhuatl",
+        "description": "Técnicas agrícolas tradicionales náhuatl",
+        "lessons": [
+          {
+            "id": "nahuatl-agriculture-001",
+            "title": "Sistema de Chinampas",
+            "content": "Técnica agrícola sostenible de chinampas",
+            "difficulty": "intermediate",
+            "estimatedTime": "25 minutos"
+          }
+        ]
+      }
+    },
+    "history": {
+      "traditions": {
+        "title": "Tradiciones Náhuatl",
+        "description": "Historia y tradiciones de la cultura náhuatl",
+        "lessons": [
+          {
+            "id": "nahuatl-traditions-001",
+            "title": "Ceremonias y Rituales",
+            "content": "Significado y práctica de ceremonias náhuatl",
+            "difficulty": "intermediate",
+            "estimatedTime": "35 minutos"
+          }
+        ]
+      }
+    }
+  },
+  "accessibility": {
+    "screenReader": true,
+    "highContrast": true,
+    "largeText": true,
+    "keyboardNavigation": true,
+    "captions": true,
+    "audioDescriptions": true,
+    "multilingual": true
+  },
+  "metadata": {
+    "culturalSensitivity": "high",
+    "educationalValue": "high",
+    "authenticity": "verified",
+    "source": "Comunidades náhuatl colaboradoras",
+    "license": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0"
+  }
+}

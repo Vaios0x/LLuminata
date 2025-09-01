@@ -1,0 +1,38 @@
+{
+  "preset": "@size-limit/preset-small-lib",
+  "path": [
+    ".next/static/chunks/*.js",
+    ".next/static/css/*.css"
+  ],
+  "limit": [
+    {
+      "path": ".next/static/chunks/main-*.js",
+      "limit": "200 KB"
+    },
+    {
+      "path": ".next/static/chunks/vendors-*.js",
+      "limit": "500 KB"
+    },
+    {
+      "path": ".next/static/chunks/react-*.js",
+      "limit": "150 KB"
+    },
+    {
+      "path": ".next/static/chunks/ui-*.js",
+      "limit": "100 KB"
+    },
+    {
+      "path": ".next/static/chunks/ai-*.js",
+      "limit": "300 KB"
+    },
+    {
+      "path": ".next/static/css/*.css",
+      "limit": "50 KB"
+    }
+  ],
+  "gzip": true,
+  "brotli": true,
+  "webpack": false,
+  "running": false,
+  "ci": false
+}

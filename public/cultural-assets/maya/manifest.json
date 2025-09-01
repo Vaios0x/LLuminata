@@ -1,0 +1,256 @@
+{
+  "culture": "maya",
+  "name": "Cultura Maya",
+  "description": "Assets culturales y educativos de la cultura Maya",
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-19T10:00:00Z",
+  "languages": [
+    "maya",
+    "k'iche'",
+    "q'eqchi'",
+    "kaqchikel",
+    "mam",
+    "tzotzil",
+    "tzeltal"
+  ],
+  "regions": [
+    "Yucatán",
+    "Quintana Roo",
+    "Campeche",
+    "Chiapas",
+    "Guatemala"
+  ],
+  "assets": {
+    "images": [
+      {
+        "id": "maya-maiz-001",
+        "name": "Cultivo de Maíz Maya",
+        "description": "Técnicas tradicionales de cultivo de maíz",
+        "url": "/cultural-assets/maya/maiz-cultivation.jpg",
+        "category": "agriculture",
+        "tags": ["agricultura", "maíz", "tradición", "sustento"],
+        "size": "1.2MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Campo de maíz maya con técnicas tradicionales de cultivo",
+          "description": "Imagen que muestra el cultivo tradicional de maíz maya, incluyendo técnicas ancestrales y la importancia del maíz en la cultura maya"
+        }
+      },
+      {
+        "id": "maya-cenote-001",
+        "name": "Cenote Sagrado",
+        "description": "Cenote usado para ceremonias y conocimiento",
+        "url": "/cultural-assets/maya/cenote-sacred.jpg",
+        "category": "geography",
+        "tags": ["geografía", "cenote", "sagrado", "conocimiento"],
+        "size": "1.8MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Cenote sagrado maya con aguas cristalinas",
+          "description": "Cenote sagrado maya que representa el conocimiento y las ceremonias tradicionales"
+        }
+      },
+      {
+        "id": "maya-calendar-001",
+        "name": "Sistema de Calendario Maya",
+        "description": "Cálculos matemáticos del calendario maya",
+        "url": "/cultural-assets/maya/calendar-system.jpg",
+        "category": "mathematics",
+        "tags": ["matemáticas", "calendario", "cálculo", "tiempo"],
+        "size": "2.1MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Sistema de calendario maya con símbolos y cálculos",
+          "description": "Representación del sistema de calendario maya mostrando los cálculos matemáticos y símbolos tradicionales"
+        }
+      },
+      {
+        "id": "maya-quetzal-001",
+        "name": "Quetzal Maya",
+        "description": "Ave sagrada de la cultura maya",
+        "url": "/cultural-assets/maya/quetzal-bird.jpg",
+        "category": "nature",
+        "tags": ["naturaleza", "quetzal", "sagrado", "libertad"],
+        "size": "1.5MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Quetzal maya con plumas coloridas",
+          "description": "El quetzal, ave sagrada maya que representa libertad y belleza"
+        }
+      },
+      {
+        "id": "maya-jaguar-001",
+        "name": "Jaguar Maya",
+        "description": "Símbolo de fuerza y poder en la cultura maya",
+        "url": "/cultural-assets/maya/jaguar-symbol.jpg",
+        "category": "symbols",
+        "tags": ["símbolos", "jaguar", "fuerza", "poder"],
+        "size": "1.3MB",
+        "dimensions": "1920x1080",
+        "accessibility": {
+          "altText": "Símbolo del jaguar maya",
+          "description": "Símbolo del jaguar maya que representa fuerza y poder en la cultura tradicional"
+        }
+      }
+    ],
+    "audio": [
+      {
+        "id": "maya-greeting-001",
+        "name": "Saludo Maya Tradicional",
+        "description": "Saludo tradicional en idioma maya",
+        "url": "/cultural-assets/maya/audio/greeting.mp3",
+        "category": "language",
+        "tags": ["idioma", "saludo", "tradición"],
+        "size": "2.5MB",
+        "duration": "15s",
+        "language": "maya",
+        "accessibility": {
+          "transcript": "K'aslemal chuqa' k'aslemal",
+          "translation": "Buenos días y buenos días",
+          "description": "Saludo tradicional maya usado en la mañana"
+        }
+      },
+      {
+        "id": "maya-numbers-001",
+        "name": "Números en Maya",
+        "description": "Conteo del 1 al 10 en idioma maya",
+        "url": "/cultural-assets/maya/audio/numbers.mp3",
+        "category": "mathematics",
+        "tags": ["matemáticas", "números", "conteo"],
+        "size": "8.2MB",
+        "duration": "45s",
+        "language": "maya",
+        "accessibility": {
+          "transcript": "Jun, ka'i', oxi', kaji', wo'o', waqi', wuqu', wajxaqi', b'eleje', lajuj",
+          "translation": "Uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez",
+          "description": "Conteo del 1 al 10 en idioma maya tradicional"
+        }
+      },
+      {
+        "id": "maya-music-001",
+        "name": "Música Maya Tradicional",
+        "description": "Música tradicional maya con instrumentos ancestrales",
+        "url": "/cultural-assets/maya/audio/traditional-music.mp3",
+        "category": "music",
+        "tags": ["música", "tradicional", "instrumentos"],
+        "size": "15.3MB",
+        "duration": "3m 25s",
+        "accessibility": {
+          "transcript": "Música instrumental maya tradicional",
+          "description": "Música tradicional maya interpretada con instrumentos ancestrales como el tunkul y la flauta de carrizo"
+        }
+      }
+    ],
+    "videos": [
+      {
+        "id": "maya-ceremony-001",
+        "name": "Ceremonia Maya Tradicional",
+        "description": "Ceremonia tradicional maya de agradecimiento",
+        "url": "/cultural-assets/maya/video/ceremony.mp4",
+        "category": "traditions",
+        "tags": ["tradiciones", "ceremonia", "agradecimiento"],
+        "size": "45.2MB",
+        "duration": "5m 30s",
+        "accessibility": {
+          "captions": true,
+          "audioDescription": true,
+          "transcript": "Ceremonia maya de agradecimiento a la tierra y el maíz",
+          "description": "Video de una ceremonia tradicional maya mostrando el agradecimiento a la tierra y el maíz"
+        }
+      }
+    ],
+    "documents": [
+      {
+        "id": "maya-vocabulary-001",
+        "name": "Vocabulario Maya Básico",
+        "description": "Lista de palabras básicas en idioma maya",
+        "url": "/cultural-assets/maya/documents/vocabulary.json",
+        "category": "language",
+        "tags": ["idioma", "vocabulario", "básico"],
+        "size": "0.8MB",
+        "format": "json",
+        "accessibility": {
+          "screenReader": true,
+          "largeText": true,
+          "description": "Documento con vocabulario básico maya organizado por categorías"
+        }
+      }
+    ]
+  },
+  "educationalContent": {
+    "mathematics": {
+      "numbers": {
+        "title": "Sistema Numérico Maya",
+        "description": "Aprendizaje del sistema de numeración maya",
+        "lessons": [
+          {
+            "id": "maya-math-001",
+            "title": "Números del 1 al 20",
+            "content": "Lección sobre los números mayas del 1 al 20",
+            "difficulty": "beginner",
+            "estimatedTime": "15 minutos"
+          }
+        ]
+      },
+      "calendar": {
+        "title": "Calendario Maya",
+        "description": "Sistema de calendario maya y sus cálculos",
+        "lessons": [
+          {
+            "id": "maya-calendar-001",
+            "title": "Introducción al Calendario Maya",
+            "content": "Conceptos básicos del calendario maya",
+            "difficulty": "intermediate",
+            "estimatedTime": "25 minutos"
+          }
+        ]
+      }
+    },
+    "science": {
+      "agriculture": {
+        "title": "Agricultura Maya Tradicional",
+        "description": "Técnicas agrícolas tradicionales mayas",
+        "lessons": [
+          {
+            "id": "maya-agriculture-001",
+            "title": "Cultivo del Maíz",
+            "content": "Técnicas tradicionales de cultivo de maíz",
+            "difficulty": "beginner",
+            "estimatedTime": "20 minutos"
+          }
+        ]
+      }
+    },
+    "history": {
+      "traditions": {
+        "title": "Tradiciones Mayas",
+        "description": "Historia y tradiciones de la cultura maya",
+        "lessons": [
+          {
+            "id": "maya-traditions-001",
+            "title": "Ceremonias Tradicionales",
+            "content": "Significado y práctica de ceremonias mayas",
+            "difficulty": "intermediate",
+            "estimatedTime": "30 minutos"
+          }
+        ]
+      }
+    }
+  },
+  "accessibility": {
+    "screenReader": true,
+    "highContrast": true,
+    "largeText": true,
+    "keyboardNavigation": true,
+    "captions": true,
+    "audioDescriptions": true,
+    "multilingual": true
+  },
+  "metadata": {
+    "culturalSensitivity": "high",
+    "educationalValue": "high",
+    "authenticity": "verified",
+    "source": "Comunidades mayas colaboradoras",
+    "license": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0"
+  }
+}

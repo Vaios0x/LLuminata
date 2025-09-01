@@ -1,0 +1,759 @@
+{
+  "languages": {
+    "es-MX": {
+      "name": "Español (México)",
+      "nativeName": "Español",
+      "code": "es-MX",
+      "region": "México",
+      "type": "primary",
+      "status": "active",
+      "speakers": 130000000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Día de los Muertos", "Carnaval", "Fiesta de San Juan"]
+      }
+    },
+
+    "maya": {
+      "name": "Maya (Yucateco)",
+      "nativeName": "Maya",
+      "code": "maya",
+      "region": "Península de Yucatán (Yucatán, Quintana Roo, Campeche)",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 774755,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Maya",
+        "culturalReferences": ["Popol Vuh", "Ceremonia del Fuego", "Tz'olkin"]
+      }
+    },
+    "nahuatl": {
+      "name": "Náhuatl",
+      "nativeName": "Nahuatl",
+      "code": "nahuatl",
+      "region": "Puebla, Hidalgo, Veracruz, Guerrero, Estado de México",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 1651958,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Nahuatl",
+        "culturalReferences": ["Códice Florentino", "Cantares Mexicanos", "Tonalpohualli"]
+      }
+    },
+    "kiche": {
+      "name": "K'iche'",
+      "nativeName": "K'iche'",
+      "code": "kiche",
+      "region": "Guatemala",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 1100000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Maya",
+        "culturalReferences": ["Popol Vuh", "Ceremonia del Fuego", "Tz'olkin"]
+      }
+    },
+    "kaqchikel": {
+      "name": "Kaqchikel",
+      "nativeName": "Kaqchikel",
+      "code": "kaqchikel",
+      "region": "Guatemala",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 450000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Maya",
+        "culturalReferences": ["Memorial de Sololá", "Tradiciones kaqchikeles"]
+      }
+    },
+    "mam": {
+      "name": "Mam",
+      "nativeName": "Mam",
+      "code": "mam",
+      "region": "Guatemala",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 520000,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Tradiciones mam", "Agricultura tradicional"]
+      }
+    },
+    "qeqchi": {
+      "name": "Q'eqchi'",
+      "nativeName": "Q'eqchi'",
+      "code": "qeqchi",
+      "region": "Guatemala, Belice",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 420000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Maya",
+        "culturalReferences": ["Tradiciones q'eqchi'", "Agricultura tradicional"]
+      }
+    },
+    "tzotzil": {
+      "name": "Tsotsil",
+      "nativeName": "Bats'i k'op",
+      "code": "tzotzil",
+      "region": "Chiapas (región Altos)",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 550234,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Chamula", "Zinacantán", "Tradiciones mayas"]
+      }
+    },
+    "tseltal": {
+      "name": "Tseltal",
+      "nativeName": "K'op",
+      "code": "tseltal",
+      "region": "Chiapas (zona de los Altos y Selva)",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 589144,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Tradiciones tseltal", "Agricultura tradicional", "Medicina tradicional"]
+      }
+    },
+    "mixteco": {
+      "name": "Mixteco",
+      "nativeName": "Tu'un savi",
+      "code": "mixteco",
+      "region": "Región Mixteca (Oaxaca, Guerrero, Puebla)",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 529593,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Códice Nuttall", "Tradiciones mixtecas", "Arte plumario"]
+      }
+    },
+    "zapoteco": {
+      "name": "Zapoteco",
+      "nativeName": "Diidxazá",
+      "code": "zapoteco",
+      "region": "Oaxaca (valles de Oaxaca y Sierra), Veracruz, Guerrero",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 490845,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Monte Albán", "Guelaguetza", "Tradiciones zapotecas"]
+      }
+    },
+    "otomi": {
+      "name": "Otomí (hñähñu)",
+      "nativeName": "Hñähñu",
+      "code": "otomi",
+      "region": "Hidalgo, México, Querétaro, Veracruz (centro de México)",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 298861,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Tradiciones otomíes", "Arte popular", "Medicina tradicional"]
+      }
+    },
+    "totonaco": {
+      "name": "Totonaco",
+      "nativeName": "Tachihuiin",
+      "code": "totonaco",
+      "region": "Veracruz, Puebla, Hidalgo",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 267635,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Danza de los Voladores", "Vanilla", "Ceremonias tradicionales"]
+      }
+    },
+    "mazateco": {
+      "name": "Mazateco",
+      "nativeName": "Ha shuta enima",
+      "code": "mazateco",
+      "region": "Oaxaca, Puebla, Veracruz",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 237212,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Chamanismo", "Medicina tradicional", "Ceremonias sagradas"]
+      }
+    },
+    "chol": {
+      "name": "Chol",
+      "nativeName": "Winik",
+      "code": "chol",
+      "region": "Chiapas, Tabasco",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 223050,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Agricultura tradicional", "Ceremonias mayas", "Medicina natural"]
+      }
+    },
+    "mazahua": {
+      "name": "Mazahua",
+      "nativeName": "Jñatjo",
+      "code": "mazahua",
+      "region": "Estado de México, Michoacán",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 147088,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Artesanías", "Agricultura", "Tradiciones orales"]
+      }
+    },
+    "huasteco": {
+      "name": "Huasteco",
+      "nativeName": "Téenek",
+      "code": "huasteco",
+      "region": "San Luis Potosí, Veracruz, Hidalgo, Tamaulipas",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 173765,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Danza de los Arcos", "Agricultura", "Pesca tradicional"]
+      }
+    },
+    "chinanteco": {
+      "name": "Chinanteco",
+      "nativeName": "Tsa jujmí",
+      "code": "chinanteco",
+      "region": "Oaxaca, Veracruz",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 141706,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Agricultura", "Tradiciones orales", "Medicina tradicional"]
+      }
+    },
+    "purepecha": {
+      "name": "Purépecha",
+      "nativeName": "P'urhépecha",
+      "code": "purepecha",
+      "region": "Michoacán",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 141177,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Danza de los Viejitos", "Artesanías", "Pesca en el Lago de Pátzcuaro"]
+      }
+    },
+    "mixe": {
+      "name": "Mixe",
+      "nativeName": "Ayüük",
+      "code": "mixe",
+      "region": "Oaxaca",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 139760,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Ceremonias tradicionales", "Agricultura", "Medicina natural"]
+      }
+    },
+    "tlapaneco": {
+      "name": "Tlapaneco",
+      "nativeName": "Me'phaa",
+      "code": "tlapaneco",
+      "region": "Guerrero",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 119497,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Agricultura tradicional", "Ceremonias", "Tradiciones orales"]
+      }
+    },
+    "tarahumara": {
+      "name": "Tarahumara",
+      "nativeName": "Rarámuri",
+      "code": "tarahumara",
+      "region": "Chihuahua",
+      "type": "indigenous",
+      "status": "active",
+      "speakers": 85018,
+      "features": {
+        "translation": true,
+        "speechRecognition": false,
+        "textToSpeech": false,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": false,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Carrera de Bola", "Agricultura en barrancas", "Tradiciones de resistencia"]
+      }
+    },
+    "en": {
+      "name": "English",
+      "nativeName": "English",
+      "code": "en",
+      "region": "Global",
+      "type": "secondary",
+      "status": "active",
+      "speakers": 1500000000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": true
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Thanksgiving", "Halloween", "Christmas"]
+      }
+    },
+    "pt": {
+      "name": "Português",
+      "nativeName": "Português",
+      "code": "pt",
+      "region": "Brasil, Portugal",
+      "type": "primary",
+      "status": "active",
+      "speakers": 260000000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": false
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Carnaval", "Capoeira", "Festa Junina"]
+      }
+    },
+    "fr": {
+      "name": "Français",
+      "nativeName": "Français",
+      "code": "fr",
+      "region": "France, Canada, Africa",
+      "type": "secondary",
+      "status": "active",
+      "speakers": 300000000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": true
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Bastille Day", "Carnival", "Christmas"]
+      }
+    },
+    "de": {
+      "name": "Deutsch",
+      "nativeName": "Deutsch",
+      "code": "de",
+      "region": "Germany, Austria, Switzerland",
+      "type": "secondary",
+      "status": "active",
+      "speakers": 95000000,
+      "features": {
+        "translation": true,
+        "speechRecognition": true,
+        "textToSpeech": true,
+        "culturalAdaptation": true
+      },
+      "accessibility": {
+        "screenReader": true,
+        "voiceSynthesis": true,
+        "subtitles": true,
+        "signLanguage": true
+      },
+      "culturalContext": {
+        "writingSystem": "Latin",
+        "readingDirection": "ltr",
+        "numberSystem": "Arabic",
+        "culturalReferences": ["Oktoberfest", "Christmas", "Easter"]
+      }
+    }
+  },
+  "defaultLanguage": "es-MX",
+  "fallbackLanguage": "en",
+  "supportedRegions": [
+    "MX",
+    "GT",
+    "BZ",
+    "SV",
+    "HN",
+    "NI",
+    "CR",
+    "PA",
+    "BR",
+    "PT",
+    "US",
+    "CA",
+    "FR",
+    "DE",
+    "AT",
+    "CH"
+  ],
+  "indigenousLanguages": [
+    "maya",
+    "nahuatl",
+    "kiche",
+    "kaqchikel",
+    "mam",
+    "qeqchi",
+    "tzotzil",
+    "tseltal",
+    "mixteco",
+    "zapoteco",
+    "otomi",
+    "totonaco",
+    "mazateco",
+    "chol",
+    "mazahua",
+    "huasteco",
+    "chinanteco",
+    "purepecha",
+    "mixe",
+    "tlapaneco",
+    "tarahumara"
+  ],
+  "primaryLanguages": [
+    "es-MX",
+    "pt"
+  ],
+  "secondaryLanguages": [
+    "en",
+    "fr",
+    "de"
+  ]
+}

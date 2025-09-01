@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "name": "InclusiveAI Coach - Contenido Offline",
+  "description": "Contenido educativo offline para InclusiveAI Coach",
+  "lastUpdated": "2024-12-19T10:00:00Z",
+  "totalSize": "0",
+  "cultures": [
+    "maya",
+    "nahuatl",
+    "zapoteco",
+    "mixteco",
+    "otomi",
+    "quechua"
+  ],
+  "categories": {
+    "mathematics": {
+      "name": "Matemáticas",
+      "description": "Contenido matemático adaptado culturalmente",
+      "subcategories": [
+        "numeros-basicos",
+        "operaciones",
+        "geometria",
+        "medidas",
+        "calendarios"
+      ],
+      "estimatedSize": "50MB"
+    },
+    "science": {
+      "name": "Ciencias",
+      "description": "Contenido científico con perspectiva cultural",
+      "subcategories": [
+        "naturaleza",
+        "medicina-tradicional",
+        "astronomia",
+        "agricultura",
+        "clima"
+      ],
+      "estimatedSize": "75MB"
+    },
+    "history": {
+      "name": "Historia",
+      "description": "Historia y tradiciones culturales",
+      "subcategories": [
+        "tradiciones",
+        "artesanias",
+        "ceremonias",
+        "lenguajes",
+        "costumbres"
+      ],
+      "estimatedSize": "100MB"
+    },
+    "language": {
+      "name": "Lenguaje",
+      "description": "Aprendizaje de idiomas indígenas",
+      "subcategories": [
+        "vocabulario",
+        "saludos",
+        "numeros",
+        "expresiones",
+        "canciones"
+      ],
+      "estimatedSize": "60MB"
+    },
+    "art": {
+      "name": "Arte y Cultura",
+      "description": "Arte tradicional y expresiones culturales",
+      "subcategories": [
+        "musica",
+        "danza",
+        "pintura",
+        "textiles",
+        "ceramica"
+      ],
+      "estimatedSize": "80MB"
+    }
+  },
+  "resources": {
+    "images": {
+      "count": 0,
+      "formats": ["jpg", "png", "webp"],
+      "maxSize": "2MB"
+    },
+    "audio": {
+      "count": 0,
+      "formats": ["mp3", "ogg", "wav"],
+      "maxSize": "10MB"
+    },
+    "video": {
+      "count": 0,
+      "formats": ["mp4", "webm"],
+      "maxSize": "50MB"
+    },
+    "documents": {
+      "count": 0,
+      "formats": ["pdf", "json", "txt"],
+      "maxSize": "5MB"
+    }
+  },
+  "accessibility": {
+    "screenReader": true,
+    "highContrast": true,
+    "largeText": true,
+    "keyboardNavigation": true,
+    "captions": true,
+    "audioDescriptions": true
+  },
+  "sync": {
+    "enabled": true,
+    "interval": 3600000,
+    "autoSync": true,
+    "conflictResolution": "server-wins"
+  },
+  "storage": {
+    "quota": "500MB",
+    "compression": true,
+    "encryption": false
+  }
+}

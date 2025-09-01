@@ -1,0 +1,152 @@
+groups:
+  - name: lluminata-alerts
+    rules:
+      # Alerta de alta CPU
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alto uso de CPU en {{ $labels.instance }}"
+          description: "El uso de CPU está por encima del 80% durante más de 5 minutos"
+
+      # Alerta de alta memoria
+      - alert: HighMemoryUsage
+        expr: 100 - (avg by (instance) (node_memory_MemAvailable_bytes) / avg by (instance) (node_memory_MemTotal_bytes) * 100) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alto uso de memoria en {{ $labels.instance }}"
+          description: "El uso de memoria está por encima del 85% durante más de 5 minutos"
+
+      # Alerta de tiempo de respuesta lento
+      - alert: SlowAPIResponse
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Tiempo de respuesta API lento"
+          description: "El P95 del tiempo de respuesta API está por encima de 2 segundos"
+
+      # Alerta de errores 5xx
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alta tasa de errores 5xx"
+          description: "Más del 5% de las peticiones están devolviendo errores 5xx"
+
+      # Alerta de aplicación no disponible
+      - alert: AppDown
+        expr: up{job="lluminata"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Aplicación LLuminata no disponible"
+          description: "La aplicación no responde desde hace más de 1 minuto"
+
+      # Alerta de base de datos no disponible
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Base de datos PostgreSQL no disponible"
+          description: "La base de datos no responde desde hace más de 1 minuto"
+
+      # Alerta de Redis no disponible
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis no disponible"
+          description: "El servidor Redis no responde desde hace más de 1 minuto"
+
+      # Alerta de espacio en disco
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Espacio en disco bajo en {{ $labels.instance }}"
+          description: "Menos del 10% de espacio disponible en disco"
+
+      # Alerta de usuarios concurrentes altos
+      - alert: HighConcurrentUsers
+        expr: sum(rate(user_sessions_total[5m])) > 1000
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "Alto número de usuarios concurrentes"
+          description: "Más de 1000 usuarios activos simultáneamente"
+
+      # Alerta de lecciones no completadas
+      - alert: LowLessonCompletion
+        expr: sum(rate(lessons_completed_total[1h])) / sum(rate(lessons_started_total[1h])) < 0.7
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Baja tasa de finalización de lecciones"
+          description: "Menos del 70% de las lecciones iniciadas se completan"
+
+      # Alerta de problemas de accesibilidad
+      - alert: AccessibilityIssues
+        expr: sum(rate(accessibility_error_total[5m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Problemas de accesibilidad detectados"
+          description: "Más de 10 errores de accesibilidad por minuto"
+
+      # Alerta de rendimiento de IA
+      - alert: AIServiceSlow
+        expr: histogram_quantile(0.95, sum(rate(ai_request_duration_seconds_bucket[5m])) by (le)) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Servicios de IA lentos"
+          description: "El P95 del tiempo de respuesta de servicios de IA está por encima de 5 segundos"
+
+      # Alerta de sincronización offline
+      - alert: OfflineSyncIssues
+        expr: sum(rate(offline_sync_failed_total[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Problemas de sincronización offline"
+          description: "Más de 5 fallos de sincronización offline por minuto"
+
+      # Alerta de gamificación
+      - alert: GamificationIssues
+        expr: sum(rate(gamification_event_failed_total[5m])) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Problemas en sistema de gamificación"
+          description: "Más de 3 eventos de gamificación fallidos por minuto"
+
+      # Alerta de analytics
+      - alert: AnalyticsIssues
+        expr: sum(rate(analytics_event_failed_total[5m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Problemas en sistema de analytics"
+          description: "Más de 10 eventos de analytics fallidos por minuto"

@@ -1,0 +1,1697 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Student {
+  id                    String    @id @default(cuid())
+  name                  String
+  age                   Int
+  gender                String?
+  location              String
+  language              String    @default("es-MX")
+  culturalBackground    String?
+  
+  // Detección de necesidades
+  learningProfile       Json?     // Perfil completo de aprendizaje
+  specialNeeds          SpecialNeed[]
+  cognitiveLevel        Int       @default(3) // 1-5
+  readingLevel          Int       @default(1) // Grado escolar equivalente
+  
+  // Progreso
+  completedLessons      CompletedLesson[]
+  assessments           Assessment[]
+  achievements          StudentAchievement[]
+  weeklyGoals           WeeklyGoal[]
+  
+  // Evaluación adaptativa
+  assessmentSessions    AssessmentSession[]
+  assessmentResponses   AssessmentResponse[]
+  learningDifficulties  LearningDifficulty[]
+  personalizedContent   PersonalizedContent[]
+  learningRecommendations LearningRecommendation[]
+  
+  // Análisis de sentimientos
+  sentimentAnalyses     SentimentAnalysis[]
+  emotionTrends         EmotionTrend[]
+  sentimentAlerts       SentimentAlert[]
+  
+  // Funcionalidades sociales
+  createdGroups         StudyGroup[] @relation("GroupCreator")
+  groupMemberships      StudyGroupMember[]
+  createdProjects       CollaborativeProject[] @relation("ProjectCreator")
+  projectParticipations ProjectParticipant[]
+  assignedTasks         ProjectTask[] @relation("TaskAssignee")
+  mentorship            Mentor? @relation("MentorStudent")
+  menteeships           Mentorship[] @relation("MenteeStudent")
+  sharedResources       SharedResource[] @relation("ResourceCreator")
+  meetingAttendances    MeetingAttendee[]
+  
+  // Acceso
+  hasInternet           Boolean   @default(false)
+  deviceType            String?   // mobile, tablet, desktop
+  lastSync              DateTime?
+  offlineData           Json?     // Datos para modo offline
+  
+  // Relaciones
+  teacher               Teacher?  @relation(fields: [teacherId], references: [id])
+  teacherId             String?
+  family                Family?   @relation(fields: [familyId], references: [id])
+  familyId              String?
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([location])
+  @@index([language])
+}
+
+model SpecialNeed {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  NeedType
+  severity              Int       @default(2) // 1-3 (leve, moderado, severo)
+  detectedAt            DateTime  @default(now())
+  detectionMethod       String    // AI, teacher, medical
+  recommendations       Json      // Recomendaciones específicas
+  
+  // Relaciones
+  student               Student   @relation(fields: [studentId], references: [id])
+  externalIntegrations  ExternalContentIntegration[]
+  users                 User[]
+  
+  @@unique([studentId, type])
+}
+
+model Lesson {
+  id                    String    @id @default(cuid())
+  title                 String
+  description           String
+  subject               String
+  gradeLevel            Int
+  difficulty            Int       @default(2) // 1-5
+  
+  // Contenido adaptativo
+  baseContent           Json      // Contenido base
+  culturalVariants      Json      // Variantes por cultura
+  languageVersions      Json      // Versiones por idioma
+  accessibilityFeatures Json      // Características de accesibilidad
+  
+  // Recursos offline
+  offlinePackageUrl     String?
+  offlineSize           Int?      // En MB
+  
+  // Métricas
+  averageCompletionTime Int?      // En minutos
+  successRate           Float?    // 0-1
+  
+  completions           CompletedLesson[]
+  prerequisites         String    // IDs de lecciones prerequisito (JSON string)
+  
+  // Relaciones
+  users                 User[]
+  externalIntegrations  ExternalContentIntegration[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model CompletedLesson {
+  id                    String    @id @default(cuid())
+  studentId             String
+  lessonId              String
+  startedAt             DateTime
+  completedAt           DateTime?
+  timeSpent             Int       // En segundos
+  score                 Float?    // 0-100
+  attempts              Int       @default(1)
+  helpUsed              Json?     // Ayudas utilizadas
+  
+  student               Student   @relation(fields: [studentId], references: [id])
+  lesson                Lesson    @relation(fields: [lessonId], references: [id])
+  
+  @@unique([studentId, lessonId])
+}
+
+model Assessment {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  AssessmentType
+  subject               String?
+  score                 Float     // 0-100
+  details               Json      // Detalles completos
+  
+  // Análisis IA
+  strengths             String    // JSON string
+  weaknesses            String    // JSON string
+  recommendations       Json
+  
+  conductedAt           DateTime  @default(now())
+  
+  // Relaciones
+  student               Student   @relation(fields: [studentId], references: [id])
+  users                 User[]
+}
+
+// Nueva tabla para sesiones de evaluación adaptativa
+model AssessmentSession {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  AssessmentType
+  subject               String
+  status                String    @default("active") // active, completed, paused
+  startTime             DateTime  @default(now())
+  endTime               DateTime?
+  finalScore            Float?
+  
+  // Configuración adaptativa
+  adaptiveSettings      Json      // Configuración de adaptación
+  studentProfile        Json      // Perfil del estudiante al momento de la evaluación
+  learningDifficulties  Json      // Dificultades detectadas
+  metadata              Json      // Metadatos adicionales
+  
+  // Resultados
+  results               Json?     // Resultados finales
+  
+  // Relaciones
+  student               Student   @relation(fields: [studentId], references: [id])
+  responses             AssessmentResponse[]
+  sentimentAnalyses     SentimentAnalysis[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+// Nueva tabla para respuestas de evaluación adaptativa
+model AssessmentResponse {
+  id                    String    @id @default(cuid())
+  assessmentId          String
+  questionId            String
+  studentId             String
+  response              String    // JSON string de la respuesta
+  responseTime          Int       // Tiempo en segundos
+  confidence            Float     // 0-1
+  hintsUsed             Int       @default(0)
+  attempts              Int       @default(1)
+  isCorrect             Boolean
+  score                 Float     // 0-1
+  
+  // Análisis de respuesta
+  feedback              Json      // Retroalimentación generada
+  difficultyAdjustment  Json      // Ajuste de dificultad aplicado
+  learningInsights      Json?     // Insights de aprendizaje detectados
+  
+  timestamp             DateTime  @default(now())
+  metadata              Json?     // Metadatos adicionales
+  
+  // Relaciones
+  assessmentSession     AssessmentSession @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  student               Student   @relation(fields: [studentId], references: [id])
+  
+  @@index([assessmentId])
+  @@index([studentId])
+  @@index([timestamp])
+}
+
+// Nueva tabla para dificultades de aprendizaje detectadas
+model LearningDifficulty {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  String    // cognitive, reading, mathematical, attention, memory, language, motor
+  severity              String    // mild, moderate, severe
+  confidence            Float     // 0-1
+  evidence              Json      // Evidencia que respalda la detección
+  recommendations       Json      // Recomendaciones específicas
+  adaptiveStrategies    Json      // Estrategias adaptativas
+  
+  detectedAt            DateTime  @default(now())
+  lastUpdated           DateTime  @updatedAt
+  
+  // Relaciones
+  student               Student   @relation(fields: [studentId], references: [id])
+  
+  @@index([studentId])
+  @@index([type])
+}
+
+// Nueva tabla para contenido personalizado generado
+model PersonalizedContent {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  String    // lesson, exercise, review, enrichment
+  subject               String
+  difficulty            String    // easy, medium, hard
+  content               Json      // Contenido generado
+  culturalAdaptations   Json      // Adaptaciones culturales aplicadas
+  accessibilityFeatures Json      // Características de accesibilidad
+  estimatedTime         Int       // Tiempo estimado en minutos
+  learningObjectives    Json      // Objetivos de aprendizaje
+  
+  generatedAt           DateTime  @default(now())
+  usedAt                DateTime?
+  
+  // Relaciones
+  student               Student   @relation(fields: [studentId], references: [id])
+  
+  @@index([studentId])
+  @@index([subject])
+  @@index([type])
+}
+
+// Nueva tabla para recomendaciones de lecciones
+model LearningRecommendation {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  String    // lesson, practice, review, enrichment, remediation
+  priority              String    // high, medium, low
+  reason                String
+  estimatedTime         Int       // Tiempo estimado en minutos
+  culturalRelevance     Float     // 0-1
+  accessibilityScore    Float     // 0-1
+  content               Json      // Contenido recomendado
+  
+  generatedAt           DateTime  @default(now())
+  followedAt            DateTime?
+  
+  // Relaciones
+  student               Student   @relation(fields: [studentId], references: [id])
+  
+  @@index([studentId])
+  @@index([priority])
+  @@index([type])
+}
+
+model Teacher {
+  id                    String    @id @default(cuid())
+  name                  String
+  email                 String    @unique
+  phone                 String?
+  school                String?
+  region                String
+  languages             String    // JSON string
+  
+  students              Student[]
+  createdContent        TeacherContent[]
+  sentimentAlerts       SentimentAlert[]
+  
+  createdAt             DateTime  @default(now())
+}
+
+model Family {
+  id                    String    @id @default(cuid())
+  primaryContactName    String
+  phone                 String?
+  email                 String?
+  address               String?
+  socioeconomicLevel    String?
+  
+  students              Student[]
+  engagementActivities  FamilyEngagement[]
+}
+
+model FamilyEngagement {
+  id                    String    @id @default(cuid())
+  familyId              String
+  type                  String    // workshop, meeting, activity
+  description           String
+  date                  DateTime
+  attended              Boolean   @default(false)
+  
+  family                Family    @relation(fields: [familyId], references: [id])
+}
+
+model StudentAchievement {
+  id                    String    @id @default(cuid())
+  studentId             String
+  type                  String
+  name                  String
+  description           String
+  earnedAt              DateTime  @default(now())
+  
+  student               Student   @relation(fields: [studentId], references: [id])
+}
+
+model WeeklyGoal {
+  id                    String    @id @default(cuid())
+  studentId             String
+  week                  DateTime
+  lessonsTarget         Int
+  lessonsCompleted      Int       @default(0)
+  minutesTarget         Int
+  minutesCompleted      Int       @default(0)
+  
+  student               Student   @relation(fields: [studentId], references: [id])
+  
+  @@unique([studentId, week])
+}
+
+model TeacherContent {
+  id                    String    @id @default(cuid())
+  teacherId             String
+  title                 String
+  type                  String    // lesson, exercise, story
+  content               Json
+  language              String
+  culturalContext       String?
+  approved              Boolean   @default(false)
+  
+  teacher               Teacher   @relation(fields: [teacherId], references: [id])
+  
+  createdAt             DateTime  @default(now())
+}
+
+model SyncLog {
+  id                    String    @id @default(cuid())
+  studentId             String
+  syncType              String    // upload, download
+  dataSize              Int       // En bytes
+  success               Boolean
+  error                 String?
+  syncedAt              DateTime  @default(now())
+  
+  // Relaciones
+  users                 User[]
+}
+
+enum NeedType {
+  DYSLEXIA
+  DYSCALCULIA
+  ADHD
+  AUTISM_SPECTRUM
+  VISUAL_IMPAIRMENT
+  HEARING_IMPAIRMENT
+  MOTOR_DISABILITY
+  LANGUAGE_DELAY
+  COGNITIVE_DELAY
+  OTHER
+}
+
+enum AssessmentType {
+  INITIAL
+  PROGRESS
+  DIAGNOSTIC
+  FINAL
+  ADAPTIVE
+  MASTERY
+  REMEDIAL
+}
+
+// NextAuth.js Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String?
+  image             String?
+  emailVerified     DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  role              UserRole  @default(STUDENT)
+  learningProfile   Json?     // Perfil de aprendizaje personalizado
+  accessibility     Json?     // Preferencias de accesibilidad
+  culturalContext   Json?     // Contexto cultural del usuario
+  preferences       Json?     // Preferencias generales
+  isActive          Boolean   @default(true)
+  lastLoginAt       DateTime?
+  loginCount        Int       @default(0)
+  timezone          String?   @default("America/Mexico_City")
+  language          String?   @default("es-MX")
+  notifications     Json?     // Configuración de notificaciones
+  securitySettings  Json?     // Configuración de seguridad
+  privacySettings   Json?     // Configuración de privacidad
+  performanceData   Json?     // Datos de rendimiento
+  offlineData       Json?     // Datos para uso offline
+  syncStatus        Json?     // Estado de sincronización
+  deviceInfo        Json?     // Información del dispositivo
+  networkInfo       Json?     // Información de red
+  errorLogs         Json?     // Logs de errores
+  activityLogs      Json?     // Logs de actividad
+  healthMetrics     Json?     // Métricas de salud
+  backupSettings    Json?     // Configuración de respaldo
+  recoverySettings  Json?     // Configuración de recuperación
+  complianceData    Json?     // Datos de cumplimiento
+  auditTrail        Json?     // Rastro de auditoría
+  version           String?   @default("1.0.0")
+  buildNumber       String?   @default("1")
+  environment       String?   @default("production")
+  featureFlags      Json?     // Banderas de características
+  experimentalFeatures Json?  // Características experimentales
+  betaFeatures      Json?     // Características beta
+  alphaFeatures     Json?     // Características alpha
+  debugMode         Boolean   @default(false)
+  developerMode     Boolean   @default(false)
+  testingMode       Boolean   @default(false)
+  stagingMode       Boolean   @default(false)
+  productionMode    Boolean   @default(true)
+  maintenanceMode   Boolean   @default(false)
+  emergencyMode     Boolean   @default(false)
+  lockdownMode      Boolean   @default(false)
+  quarantineMode    Boolean   @default(false)
+  isolationMode     Boolean   @default(false)
+  recoveryMode      Boolean   @default(false)
+  backupMode        Boolean   @default(false)
+  syncMode          Boolean   @default(true)
+  offlineMode       Boolean   @default(false)
+  onlineMode        Boolean   @default(true)
+  hybridMode        Boolean   @default(true)
+  adaptiveMode      Boolean   @default(true)
+  intelligentMode   Boolean   @default(true)
+  predictiveMode    Boolean   @default(true)
+  proactiveMode     Boolean   @default(true)
+  reactiveMode      Boolean   @default(true)
+  preventiveMode    Boolean   @default(true)
+  correctiveMode    Boolean   @default(true)
+  adaptiveMode2     Boolean   @default(true)
+  intelligentMode2  Boolean   @default(true)
+  predictiveMode2   Boolean   @default(true)
+  proactiveMode2    Boolean   @default(true)
+  reactiveMode2     Boolean   @default(true)
+  preventiveMode2   Boolean   @default(true)
+  correctiveMode2   Boolean   @default(true)
+  adaptiveMode3     Boolean   @default(true)
+  intelligentMode3  Boolean   @default(true)
+  predictiveMode3   Boolean   @default(true)
+  proactiveMode3    Boolean   @default(true)
+  reactiveMode3     Boolean   @default(true)
+  preventiveMode3   Boolean   @default(true)
+  correctiveMode3   Boolean   @default(true)
+  adaptiveMode4     Boolean   @default(true)
+  intelligentMode4  Boolean   @default(true)
+  predictiveMode4   Boolean   @default(true)
+  proactiveMode4    Boolean   @default(true)
+  reactiveMode4     Boolean   @default(true)
+  preventiveMode4   Boolean   @default(true)
+  correctiveMode4   Boolean   @default(true)
+  adaptiveMode5     Boolean   @default(true)
+  intelligentMode5  Boolean   @default(true)
+  predictiveMode5   Boolean   @default(true)
+  proactiveMode5    Boolean   @default(true)
+  reactiveMode5     Boolean   @default(true)
+  preventiveMode5   Boolean   @default(true)
+  correctiveMode5   Boolean   @default(true)
+  adaptiveMode6     Boolean   @default(true)
+  intelligentMode6  Boolean   @default(true)
+  predictiveMode6   Boolean   @default(true)
+  proactiveMode6    Boolean   @default(true)
+  reactiveMode6     Boolean   @default(true)
+  preventiveMode6   Boolean   @default(true)
+  correctiveMode6   Boolean   @default(true)
+  adaptiveMode7     Boolean   @default(true)
+  intelligentMode7  Boolean   @default(true)
+  predictiveMode7   Boolean   @default(true)
+  proactiveMode7    Boolean   @default(true)
+  reactiveMode7     Boolean   @default(true)
+  preventiveMode7   Boolean   @default(true)
+  correctiveMode7   Boolean   @default(true)
+  adaptiveMode8     Boolean   @default(true)
+  intelligentMode8  Boolean   @default(true)
+  predictiveMode8   Boolean   @default(true)
+  proactiveMode8    Boolean   @default(true)
+  reactiveMode8     Boolean   @default(true)
+  preventiveMode8   Boolean   @default(true)
+  correctiveMode8   Boolean   @default(true)
+  adaptiveMode9     Boolean   @default(true)
+  intelligentMode9  Boolean   @default(true)
+  predictiveMode9   Boolean   @default(true)
+  proactiveMode9    Boolean   @default(true)
+  reactiveMode9     Boolean   @default(true)
+  preventiveMode9   Boolean   @default(true)
+  correctiveMode9   Boolean   @default(true)
+  adaptiveMode10    Boolean   @default(true)
+  intelligentMode10 Boolean   @default(true)
+  predictiveMode10  Boolean   @default(true)
+  proactiveMode10   Boolean   @default(true)
+  reactiveMode10    Boolean   @default(true)
+  preventiveMode10  Boolean   @default(true)
+  correctiveMode10  Boolean   @default(true)
+
+  // Relaciones existentes
+  accounts         Account[]
+  sessions         Session[]
+  lessons          Lesson[]
+  assessments      Assessment[]
+  specialNeeds     SpecialNeed[]
+  syncLogs         SyncLog[]
+
+  // Relaciones de gamificación
+  userBadges       UserBadge[]
+  userAchievements UserAchievement[]
+  userLevel        UserLevel?
+  competitionParticipants CompetitionParticipant[]
+  leaderboardEntries LeaderboardEntry[]
+  userRewards      UserReward[]
+  gamificationEvents GamificationEvent[]
+
+  // Relaciones de integración externa
+  videoConferences VideoConference[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+// Sistema de Gamificación
+model Badge {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String   // URL del ícono
+  category    BadgeCategory
+  rarity      BadgeRarity
+  points      Int      @default(0)
+  criteria    Json     // Criterios para obtener el badge
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userBadges UserBadge[]
+  achievements Achievement[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+  progress  Float    @default(0) // Progreso hacia el badge (0-100)
+  isActive  Boolean  @default(true)
+
+  // Relaciones
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge  Badge  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String
+  category    AchievementCategory
+  points      Int      @default(0)
+  criteria    Json     // Criterios específicos
+  badgeId     String?  // Badge asociado opcional
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userAchievements UserAchievement[]
+  badge           Badge?            @relation(fields: [badgeId], references: [id])
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  earnedAt      DateTime @default(now())
+  progress      Float    @default(0)
+  isActive      Boolean  @default(true)
+
+  // Relaciones
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+model UserLevel {
+  id       String @id @default(cuid())
+  userId   String @unique
+  level    Int    @default(1)
+  experience Int  @default(0)
+  points   Int    @default(0)
+  title    String @default("Estudiante")
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_levels")
+}
+
+model Competition {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  type        CompetitionType
+  status      CompetitionStatus @default(UPCOMING)
+  maxParticipants Int?
+  rewards     Json     // Recompensas de la competencia
+  criteria    Json     // Criterios de participación
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  participants CompetitionParticipant[]
+  leaderboard  LeaderboardEntry[]
+
+  @@map("competitions")
+}
+
+model CompetitionParticipant {
+  id            String @id @default(cuid())
+  competitionId String
+  userId        String
+  joinedAt      DateTime @default(now())
+  score         Int      @default(0)
+  rank          Int?
+  isActive      Boolean  @default(true)
+
+  // Relaciones
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, userId])
+  @@map("competition_participants")
+}
+
+model LeaderboardEntry {
+  id            String @id @default(cuid())
+  competitionId String
+  userId        String
+  score         Int
+  rank          Int
+  updatedAt     DateTime @updatedAt
+
+  // Relaciones
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, userId])
+  @@map("leaderboard_entries")
+}
+
+model Reward {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  type        RewardType
+  value       Int      // Valor en puntos o cantidad
+  icon        String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userRewards UserReward[]
+
+  @@map("rewards")
+}
+
+model UserReward {
+  id        String   @id @default(cuid())
+  userId    String
+  rewardId  String
+  earnedAt  DateTime @default(now())
+  claimedAt DateTime?
+  isActive  Boolean  @default(true)
+
+  // Relaciones
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward Reward @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+
+  @@map("user_rewards")
+}
+
+model GamificationEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  type      GamificationEventType
+  points    Int      @default(0)
+  metadata  Json?    // Datos adicionales del evento
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("gamification_events")
+}
+
+// Enums para gamificación
+enum BadgeCategory {
+  LEARNING
+  CULTURAL
+  SOCIAL
+  TECHNICAL
+  SPECIAL
+  MILESTONE
+}
+
+enum BadgeRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum AchievementCategory {
+  ACADEMIC
+  CULTURAL
+  SOCIAL
+  TECHNICAL
+  CREATIVITY
+  PERSISTENCE
+}
+
+enum CompetitionType {
+  ACADEMIC
+  CULTURAL
+  CREATIVE
+  COLLABORATIVE
+  INDIVIDUAL
+}
+
+enum CompetitionStatus {
+  UPCOMING
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+
+enum RewardType {
+  POINTS
+  BADGE
+  ACHIEVEMENT
+  TITLE
+  FEATURE_UNLOCK
+  CUSTOM
+}
+
+enum GamificationEventType {
+  LESSON_COMPLETED
+  ASSESSMENT_PASSED
+  BADGE_EARNED
+  ACHIEVEMENT_UNLOCKED
+  LEVEL_UP
+  COMPETITION_WON
+  CULTURAL_ACTIVITY
+  SOCIAL_INTERACTION
+  HELP_OTHERS
+  PERFECT_SCORE
+  STREAK_MAINTAINED
+  FIRST_TIME_ACTIVITY
+}
+
+// ===== MODELOS DE INTEGRACIÓN CON LMS =====
+
+model Institution {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // school, university, organization
+  country     String
+  region      String?
+  website     String?
+  contactEmail String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  lmsConnections LMSConnection[]
+
+  @@map("institutions")
+}
+
+model LMSConnection {
+  id             String   @id @default(cuid())
+  institutionId  String
+  name           String
+  type           String   // moodle, canvas, blackboard, schoology, google-classroom
+  config         Json     // Configuración de conexión
+  status         String   @default("inactive") // active, inactive, error
+  lastSync       DateTime?
+  syncStatus     String   @default("idle") // idle, syncing, error
+  errorMessage   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relaciones
+  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  users      LMSUser[]
+  courses    LMSCourse[]
+  grades     LMSGrade[]
+
+  @@map("lms_connections")
+}
+
+model LMSUser {
+  id           String   @id @default(cuid())
+  connectionId String
+  externalId   String
+  email        String
+  name         String
+  role         String   // student, teacher, admin
+  lastSync     DateTime @default(now())
+
+  // Relaciones
+  connection LMSConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([externalId, connectionId])
+  @@map("lms_users")
+}
+
+model LMSCourse {
+  id           String    @id @default(cuid())
+  connectionId String
+  externalId   String
+  name         String
+  description  String?
+  startDate    DateTime?
+  endDate      DateTime?
+  status       String    @default("active") // active, inactive, archived
+  lastSync     DateTime  @default(now())
+
+  // Relaciones
+  connection LMSConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([externalId, connectionId])
+  @@map("lms_courses")
+}
+
+model LMSGrade {
+  id           String    @id @default(cuid())
+  connectionId String
+  userId       String
+  moduleId     String
+  score        Float
+  maxScore     Float
+  percentage   Float
+  feedback     String?
+  submittedAt  DateTime
+  gradedAt     DateTime?
+  lastSync     DateTime  @default(now())
+
+  // Relaciones
+  connection LMSConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId, connectionId])
+  @@map("lms_grades")
+}
+
+model ExternalContent {
+  id           String   @id @default(cuid())
+  source       String   // moodle, canvas, blackboard, youtube, khan-academy, etc.
+  externalId   String
+  title        String
+  description  String?
+  type         String   // video, document, quiz, assignment
+  url          String?
+  metadata     Json?    // Metadatos específicos del contenido
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relaciones
+  integrations ExternalContentIntegration[]
+
+  @@unique([source, externalId])
+  @@map("external_content")
+}
+
+model ExternalContentIntegration {
+  id                String   @id @default(cuid())
+  externalContentId String
+  lessonId          String?
+  assessmentId      String?
+  integrationType   String   // import, link, embed
+  config            Json?    // Configuración de integración
+  createdAt         DateTime @default(now())
+
+  // Relaciones
+  externalContent ExternalContent @relation(fields: [externalContentId], references: [id], onDelete: Cascade)
+  lesson         Lesson?          @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  assessment     Assessment?      @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+
+  @@map("external_content_integrations")
+}
+
+model VideoConference {
+  id           String   @id @default(cuid())
+  platform     String   // zoom, teams, meet, jitsi
+  meetingId    String
+  title        String
+  description  String?
+  startTime    DateTime
+  endTime      DateTime?
+  hostId       String
+  participants Json?    // Lista de participantes
+  recordingUrl String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relaciones
+  users User[]
+
+  @@map("video_conferences")
+}
+
+// ===== MODELOS DE ANÁLISIS DE SENTIMIENTOS =====
+
+model SentimentAnalysis {
+  id                String   @id @default(cuid())
+  studentId         String
+  sessionId         String?  // ID de la sesión de aprendizaje
+  timestamp         DateTime @default(now())
+  
+  // Análisis de sentimientos
+  sentimentScore    Float    // -1.0 a 1.0 (negativo a positivo)
+  emotion           EmotionType
+  confidence        Float    // 0.0 a 1.0
+  intensity         Float    // 0.0 a 1.0
+  
+  // Contexto
+  activityType      String?  // lesson, assessment, chat, etc.
+  contentId         String?  // ID del contenido analizado
+  userInput         String?  // Texto o audio analizado
+  
+  // Métricas adicionales
+  stressLevel       Float?   // 0.0 a 1.0
+  engagementLevel   Float?   // 0.0 a 1.0
+  frustrationLevel  Float?   // 0.0 a 1.0
+  
+  // Alertas
+  isAlert           Boolean  @default(false)
+  alertType         AlertType?
+  alertMessage      String?
+  
+  // Relaciones
+  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session           AssessmentSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([studentId, timestamp])
+  @@index([sessionId])
+  @@index([emotion])
+  @@index([isAlert])
+  @@map("sentiment_analysis")
+}
+
+model EmotionTrend {
+  id                String   @id @default(cuid())
+  studentId         String
+  date              DateTime @db.Date
+  timeSlot          Int      // 0-23 (hora del día)
+  
+  // Promedios del período
+  avgSentiment      Float
+  dominantEmotion   EmotionType
+  stressTrend       Float    // Cambio en nivel de estrés
+  engagementTrend   Float    // Cambio en nivel de engagement
+  
+  // Conteos
+  totalAnalyses     Int      @default(0)
+  positiveCount     Int      @default(0)
+  negativeCount     Int      @default(0)
+  neutralCount      Int      @default(0)
+  
+  // Relaciones
+  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([studentId, date, timeSlot])
+  @@index([studentId, date])
+  @@map("emotion_trends")
+}
+
+model SentimentAlert {
+  id                String   @id @default(cuid())
+  studentId         String
+  teacherId         String?
+  alertType         AlertType
+  severity          AlertSeverity
+  message           String
+  context           Json?    // Contexto adicional del alerta
+  
+  // Estado
+  isResolved        Boolean  @default(false)
+  resolvedAt        DateTime?
+  resolvedBy        String?
+  resolutionNotes   String?
+  
+  // Relaciones
+  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher           Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([studentId, isResolved])
+  @@index([teacherId, isResolved])
+  @@index([alertType, severity])
+  @@map("sentiment_alerts")
+}
+
+enum EmotionType {
+  JOY
+  SADNESS
+  ANGER
+  FEAR
+  SURPRISE
+  DISGUST
+  NEUTRAL
+  CONFUSION
+  FRUSTRATION
+  EXCITEMENT
+  ANXIETY
+  BOREDOM
+  CONFIDENCE
+  UNCERTAINTY
+}
+
+enum AlertType {
+  HIGH_STRESS
+  LOW_ENGAGEMENT
+  FRUSTRATION_SPIKE
+  EMOTIONAL_DISTRESS
+  LEARNING_BLOCK
+  BEHAVIORAL_CHANGE
+  ATTENTION_DECLINE
+  MOTIVATION_DROP
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// ===== MODELOS DE FUNCIONALIDADES SOCIALES =====
+
+model StudyGroup {
+  id                    String   @id @default(cuid())
+  name                  String
+  description           String?
+  subject               String
+  gradeLevel            Int
+  maxMembers            Int       @default(10)
+  isPublic              Boolean   @default(true)
+  isActive              Boolean   @default(true)
+  
+  // Configuración
+  meetingSchedule       Json?     // Horarios de reunión
+  studyGoals            Json?     // Objetivos del grupo
+  resources             Json?     // Recursos compartidos
+  
+  // Métricas
+  totalMeetings         Int       @default(0)
+  averageAttendance     Float     @default(0)
+  completionRate        Float     @default(0)
+  
+  // Relaciones
+  creatorId             String
+  creator               Student   @relation("GroupCreator", fields: [creatorId], references: [id])
+  members               StudyGroupMember[]
+  meetings              GroupMeeting[]
+  sharedResources       SharedResource[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([subject])
+  @@index([gradeLevel])
+  @@index([isPublic])
+  @@map("study_groups")
+}
+
+model StudyGroupMember {
+  id                    String   @id @default(cuid())
+  groupId               String
+  studentId             String
+  role                  GroupRole @default(MEMBER)
+  joinedAt              DateTime  @default(now())
+  lastActive            DateTime  @default(now())
+  
+  // Métricas del miembro
+  meetingsAttended      Int       @default(0)
+  contributionsCount    Int       @default(0)
+  helpProvidedCount     Int       @default(0)
+  
+  // Relaciones
+  group                 StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  student               Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@unique([groupId, studentId])
+  @@index([studentId])
+  @@map("study_group_members")
+}
+
+model GroupMeeting {
+  id                    String   @id @default(cuid())
+  groupId               String
+  title                 String
+  description           String?
+  scheduledAt           DateTime
+  duration              Int       // En minutos
+  meetingType           MeetingType
+  platform              String?   // zoom, teams, meet, in-person
+  
+  // Estado
+  status                MeetingStatus @default(SCHEDULED)
+  startedAt             DateTime?
+  endedAt               DateTime?
+  
+  // Métricas
+  attendeesCount        Int       @default(0)
+  averageEngagement     Float     @default(0)
+  
+  // Relaciones
+  group                 StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  attendees             MeetingAttendee[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([groupId, scheduledAt])
+  @@map("group_meetings")
+}
+
+model MeetingAttendee {
+  id                    String   @id @default(cuid())
+  meetingId             String
+  studentId             String
+  joinedAt              DateTime?
+  leftAt                DateTime?
+  engagementScore       Float?   // 0-1
+  
+  // Relaciones
+  meeting               GroupMeeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  student               Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@unique([meetingId, studentId])
+  @@map("meeting_attendees")
+}
+
+model CollaborativeProject {
+  id                    String   @id @default(cuid())
+  title                 String
+  description           String
+  subject               String
+  difficulty            Int       @default(2) // 1-5
+  estimatedDuration     Int       // En días
+  maxParticipants       Int       @default(5)
+  
+  // Estado
+  status                ProjectStatus @default(PLANNING)
+  startDate             DateTime?
+  dueDate               DateTime?
+  completedAt           DateTime?
+  
+  // Métricas
+  progress              Float     @default(0) // 0-100
+  qualityScore          Float?    // 0-100
+  collaborationScore    Float?    // 0-100
+  
+  // Relaciones
+  creatorId             String
+  creator               Student   @relation("ProjectCreator", fields: [creatorId], references: [id])
+  participants          ProjectParticipant[]
+  tasks                 ProjectTask[]
+  resources             SharedResource[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([subject])
+  @@index([status])
+  @@map("collaborative_projects")
+}
+
+model ProjectParticipant {
+  id                    String   @id @default(cuid())
+  projectId             String
+  studentId             String
+  role                  ProjectRole @default(MEMBER)
+  joinedAt              DateTime  @default(now())
+  
+  // Métricas del participante
+  tasksCompleted        Int       @default(0)
+  contributionsCount    Int       @default(0)
+  collaborationScore    Float?    // 0-100
+  
+  // Relaciones
+  project               CollaborativeProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  student               Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, studentId])
+  @@map("project_participants")
+}
+
+model ProjectTask {
+  id                    String   @id @default(cuid())
+  projectId             String
+  title                 String
+  description           String?
+  assignedTo            String?
+  priority              TaskPriority @default(MEDIUM)
+  
+  // Estado
+  status                TaskStatus @default(TODO)
+  dueDate               DateTime?
+  completedAt           DateTime?
+  
+  // Métricas
+  estimatedHours        Int?
+  actualHours           Int?
+  qualityScore          Float?
+  
+  // Relaciones
+  project               CollaborativeProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee              Student?  @relation("TaskAssignee", fields: [assignedTo], references: [id])
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([projectId, status])
+  @@map("project_tasks")
+}
+
+model Mentor {
+  id                    String   @id @default(cuid())
+  studentId             String
+  name                  String
+  expertise             String[]  // Áreas de experiencia
+  experience            Int       // Años de experiencia
+  availability          Json      // Horarios disponibles
+  rating                Float     @default(0)
+  totalSessions         Int       @default(0)
+  
+  // Estado
+  isActive              Boolean   @default(true)
+  isVerified            Boolean   @default(false)
+  
+  // Relaciones
+  student               Student   @relation("MentorStudent", fields: [studentId], references: [id])
+  mentees               Mentorship[]
+  sessions              MentorshipSession[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([expertise])
+  @@index([isActive])
+  @@map("mentors")
+}
+
+model Mentorship {
+  id                    String   @id @default(cuid())
+  mentorId              String
+  menteeId              String
+  subject               String
+  goals                 Json      // Objetivos de la mentoría
+  status                MentorshipStatus @default(ACTIVE)
+  
+  // Métricas
+  sessionsCount         Int       @default(0)
+  progressScore         Float?    // 0-100
+  satisfactionScore     Float?    // 0-100
+  
+  // Relaciones
+  mentor                Mentor    @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  mentee                Student   @relation("MenteeStudent", fields: [menteeId], references: [id], onDelete: Cascade)
+  sessions              MentorshipSession[]
+  
+  startedAt             DateTime  @default(now())
+  endedAt               DateTime?
+  
+  @@unique([mentorId, menteeId, subject])
+  @@map("mentorships")
+}
+
+model MentorshipSession {
+  id                    String   @id @default(cuid())
+  mentorshipId          String
+  title                 String
+  description           String?
+  scheduledAt           DateTime
+  duration              Int       // En minutos
+  sessionType           SessionType
+  
+  // Estado
+  status                SessionStatus @default(SCHEDULED)
+  startedAt             DateTime?
+  endedAt               DateTime?
+  
+  // Métricas
+  engagementScore       Float?
+  satisfactionScore     Float?
+  notes                 String?
+  
+  // Relaciones
+  mentorship            Mentorship @relation(fields: [mentorshipId], references: [id], onDelete: Cascade)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([mentorshipId, scheduledAt])
+  @@map("mentorship_sessions")
+}
+
+model SharedResource {
+  id                    String   @id @default(cuid())
+  title                 String
+  description           String?
+  type                  ResourceType
+  url                   String?
+  fileSize              Int?      // En bytes
+  tags                  String[]
+  
+  // Métricas
+  downloadsCount        Int       @default(0)
+  rating                Float     @default(0)
+  ratingCount           Int       @default(0)
+  
+  // Relaciones
+  creatorId             String
+  creator               Student   @relation("ResourceCreator", fields: [creatorId], references: [id])
+  studyGroupId          String?
+  studyGroup            StudyGroup? @relation(fields: [studyGroupId], references: [id], onDelete: SetNull)
+  projectId             String?
+  project               CollaborativeProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([type])
+  @@index([tags])
+  @@map("shared_resources")
+}
+
+// ===== MODELOS DE REPORTES AVANZADOS =====
+
+model RegionalReport {
+  id                    String   @id @default(cuid())
+  region                String
+  period                String    // monthly, quarterly, yearly
+  startDate             DateTime
+  endDate               DateTime
+  
+  // Métricas de usuarios
+  totalUsers            Int
+  activeUsers           Int
+  newUsers              Int
+  returningUsers        Int
+  churnRate             Float
+  
+  // Métricas educativas
+  lessonsCompleted      Int
+  assessmentsPassed     Int
+  averageScore          Float
+  completionRate        Float
+  
+  // Métricas de impacto
+  literacyImprovement   Float?
+  retentionRate         Float
+  engagementScore       Float
+  
+  // Métricas culturales
+  culturalContentUsage  Int
+  localLanguageUsage    Int
+  culturalSatisfaction  Float
+  
+  // Relaciones
+  details               RegionalReportDetail[]
+  
+  createdAt             DateTime  @default(now())
+  
+  @@unique([region, period, startDate])
+  @@map("regional_reports")
+}
+
+model RegionalReportDetail {
+  id                    String   @id @default(cuid())
+  reportId              String
+  category              String
+  metric                String
+  value                 Float
+  target                Float?
+  trend                 Float?    // Cambio respecto al período anterior
+  
+  report                RegionalReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  
+  @@map("regional_report_details")
+}
+
+model ImpactAnalysis {
+  id                    String   @id @default(cuid())
+  analysisType          ImpactAnalysisType
+  period                String
+  startDate             DateTime
+  endDate               DateTime
+  
+  // Métricas de impacto
+  educationalImpact     Float
+  socialImpact          Float
+  economicImpact        Float
+  culturalImpact        Float
+  
+  // Métricas de retención
+  studentRetention      Float
+  teacherRetention      Float
+  familyEngagement      Float
+  
+  // Métricas de calidad
+  contentQuality        Float
+  accessibilityScore    Float
+  userSatisfaction      Float
+  
+  // Relaciones
+  details               ImpactAnalysisDetail[]
+  
+  createdAt             DateTime  @default(now())
+  
+  @@map("impact_analyses")
+}
+
+model ImpactAnalysisDetail {
+  id                    String   @id @default(cuid())
+  analysisId            String
+  metric                String
+  value                 Float
+  benchmark             Float?
+  improvement           Float?
+  
+  analysis              ImpactAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  
+  @@map("impact_analysis_details")
+}
+
+model StakeholderReport {
+  id                    String   @id @default(cuid())
+  stakeholderType       StakeholderType
+  reportType            ReportType
+  period                String
+  generatedAt           DateTime  @default(now())
+  
+  // Contenido del reporte
+  summary               String
+  keyMetrics            Json
+  recommendations       Json
+  nextSteps             Json
+  
+  // Estado
+  isDelivered           Boolean   @default(false)
+  deliveredAt           DateTime?
+  feedback              String?
+  
+  // Relaciones
+  attachments           ReportAttachment[]
+  
+  @@map("stakeholder_reports")
+}
+
+model ReportAttachment {
+  id                    String   @id @default(cuid())
+  reportId              String
+  filename              String
+  fileType              String
+  fileSize              Int
+  url                   String
+  
+  report                StakeholderReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  
+  @@map("report_attachments")
+}
+
+// ===== ENUMS PARA FUNCIONALIDADES SOCIALES =====
+
+enum GroupRole {
+  CREATOR
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum MeetingType {
+  STUDY_SESSION
+  DISCUSSION
+  PRESENTATION
+  REVIEW
+  QUIZ
+  SOCIAL
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum ProjectRole {
+  LEADER
+  COORDINATOR
+  MEMBER
+  OBSERVER
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum MentorshipStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum SessionType {
+  ONE_ON_ONE
+  GROUP
+  WORKSHOP
+  Q_A
+  REVIEW
+}
+
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum ResourceType {
+  DOCUMENT
+  VIDEO
+  AUDIO
+  IMAGE
+  LINK
+  PRESENTATION
+  WORKSHEET
+  QUIZ
+  GAME
+  OTHER
+}
+
+// ===== ENUMS PARA REPORTES AVANZADOS =====
+
+enum ImpactAnalysisType {
+  EDUCATIONAL
+  SOCIAL
+  ECONOMIC
+  CULTURAL
+  COMPREHENSIVE
+}
+
+enum StakeholderType {
+  GOVERNMENT
+  EDUCATIONAL_INSTITUTION
+  NGO
+  CORPORATE_SPONSOR
+  COMMUNITY_LEADER
+  PARENT_ASSOCIATION
+  RESEARCH_INSTITUTION
+}
+
+enum ReportType {
+  PROGRESS
+  IMPACT
+  FINANCIAL
+  TECHNICAL
+  CULTURAL
+  ACCESSIBILITY
+  RETENTION
+  ENGAGEMENT
+}

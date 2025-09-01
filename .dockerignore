@@ -1,0 +1,67 @@
+# Dependencias
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de build
+.next
+out
+dist
+
+# Archivos de desarrollo
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Archivos de testing
+coverage
+.nyc_output
+test-results
+playwright-report
+
+# Archivos de Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Archivos de CI/CD
+.github
+.gitlab-ci.yml
+.gitignore
+
+# Archivos de documentación
+README.md
+docs
+*.md
+
+# Archivos temporales
+tmp
+temp
+.cache
+
+# Archivos de backup
+*.bak
+*.backup
+
+# Archivos de seed y migración
+prisma/dev.db
+prisma/dev.db-journal
+
+# Archivos de offline content generados
+public/offline-content
