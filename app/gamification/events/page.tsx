@@ -44,7 +44,7 @@ import {
   Bell,
   Play,
   Pause,
-  Stop,
+  Square,
   ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
