@@ -4,8 +4,10 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
+  let syncData: any = null;
+  
   try {
-    const syncData = await request.json();
+    syncData = await request.json();
     
     // Procesar diferentes tipos de sincronización
     for (const item of syncData.items) {
