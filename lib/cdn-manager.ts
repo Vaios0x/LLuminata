@@ -1,439 +1,160 @@
-// Sistema de gestión de CDN para optimización de assets
-
+// Interfaces para el CDN
 interface CDNConfig {
-  provider: 'cloudflare' | 'aws-cloudfront' | 'vercel' | 'custom';
   baseUrl: string;
   apiKey?: string;
-  zoneId?: string;
   region?: string;
-  cacheControl: {
-    images: string;
-    scripts: string;
-    styles: string;
-    fonts: string;
-    videos: string;
-    documents: string;
-  };
-  optimization: {
-    images: boolean;
-    compression: boolean;
-    minification: boolean;
-    bundling: boolean;
-  };
-  fallback: {
-    enabled: boolean;
-    localPath: string;
-  };
+  cacheControl?: string;
+  maxAge?: number;
 }
 
-interface AssetInfo {
-  url: string;
-  type: 'image' | 'script' | 'style' | 'font' | 'video' | 'document';
-  size: number;
-  optimized: boolean;
-  cached: boolean;
-  lastModified: Date;
-  etag: string;
+interface AssetOptions {
+  width?: number;
+  height?: number;
+  quality?: number;
+  format?: 'webp' | 'avif' | 'jpg' | 'png';
+  priority?: 'high' | 'normal' | 'low';
+  cache?: boolean;
 }
 
-interface OptimizationResult {
-  originalSize: number;
-  optimizedSize: number;
-  compressionRatio: number;
-  format: string;
-  quality: number;
-  url: string;
+interface UploadOptions {
+  public?: boolean;
+  folder?: string;
+  metadata?: Record<string, string>;
 }
 
-/**
- * Clase principal para gestión de CDN
- */
-export class CDNManager {
+interface CDNStats {
+  totalAssets: number;
+  totalSize: number;
+  cacheHitRate: number;
+  bandwidth: number;
+}
+
+// Clase principal del CDN Manager
+class CDNManager {
   private config: CDNConfig;
-  private assetCache = new Map<string, AssetInfo>();
-  private optimizationCache = new Map<string, OptimizationResult>();
+  private cache: Map<string, { data: any; timestamp: number; ttl: number }>;
 
-  constructor(config: Partial<CDNConfig> = {}) {
+  constructor(config: CDNConfig) {
     this.config = {
-      provider: 'cloudflare',
-      baseUrl: process.env.CDN_BASE_URL || 'https://cdn.lluminata.com',
-      apiKey: process.env.CDN_API_KEY,
-      zoneId: process.env.CDN_ZONE_ID,
-      region: process.env.CDN_REGION || 'us-east-1',
-      cacheControl: {
-        images: 'public, max-age=31536000, immutable',
-        scripts: 'public, max-age=31536000, immutable',
-        styles: 'public, max-age=31536000, immutable',
-        fonts: 'public, max-age=31536000, immutable',
-        videos: 'public, max-age=86400',
-        documents: 'public, max-age=3600',
-      },
-      optimization: {
-        images: true,
-        compression: true,
-        minification: true,
-        bundling: true,
-      },
-      fallback: {
-        enabled: true,
-        localPath: '/public/assets',
-      },
-      ...config,
+      baseUrl: config.baseUrl,
+      apiKey: config.apiKey,
+      region: config.region || 'us-east-1',
+      cacheControl: config.cacheControl || 'public, max-age=31536000',
+      maxAge: config.maxAge || 31536000,
     };
-
-    this.initializeCDN();
+    this.cache = new Map();
   }
 
   /**
-   * Inicializar CDN
+   * Obtiene un asset del CDN con opciones de optimización
    */
-  private async initializeCDN(): Promise<void> {
-    try {
-      console.log('🚀 Inicializando CDN Manager...');
-      
-      // Verificar conectividad con CDN
-      const isConnected = await this.testConnection();
-      if (!isConnected) {
-        console.warn('⚠️ CDN no disponible, usando fallback local');
-      } else {
-        console.log('✅ CDN conectado exitosamente');
-      }
-
-      // Precargar assets críticos
-      await this.preloadCriticalAssets();
-      
-    } catch (error) {
-      console.error('❌ Error inicializando CDN:', error);
-    }
-  }
-
-  /**
-   * Probar conexión con CDN
-   */
-  private async testConnection(): Promise<boolean> {
-    try {
-      const testUrl = `${this.config.baseUrl}/health`;
-      const response = await fetch(testUrl, { 
-        method: 'HEAD',
-        headers: this.getHeaders(),
-      });
-      
-      return response.ok;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  /**
-   * Obtener headers para requests
-   */
-  private getHeaders(): Record<string, string> {
-    const headers: Record<string, string> = {
-      'User-Agent': 'LLuminata-CDN-Manager/1.0',
-    };
-
-    if (this.config.apiKey) {
-      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
-    }
-
-    return headers;
-  }
-
-  /**
-   * Generar URL de CDN
-   */
-  generateCDNUrl(path: string, options: {
-    width?: number;
-    height?: number;
-    quality?: number;
-    format?: 'webp' | 'avif' | 'jpg' | 'png';
-    optimize?: boolean;
-  } = {}): string {
-    const { width, height, quality, format, optimize } = options;
-    
-    // URL base del CDN
-    let url = `${this.config.baseUrl}/${path.replace(/^\//, '')}`;
-    
-    // Agregar parámetros de optimización para imágenes
-    if (this.isImage(path) && (optimize || width || height || quality || format)) {
-      const params = new URLSearchParams();
-      
-      if (width) params.append('w', width.toString());
-      if (height) params.append('h', height.toString());
-      if (quality) params.append('q', quality.toString());
-      if (format) params.append('f', format);
-      if (optimize) params.append('opt', '1');
-      
-      url += `?${params.toString()}`;
-    }
-    
-    return url;
-  }
-
-  /**
-   * Verificar si es una imagen
-   */
-  private isImage(path: string): boolean {
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.svg'];
-    return imageExtensions.some(ext => path.toLowerCase().endsWith(ext));
-  }
-
-  /**
-   * Obtener asset optimizado
-   */
-  async getOptimizedAsset(
-    path: string, 
-    options: {
-      width?: number;
-      height?: number;
-      quality?: number;
-      format?: 'webp' | 'avif' | 'jpg' | 'png';
-      priority?: 'high' | 'normal' | 'low';
-    } = {}
-  ): Promise<string> {
+  async getAsset(path: string, options: AssetOptions = {}): Promise<string> {
     const cacheKey = `${path}-${JSON.stringify(options)}`;
     
-    // Verificar caché local
-    if (this.assetCache.has(cacheKey)) {
-      const asset = this.assetCache.get(cacheKey)!;
-      if (this.isAssetValid(asset)) {
-        return asset.url;
-      }
+    // Verificar cache local
+    const cached = this.cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < cached.ttl) {
+      return cached.data;
     }
 
     try {
-      // Generar URL optimizada
-      const cdnUrl = this.generateCDNUrl(path, options);
-      
-      // Verificar si existe en CDN
-      const exists = await this.checkAssetExists(cdnUrl);
-      
-      if (exists) {
-        // Guardar en caché
-        const assetInfo: AssetInfo = {
-          url: cdnUrl,
-          type: this.getAssetType(path),
-          size: 0, // Se actualizará en el próximo request
-          optimized: true,
-          cached: true,
-          lastModified: new Date(),
-          etag: '',
-        };
-        
-        this.assetCache.set(cacheKey, assetInfo);
-        return cdnUrl;
-      } else {
-        // Fallback a local
-        return this.getFallbackUrl(path);
-      }
-    } catch (error) {
-      console.error('Error obteniendo asset optimizado:', error);
-      return this.getFallbackUrl(path);
-    }
-  }
+      let url = `${this.config.baseUrl}/${path}`;
+      const params = new URLSearchParams();
 
-  /**
-   * Verificar si un asset existe
-   */
-  private async checkAssetExists(url: string): Promise<boolean> {
-    try {
-      const response = await fetch(url, { 
-        method: 'HEAD',
-        headers: this.getHeaders(),
+      if (options.width) params.append('w', options.width.toString());
+      if (options.height) params.append('h', options.height.toString());
+      if (options.quality) params.append('q', options.quality.toString());
+      if (options.format) params.append('f', options.format);
+      if (options.priority) params.append('p', options.priority);
+
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+
+      // Simular respuesta del CDN
+      const response = await fetch(url, {
+        headers: {
+          'Cache-Control': this.config.cacheControl,
+          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
+        },
       });
-      return response.ok;
+
+      if (!response.ok) {
+        throw new Error(`CDN error: ${response.status} ${response.statusText}`);
+      }
+
+      const finalUrl = response.url;
+      
+      // Guardar en cache local
+      this.cache.set(cacheKey, {
+        data: finalUrl,
+        timestamp: Date.now(),
+        ttl: options.cache ? this.config.maxAge : 60000, // 1 minuto si no hay cache
+      });
+
+      return finalUrl;
     } catch (error) {
-      return false;
+      console.error('Error obteniendo asset del CDN:', error);
+      // Fallback a URL original
+      return `${this.config.baseUrl}/${path}`;
     }
   }
 
   /**
-   * Obtener URL de fallback
-   */
-  private getFallbackUrl(path: string): string {
-    if (!this.config.fallback.enabled) {
-      throw new Error('Fallback no habilitado');
-    }
-    
-    return `${this.config.fallback.localPath}/${path.replace(/^\//, '')}`;
-  }
-
-  /**
-   * Verificar si un asset es válido
-   */
-  private isAssetValid(asset: AssetInfo): boolean {
-    const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-    return Date.now() - asset.lastModified.getTime() < maxAge;
-  }
-
-  /**
-   * Obtener tipo de asset
-   */
-  private getAssetType(path: string): AssetInfo['type'] {
-    const ext = path.toLowerCase().split('.').pop();
-    
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'svg'].includes(ext || '')) {
-      return 'image';
-    } else if (['js', 'mjs'].includes(ext || '')) {
-      return 'script';
-    } else if (['css'].includes(ext || '')) {
-      return 'style';
-    } else if (['woff', 'woff2', 'ttf', 'otf'].includes(ext || '')) {
-      return 'font';
-    } else if (['mp4', 'webm', 'ogg'].includes(ext || '')) {
-      return 'video';
-    } else {
-      return 'document';
-    }
-  }
-
-  /**
-   * Optimizar imagen
+   * Optimiza una imagen con las opciones especificadas
    */
   async optimizeImage(
-    imageUrl: string,
-    options: {
-      width?: number;
-      height?: number;
-      quality?: number;
-      format?: 'webp' | 'avif' | 'jpg' | 'png';
-    } = {}
-  ): Promise<OptimizationResult> {
-    const cacheKey = `${imageUrl}-${JSON.stringify(options)}`;
-    
-    // Verificar caché de optimización
-    if (this.optimizationCache.has(cacheKey)) {
-      return this.optimizationCache.get(cacheKey)!;
+    src: string, 
+    options: AssetOptions = {}
+  ): Promise<string> {
+    // Si es una URL externa, devolver como está
+    if (src.startsWith('http') && !src.includes(this.config.baseUrl)) {
+      return src;
     }
 
-    try {
-      // Obtener imagen original
-      const response = await fetch(imageUrl);
-      const originalBuffer = await response.arrayBuffer();
-      const originalSize = originalBuffer.byteLength;
-      
-      // Generar URL optimizada
-      const optimizedUrl = this.generateCDNUrl(imageUrl, {
-        ...options,
-        optimize: true,
-      });
-      
-      // Verificar si ya existe la versión optimizada
-      const optimizedResponse = await fetch(optimizedUrl);
-      
-      if (optimizedResponse.ok) {
-        const optimizedBuffer = await optimizedResponse.arrayBuffer();
-        const optimizedSize = optimizedBuffer.byteLength;
-        
-        const result: OptimizationResult = {
-          originalSize,
-          optimizedSize,
-          compressionRatio: (originalSize - optimizedSize) / originalSize,
-          format: options.format || 'webp',
-          quality: options.quality || 85,
-          url: optimizedUrl,
-        };
-        
-        this.optimizationCache.set(cacheKey, result);
-        return result;
-      } else {
-        // Si no existe, crear la versión optimizada
-        return await this.createOptimizedImage(imageUrl, originalBuffer, options);
-      }
-    } catch (error) {
-      console.error('Error optimizando imagen:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Crear imagen optimizada
-   */
-  private async createOptimizedImage(
-    imageUrl: string,
-    originalBuffer: ArrayBuffer,
-    options: {
-      width?: number;
-      height?: number;
-      quality?: number;
-      format?: 'webp' | 'avif' | 'jpg' | 'png';
-    }
-  ): Promise<OptimizationResult> {
-    // En un entorno real, esto se haría en el servidor CDN
-    // Aquí simulamos la optimización
-    const originalSize = originalBuffer.byteLength;
-    const optimizedSize = Math.floor(originalSize * 0.7); // Simular 30% de reducción
+    // Extraer path del src
+    const path = src.replace(this.config.baseUrl, '').replace(/^\//, '');
     
-    const result: OptimizationResult = {
-      originalSize,
-      optimizedSize,
-      compressionRatio: (originalSize - optimizedSize) / originalSize,
+    return this.getAsset(path, {
+      ...options,
       format: options.format || 'webp',
       quality: options.quality || 85,
-      url: this.generateCDNUrl(imageUrl, { ...options, optimize: true }),
-    };
-    
-    return result;
+    });
   }
 
   /**
-   * Precargar assets críticos
-   */
-  private async preloadCriticalAssets(): Promise<void> {
-    const criticalAssets = [
-      '/images/logo.png',
-      '/images/hero-bg.jpg',
-      '/styles/main.css',
-      '/scripts/app.js',
-      '/fonts/inter-var.woff2',
-    ];
-    
-    console.log('📦 Precargando assets críticos...');
-    
-    for (const asset of criticalAssets) {
-      try {
-        await this.getOptimizedAsset(asset, { priority: 'high' });
-      } catch (error) {
-        console.warn(`⚠️ Error precargando ${asset}:`, error);
-      }
-    }
-    
-    console.log('✅ Assets críticos precargados');
-  }
-
-  /**
-   * Subir asset al CDN
+   * Sube un asset al CDN
    */
   async uploadAsset(
-    file: File | Buffer,
+    file: File | Blob,
     path: string,
-    options: {
-      optimize?: boolean;
-      cacheControl?: string;
-      metadata?: Record<string, string>;
-    } = {}
+    options: UploadOptions = {}
   ): Promise<string> {
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('path', path);
-      formData.append('optimize', options.optimize?.toString() || 'false');
-      formData.append('cacheControl', options.cacheControl || this.getCacheControl(path));
+      formData.append('public', options.public?.toString() || 'true');
+      formData.append('folder', options.folder || 'uploads');
       
       if (options.metadata) {
-        formData.append('metadata', JSON.stringify(options.metadata));
+        Object.entries(options.metadata).forEach(([key, value]) => {
+          formData.append(`metadata[${key}]`, value);
+        });
       }
-      
+
       const response = await fetch(`${this.config.baseUrl}/upload`, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: {
+          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
+        },
         body: formData,
       });
-      
+
       if (!response.ok) {
-        throw new Error(`Error subiendo asset: ${response.statusText}`);
+        throw new Error(`Error subiendo asset: ${response.status} ${response.statusText}`);
       }
-      
+
       const result = await response.json();
       return result.url;
     } catch (error) {
@@ -443,235 +164,90 @@ export class CDNManager {
   }
 
   /**
-   * Obtener cache control para tipo de asset
-   */
-  private getCacheControl(path: string): string {
-    const type = this.getAssetType(path);
-    return this.config.cacheControl[type] || this.config.cacheControl.documents;
-  }
-
-  /**
-   * Invalidar caché de CDN
+   * Invalida el cache del CDN para rutas específicas
    */
   async invalidateCache(paths: string[]): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.baseUrl}/invalidate`, {
         method: 'POST',
         headers: {
-          ...this.getHeaders(),
           'Content-Type': 'application/json',
+          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
         },
         body: JSON.stringify({ paths }),
       });
-      
-      if (response.ok) {
-        // Limpiar caché local
-        for (const path of paths) {
-          for (const [key] of this.assetCache.entries()) {
-            if (key.startsWith(path)) {
-              this.assetCache.delete(key);
-            }
+
+      if (!response.ok) {
+        throw new Error(`Error invalidando cache: ${response.status} ${response.statusText}`);
+      }
+
+      // Limpiar cache local para estas rutas
+      paths.forEach(path => {
+        for (const [key] of this.cache) {
+          if (key.includes(path)) {
+            this.cache.delete(key);
           }
         }
-        
-        console.log(`🗑️ Caché invalidado para ${paths.length} paths`);
-        return true;
-      }
-      
-      return false;
+      });
+
+      return true;
     } catch (error) {
-      console.error('Error invalidando caché:', error);
+      console.error('Error invalidando cache del CDN:', error);
       return false;
     }
   }
 
   /**
-   * Obtener estadísticas de CDN
+   * Obtiene estadísticas del CDN
    */
-  async getStats(): Promise<{
-    totalAssets: number;
-    totalSize: number;
-    cacheHitRate: number;
-    optimizationRate: number;
-    bandwidth: number;
-  }> {
+  async getStats(): Promise<CDNStats> {
     try {
       const response = await fetch(`${this.config.baseUrl}/stats`, {
-        headers: this.getHeaders(),
+        headers: {
+          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
+        },
       });
-      
-      if (response.ok) {
-        return await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Error obteniendo estadísticas: ${response.status} ${response.statusText}`);
       }
-      
-      return {
-        totalAssets: this.assetCache.size,
-        totalSize: 0,
-        cacheHitRate: 0,
-        optimizationRate: 0,
-        bandwidth: 0,
-      };
+
+      return await response.json();
     } catch (error) {
-      console.error('Error obteniendo estadísticas de CDN:', error);
+      console.error('Error obteniendo estadísticas del CDN:', error);
+      // Devolver estadísticas por defecto
       return {
         totalAssets: 0,
         totalSize: 0,
         cacheHitRate: 0,
-        optimizationRate: 0,
         bandwidth: 0,
       };
     }
   }
 
   /**
-   * Limpiar caché local
+   * Limpia el cache local
    */
   clearLocalCache(): void {
-    this.assetCache.clear();
-    this.optimizationCache.clear();
-    console.log('🗑️ Caché local limpiado');
+    this.cache.clear();
   }
 
   /**
-   * Obtener configuración
+   * Obtiene información del cache local
    */
-  getConfig(): CDNConfig {
-    return { ...this.config };
+  getLocalCacheInfo(): { size: number; keys: string[] } {
+    return {
+      size: this.cache.size,
+      keys: Array.from(this.cache.keys()),
+    };
   }
 }
 
-// Instancia singleton
-export const cdnManager = new CDNManager();
-
-// Hook para React
-export const useCDN = () => {
-  const getAsset = React.useCallback(async (
-    path: string,
-    options?: {
-      width?: number;
-      height?: number;
-      quality?: number;
-      format?: 'webp' | 'avif' | 'jpg' | 'png';
-      priority?: 'high' | 'normal' | 'low';
-    }
-  ) => {
-    return await cdnManager.getOptimizedAsset(path, options);
-  }, []);
-
-  const optimizeImage = React.useCallback(async (
-    imageUrl: string,
-    options?: {
-      width?: number;
-      height?: number;
-      quality?: number;
-      format?: 'webp' | 'avif' | 'jpg' | 'png';
-    }
-  ) => {
-    return await cdnManager.optimizeImage(imageUrl, options);
-  }, []);
-
-  const uploadAsset = React.useCallback(async (
-    file: File | Buffer,
-    path: string,
-    options?: {
-      optimize?: boolean;
-      cacheControl?: string;
-      metadata?: Record<string, string>;
-    }
-  ) => {
-    return await cdnManager.uploadAsset(file, path, options);
-  }, []);
-
-  const invalidateCache = React.useCallback(async (paths: string[]) => {
-    return await cdnManager.invalidateCache(paths);
-  }, []);
-
-  const getStats = React.useCallback(async () => {
-    return await cdnManager.getStats();
-  }, []);
-
-  return {
-    getAsset,
-    optimizeImage,
-    uploadAsset,
-    invalidateCache,
-    getStats,
-  };
-};
-
-// Componente React para imagen optimizada
-export const OptimizedImage: React.FC<{
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-  quality?: number;
-  format?: 'webp' | 'avif' | 'jpg' | 'png';
-  className?: string;
-  priority?: boolean;
-  loading?: 'lazy' | 'eager';
-}> = ({ 
-  src, 
-  alt, 
-  width, 
-  height, 
-  quality, 
-  format, 
-  className, 
-  priority = false,
-  loading = 'lazy'
-}) => {
-  const [optimizedSrc, setOptimizedSrc] = React.useState<string>(src);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-
-  const { getAsset } = useCDN();
-
-  React.useEffect(() => {
-    const loadOptimizedImage = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        const optimizedUrl = await getAsset(src, {
-          width,
-          height,
-          quality,
-          format,
-          priority: priority ? 'high' : 'normal',
-        });
-        
-        setOptimizedSrc(optimizedUrl);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error cargando imagen');
-        setOptimizedSrc(src); // Fallback a imagen original
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadOptimizedImage();
-  }, [src, width, height, quality, format, priority, getAsset]);
-
-  if (error) {
-    console.warn('Error cargando imagen optimizada:', error);
-  }
-
-  return (
-    <img
-      src={optimizedSrc}
-      alt={alt}
-      width={width}
-      height={height}
-      className={`${className || ''} ${isLoading ? 'opacity-50' : 'opacity-100'}`}
-      loading={loading}
-      onLoad={() => setIsLoading(false)}
-      onError={() => {
-        setError('Error cargando imagen');
-        setIsLoading(false);
-      }}
-    />
-  );
-};
+// Instancia global del CDN Manager
+const cdnManager = new CDNManager({
+  baseUrl: process.env.NEXT_PUBLIC_CDN_URL || 'https://cdn.example.com',
+  apiKey: process.env.CDN_API_KEY,
+  region: process.env.CDN_REGION || 'us-east-1',
+});
 
 export default cdnManager;

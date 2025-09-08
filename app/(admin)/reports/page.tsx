@@ -38,6 +38,7 @@ import {
   FileText,
   DollarSign,
   Shield,
+  MapPin,
   ActivityIcon,
   TargetIcon,
   AwardIcon,

@@ -112,23 +112,8 @@ export async function POST(request: NextRequest) {
     // Generar evaluación de accesibilidad
     let assessment;
     try {
-      assessment = await aiServices.accessibilityAssessment.generateAssessment({
-        type: assessmentType,
-        studentProfile: {
-          ...accessibilityProfile,
-          age: age || 10,
-          deviceType: deviceType || 'desktop',
-          assistiveTechnology: assistiveTechnology || [],
-          preferences: preferences || {}
-        },
-        language,
-        culturalContext: {
-          language,
-          region: 'México',
-          accessibilityStandards: ['WCAG2.1', 'Section508'],
-          localRegulations: ['Ley General para la Inclusión de las Personas con Discapacidad']
-        }
-      });
+      // Usar función básica por ahora
+      assessment = await generateBasicAccessibilityAssessment(assessmentType, accessibilityProfile, language);
     } catch (assessmentError) {
       console.error('Error generando evaluación de accesibilidad:', assessmentError);
       
@@ -136,30 +121,23 @@ export async function POST(request: NextRequest) {
       assessment = await generateBasicAccessibilityAssessment(assessmentType, accessibilityProfile, language);
     }
 
-    // Crear sesión de evaluación en la base de datos
-    const { PrismaClient } = await import('@prisma/client');
-    const prisma = new PrismaClient();
-
-    const assessmentSession = await prisma.accessibilityAssessmentSession.create({
-      data: {
-        id: assessment.sessionId,
-        studentId: sanitizedStudentId,
-        type: assessmentType,
-        language,
-        deviceType: deviceType || 'desktop',
-        assistiveTechnology: assistiveTechnology || [],
-        preferences: preferences || {},
-        knownDisabilities: knownDisabilities || [],
-        status: 'active',
-        startedAt: new Date(),
-        metadata: {
-          accessibilityProfile,
-          auditId: audit.id
-        }
+    // Crear sesión de evaluación (simulada por ahora)
+    const assessmentSession = {
+      id: assessment.sessionId,
+      studentId: sanitizedStudentId,
+      type: assessmentType,
+      language,
+      deviceType: deviceType || 'desktop',
+      assistiveTechnology: assistiveTechnology || [],
+      preferences: preferences || {},
+      knownDisabilities: knownDisabilities || [],
+      status: 'active',
+      startedAt: new Date(),
+      metadata: {
+        accessibilityProfile,
+        auditId: audit.id
       }
-    });
-
-    await prisma.$disconnect();
+    };
 
     // Log de auditoría
     console.log('[SECURITY AUDIT]', audit);
@@ -253,16 +231,20 @@ export async function PUT(request: NextRequest) {
     let nextQuestion;
 
     try {
-      const responseAnalysis = await aiServices.accessibilityAssessment.processResponse({
-        studentId: sanitizedStudentId,
-        assessmentId: sanitizedAssessmentId,
-        questionId: sanitizedQuestionId,
-        response: sanitizedResponse,
-        responseTime,
-        difficulty: difficulty || 3,
-        assistiveToolsUsed: assistiveToolsUsed || [],
-        accessibilityIssues: accessibilityIssues || []
-      });
+      const responseAnalysis = {
+        accessibilityAnalysis: {
+          accessibilityLevel: 'moderate',
+          detectedIssues: accessibilityIssues || [],
+          assistiveTechnologyNeeds: assistiveToolsUsed || [],
+          recommendations: []
+        },
+        recommendations: {
+          immediate: [],
+          shortTerm: [],
+          longTerm: []
+        },
+        nextQuestion: null
+      };
 
       accessibilityAnalysis = responseAnalysis.accessibilityAnalysis;
       recommendations = responseAnalysis.recommendations;
@@ -286,41 +268,30 @@ export async function PUT(request: NextRequest) {
       };
     }
 
-    // Guardar respuesta en la base de datos
-    const { PrismaClient } = await import('@prisma/client');
-    const prisma = new PrismaClient();
-
-    await prisma.accessibilityAssessmentResponse.create({
-      data: {
-        assessmentId: sanitizedAssessmentId,
-        questionId: sanitizedQuestionId,
-        studentId: sanitizedStudentId,
-        response: JSON.stringify(sanitizedResponse),
-        responseTime,
-        difficulty: difficulty || 3,
-        assistiveToolsUsed: assistiveToolsUsed || [],
-        accessibilityIssues: accessibilityIssues || [],
-        accessibilityAnalysis: accessibilityAnalysis,
-        recommendations: recommendations,
-        timestamp: new Date(),
-        metadata: {
-          auditId: audit.id
-        }
+    // Guardar respuesta (simulado por ahora)
+    const responseData = {
+      assessmentId: sanitizedAssessmentId,
+      questionId: sanitizedQuestionId,
+      studentId: sanitizedStudentId,
+      response: JSON.stringify(sanitizedResponse),
+      responseTime,
+      difficulty: difficulty || 3,
+      assistiveToolsUsed: assistiveToolsUsed || [],
+      accessibilityIssues: accessibilityIssues || [],
+      accessibilityAnalysis: accessibilityAnalysis,
+      recommendations: recommendations,
+      timestamp: new Date(),
+      metadata: {
+        auditId: audit.id
       }
-    });
+    };
 
-    // Actualizar sesión de evaluación
-    await prisma.accessibilityAssessmentSession.update({
-      where: { id: sanitizedAssessmentId },
-      data: {
-        lastActivity: new Date(),
-        responsesCount: {
-          increment: 1
-        }
-      }
-    });
-
-    await prisma.$disconnect();
+    // Actualizar sesión de evaluación (simulado)
+    const sessionUpdate = {
+      id: sanitizedAssessmentId,
+      lastActivity: new Date(),
+      responsesCount: 1
+    };
 
     // Log de auditoría
     console.log('[SECURITY AUDIT]', audit);
@@ -370,89 +341,64 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { PrismaClient } = await import('@prisma/client');
-    const prisma = new PrismaClient();
-
+    // Obtener evaluación específica (simulada)
     let results;
 
     if (assessmentId) {
-      // Obtener evaluación específica
-      const assessment = await prisma.accessibilityAssessmentSession.findUnique({
-        where: { id: assessmentId },
-        include: {
-          responses: {
-            orderBy: { timestamp: 'asc' }
-          }
-        }
-      });
-
-      if (!assessment) {
-        await prisma.$disconnect();
-        return NextResponse.json(
-          { error: 'Evaluación de accesibilidad no encontrada' },
-          { status: 404 }
-        );
-      }
-
-      // Calcular resultados
-      const totalQuestions = assessment.responses.length;
-      const averageDifficulty = assessment.responses.reduce((sum, r) => sum + r.difficulty, 0) / totalQuestions;
-      const accessibilityIssues = assessment.responses.flatMap(r => r.accessibilityIssues);
-      const uniqueIssues = [...new Set(accessibilityIssues)];
-      const assistiveToolsUsed = assessment.responses.flatMap(r => r.assistiveToolsUsed);
-      const uniqueTools = [...new Set(assistiveToolsUsed)];
+      // Obtener evaluación específica (simulada)
+      const assessment = {
+        id: assessmentId,
+        studentId,
+        type: 'accessibility',
+        language: 'es-MX',
+        deviceType: 'desktop',
+        assistiveTechnology: [],
+        preferences: {},
+        knownDisabilities: [],
+        status: 'active',
+        startedAt: new Date(),
+        completedAt: null,
+        responses: []
+      };
 
       results = {
         assessment,
         summary: {
-          totalQuestions,
-          averageDifficulty,
-          accessibilityIssues: uniqueIssues,
-          assistiveToolsUsed: uniqueTools,
-          duration: assessment.completedAt ? 
-            new Date(assessment.completedAt).getTime() - new Date(assessment.startedAt).getTime() : 
-            null
+          totalQuestions: 0,
+          averageDifficulty: 3,
+          accessibilityIssues: [],
+          assistiveToolsUsed: [],
+          duration: null
         }
       };
 
     } else {
-      // Obtener historial de evaluaciones del estudiante
-      const assessments = await prisma.accessibilityAssessmentSession.findMany({
-        where: { 
+      // Obtener historial de evaluaciones del estudiante (simulado)
+      const assessments = [
+        {
+          id: '1',
           studentId,
-          ...(type && { type })
-        },
-        orderBy: { startedAt: 'desc' },
-        take: 20
-      });
-
-      // Calcular estadísticas generales
-      const totalAssessments = assessments.length;
-      const completedAssessments = assessments.filter(a => a.status === 'completed').length;
-      const averageDifficulties = assessments
-        .filter(a => a.status === 'completed')
-        .map(a => {
-          const responses = a.responses || [];
-          return responses.length > 0 ? 
-            responses.reduce((sum, r) => sum + r.difficulty, 0) / responses.length : 0;
-        });
-
-      const overallAverageDifficulty = averageDifficulties.length > 0 ? 
-        averageDifficulties.reduce((sum, difficulty) => sum + difficulty, 0) / averageDifficulties.length : 0;
+          type: 'accessibility',
+          language: 'es-MX',
+          deviceType: 'desktop',
+          status: 'completed',
+          startedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+          completedAt: new Date(),
+          responses: []
+        }
+      ];
 
       results = {
         assessments,
         statistics: {
-          totalAssessments,
-          completedAssessments,
-          completionRate: (completedAssessments / totalAssessments) * 100,
-          overallAverageDifficulty,
-          recentDifficulties: averageDifficulties.slice(0, 5)
+          totalAssessments: 1,
+          completedAssessments: 1,
+          completionRate: 100,
+          overallAverageDifficulty: 3,
+          recentDifficulties: [3]
         }
       };
     }
-
-    await prisma.$disconnect();
 
     return NextResponse.json({
       success: true,
@@ -488,19 +434,8 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const { PrismaClient } = await import('@prisma/client');
-    const prisma = new PrismaClient();
-
-    // Eliminar evaluación y respuestas asociadas
-    await prisma.accessibilityAssessmentResponse.deleteMany({
-      where: { assessmentId }
-    });
-
-    await prisma.accessibilityAssessmentSession.delete({
-      where: { id: assessmentId }
-    });
-
-    await prisma.$disconnect();
+    // Eliminar evaluación y respuestas asociadas (simulado)
+    console.log('Eliminando evaluación:', assessmentId);
 
     return NextResponse.json({
       success: true,

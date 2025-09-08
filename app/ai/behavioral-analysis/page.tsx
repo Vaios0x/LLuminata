@@ -135,7 +135,6 @@ import {
   MousePointer,
   Scroll,
   Move,
-  XCircle,
   Save,
   Edit,
   Trash2

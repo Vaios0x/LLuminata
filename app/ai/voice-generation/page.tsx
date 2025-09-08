@@ -10,14 +10,15 @@ import {
   Volume2, 
   Play, 
   Pause, 
-  Stop, 
-  Download, 
+  Square, 
+  Download,
+  Eye, 
   Upload, 
   Settings,
   Languages,
   User,
   Clock,
-  Waveform,
+  BarChart3,
   Sliders,
   Save,
   RefreshCw,
@@ -35,7 +36,7 @@ import {
   Globe,
   Palette,
   TrendingUp,
-  BarChart3,
+  Activity,
   PieChart,
   LineChart,
   Calendar,
@@ -525,7 +526,7 @@ export default function VoiceGenerationPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Waveform className="w-5 h-5 text-green-600" />
+                <BarChart3 className="w-5 h-5 text-green-600" />
                 <span>Pistas Recientes</span>
               </CardTitle>
             </CardHeader>

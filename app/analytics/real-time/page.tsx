@@ -54,24 +54,6 @@ import {
   Battery,
   BatteryCharging,
   WifiOff,
-  SignalHigh,
-  SignalMedium,
-  SignalLow,
-  SignalZero,
-  WifiHigh,
-  WifiMedium,
-  WifiLow,
-  WifiZero,
-  BatteryFull,
-  BatteryHigh,
-  BatteryMedium,
-  BatteryLow,
-  BatteryEmpty,
-  BatteryChargingFull,
-  BatteryChargingHigh,
-  BatteryChargingMedium,
-  BatteryChargingLow,
-  BatteryChargingEmpty,
   MapPin,
   Globe,
   Smartphone,
@@ -99,7 +81,6 @@ import {
   RotateCcw,
   Eye,
   MousePointer,
-  Click,
   Scroll,
   Move,
   Award,
@@ -130,83 +111,9 @@ import {
   MoveDown,
   MoveLeft,
   MoveRight,
-  RotateCcw2,
   RotateCw,
-  RotateCw2,
-  RefreshCw2,
-  RefreshCw3,
-  RefreshCw4,
-  RefreshCw5,
-  RefreshCw6,
-  RefreshCw7,
-  RefreshCw8,
-  RefreshCw9,
-  RefreshCw10,
   Brain,
-  Target,
-  Users2,
-  Clock2,
-  Calendar2,
-  BarChart32,
-  PieChart2,
-  Activity2,
-  Zap2,
-  CheckCircle2,
-  XCircle2,
-  AlertTriangle2,
-  Info2,
-  HelpCircle2,
-  Settings2,
-  Filter2,
-  Search2,
-  Plus2,
-  Minus2,
-  Edit2,
-  Trash22,
-  Copy2,
-  ExternalLink2,
-  Link2,
-  Unlink2,
-  Lock2,
-  Unlock2,
-  Shield2,
-  Key2,
-  Bell2,
-  Mail2,
-  Phone2,
-  Video2,
-  Image2,
-  FileText2,
-  File2,
-  Folder2,
-  FolderOpen2,
-  Database2,
-  Server2,
-  Cpu2,
-  HardDrive2,
-  Wifi2,
-  Signal2,
-  Battery2,
-  BatteryCharging2,
-  WifiOff2,
-  SignalHigh2,
-  SignalMedium2,
-  SignalLow2,
-  SignalZero2,
-  WifiHigh2,
-  WifiMedium2,
-  WifiLow2,
-  WifiZero2,
-  BatteryFull2,
-  BatteryHigh2,
-  BatteryMedium2,
-  BatteryLow2,
-  BatteryEmpty2,
-  BatteryChargingFull2,
-  BatteryChargingHigh2,
-  BatteryChargingMedium2,
-  BatteryChargingLow2,
-  BatteryChargingEmpty2
+  Target
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -262,7 +169,7 @@ export default function RealTimePage() {
   const [isLive, setIsLive] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'users' | 'performance'>('overview');
   const [timeRange, setTimeRange] = useState<'1m' | '5m' | '15m' | '1h'>('5m');
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Datos de ejemplo
   const mockMetrics: RealTimeMetric[] = [
@@ -575,11 +482,11 @@ export default function RealTimePage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-2xl font-bold text-gray-900">
-                    {metric.category === 'response_time' || metric.category === 'error_rate' 
+                    {metric.category === 'performance' 
                       ? metric.value.toFixed(1)
                       : formatNumber(metric.value)}
-                    {metric.category === 'response_time' && 'ms'}
-                    {metric.category === 'error_rate' && '%'}
+                    {metric.category === 'performance' && 'ms'}
+                    {metric.category === 'errors' && '%'}
                   </p>
                   <div className="flex items-center space-x-1">
                     {metric.trend === 'up' ? (

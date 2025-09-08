@@ -47,13 +47,13 @@ export interface RecognitionEvents {
 
 export class SpeechRecognitionService {
   private recognition: any = null;
-  private isListening: boolean = false;
+  private _isListening: boolean = false;
   private commands: Map<string, VoiceCommand> = new Map();
   private openai: OpenAI;
   private anthropic: Anthropic;
   private config: RecognitionConfig;
   private events: RecognitionEvents = {};
-  private isSupported: boolean = false;
+  private _isSupported: boolean = false;
   private model: tf.LayersModel | null = null;
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
@@ -97,9 +97,9 @@ export class SpeechRecognitionService {
     if (typeof window === 'undefined') return;
 
     const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-    this.isSupported = !!SpeechRecognition;
+    this._isSupported = !!SpeechRecognition;
 
-    if (!this.isSupported) {
+    if (!this._isSupported) {
       console.warn('Reconocimiento de voz no soportado en este navegador');
       return;
     }
@@ -121,13 +121,13 @@ export class SpeechRecognitionService {
 
     // Configurar eventos
     this.recognition.onstart = () => {
-      this.isListening = true;
+      this._isListening = true;
       this.events.onStart?.();
       console.log('🎤 Reconocimiento de voz iniciado');
     };
 
     this.recognition.onend = () => {
-      this.isListening = false;
+      this._isListening = false;
       this.events.onEnd?.();
       console.log('🎤 Reconocimiento de voz detenido');
     };
@@ -514,7 +514,7 @@ export class SpeechRecognitionService {
       throw new Error('Reconocimiento de voz no soportado');
     }
 
-    if (this.isListening) {
+    if (this._isListening) {
       console.warn('El reconocimiento ya está activo');
       return;
     }
@@ -531,7 +531,7 @@ export class SpeechRecognitionService {
    * Detiene el reconocimiento de voz
    */
   stop(): void {
-    if (!this.recognition || !this.isListening) return;
+    if (!this.recognition || !this._isListening) return;
 
     try {
       this.recognition.stop();
@@ -568,14 +568,14 @@ export class SpeechRecognitionService {
    * Verifica si el reconocimiento está soportado
    */
   isSupported(): boolean {
-    return this.isSupported;
+    return this._isSupported;
   }
 
   /**
    * Verifica si está escuchando
    */
   isListening(): boolean {
-    return this.isListening;
+    return this._isListening;
   }
 
   /**

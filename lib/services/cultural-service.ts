@@ -151,13 +151,13 @@ export class CulturalService {
     maya: {
       language: 'maya',
       region: 'Yucatán',
-      greetings: ['Ba'ax ka wa'alik', 'Ma'alob k'iin'],
+      greetings: ["Ba'ax ka wa'alik", "Ma'alob k'iin"],
       colors: { primary: 'verde', secondary: 'rojo', sacred: 'azul' },
-      numbers: { traditional: ['hun', 'ka'a', 'ox'], modern: ['uno', 'dos', 'tres'] },
+      numbers: { traditional: ["hun", "ka'a", "ox"], modern: ["uno", "dos", "tres"] },
       symbols: ['jaguar', 'serpiente', 'sol', 'luna'],
       learningStyles: ['visual', 'kinestésico', 'comunitario'],
       taboos: ['muerte', 'enfermedad', 'pobreza'],
-      celebrations: ['Hanal Pixán', 'Ch'a' Cháak']
+      celebrations: ["Hanal Pixán", "Ch'a' Cháak"]
     },
     nahuatl: {
       language: 'nahuatl',

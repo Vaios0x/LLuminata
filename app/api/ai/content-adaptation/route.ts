@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     const { content, targetCulture, language } = await request.json();
 
-    const culturalContexts = {
+    const culturalContexts: Record<string, { examples: string; values: string; avoid: string }> = {
       'maya': {
         examples: 'maíz, milpa, cenotes, quetzal',
         values: 'comunidad, naturaleza, tradición oral',
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       }
     };
     
-    const context = culturalContexts[targetCulture] || culturalContexts['rural'];
+    const context = culturalContexts[targetCulture as keyof typeof culturalContexts] || culturalContexts['rural'];
     
     const adaptedContent = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",

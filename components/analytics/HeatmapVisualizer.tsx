@@ -96,15 +96,7 @@ import {
   BatteryChargingHigh,
   BatteryChargingMedium,
   BatteryChargingLow,
-  BatteryChargingEmpty,
-  WifiHigh,
-  WifiMedium,
-  WifiLow,
-  WifiZero,
-  SignalHigh,
-  SignalMedium,
-  SignalLow,
-  SignalZero
+  BatteryChargingEmpty
 } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';

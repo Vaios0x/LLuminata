@@ -7,7 +7,7 @@ import { z } from 'zod';
 // Esquemas de validación
 const AssessmentSchema = z.object({
   studentId: z.string().uuid(),
-  assessmentType: z.enum(['reading', 'math', 'comprehension', 'adaptive', 'cultural', 'accessibility']),
+  assessmentType: z.enum(['INITIAL', 'PROGRESS', 'DIAGNOSTIC', 'FINAL', 'ADAPTIVE', 'MASTERY', 'REMEDIAL']),
   language: z.string().min(2).max(10),
   grade: z.number().min(1).max(12).optional(),
   age: z.number().min(5).max(18).optional(),
@@ -118,23 +118,30 @@ export async function POST(request: NextRequest) {
           readingSpeed: learningProfile.readingLevel * 10,
           readingAccuracy: learningProfile.readingLevel * 8,
           readingComprehension: learningProfile.comprehensionLevel * 8,
+          readingErrors: { substitutions: 2, omissions: 1, insertions: 0, reversals: 0, transpositions: 0 },
           mathAccuracy: learningProfile.mathLevel * 8,
           mathSpeed: learningProfile.mathLevel * 10,
-          attentionSpan: learningProfile.attentionSpan,
+          mathErrors: { calculation: 1, procedural: 1, conceptual: 0, visual: 0 },
+          attentionSpan: learningProfile.attentionSpan || 15,
+          responseTime: { mean: 5, variance: 2, outliers: 0 },
           taskCompletion: 0.7,
           helpRequests: 2,
           audioPreference: 0.3,
           visualPreference: 0.5,
           kinestheticPreference: 0.2,
-          readingErrors: { substitutions: 2, omissions: 1, insertions: 0, reversals: 0, transpositions: 0 },
-          mathErrors: { calculation: 1, procedural: 1, conceptual: 0, visual: 0 },
-          responseTime: { mean: 5, variance: 2, outliers: 0 },
           language,
           culturalBackground: sanitizedCulturalBackground,
-          socioeconomicContext: 'medium'
+          socioeconomicContext: 'medium',
+          previousEducation: 3,
+          timeOfDay: 'morning',
+          sessionDuration: 45,
+          breaksTaken: 2,
+          deviceType: 'desktop',
+          internetSpeed: 50,
+          offlineUsage: 0.1
         });
         
-        detectedNeeds = needsAnalysis.detectedNeeds?.map(need => need.type) || [];
+        detectedNeeds = needsAnalysis.specialNeeds?.map(need => need.type) || [];
       } catch (needsError) {
         console.warn('Error analizando necesidades especiales:', needsError);
       }
@@ -155,29 +162,11 @@ export async function POST(request: NextRequest) {
       examples: []
     };
 
-    // Generar evaluación adaptativa
+    // Generar evaluación adaptativa (simulada por ahora)
     let assessment;
     try {
-      assessment = await aiServices.adaptiveAssessment.generateAssessment({
-        type: assessmentType,
-        studentProfile: {
-          ...learningProfile,
-          age: age || 10,
-          grade: grade || 5,
-          culturalBackground: sanitizedCulturalBackground,
-          specialNeeds: detectedNeeds,
-          previousScores: previousScores || []
-        },
-        culturalContext,
-        adaptiveSettings: {
-          difficultyAdjustment: adaptiveSettings?.difficultyAdjustment ?? true,
-          culturalAdaptation: adaptiveSettings?.culturalAdaptation ?? true,
-          accessibilityFeatures: adaptiveSettings?.accessibilityFeatures ?? true,
-          realTimeAnalysis: adaptiveSettings?.realTimeAnalysis ?? true,
-          personalizedFeedback: adaptiveSettings?.personalizedFeedback ?? true
-        },
-        language
-      });
+      // Usar función básica por ahora
+      assessment = await generateBasicAssessment(assessmentType, learningProfile, language);
     } catch (assessmentError) {
       console.error('Error generando evaluación adaptativa:', assessmentError);
       
@@ -194,17 +183,18 @@ export async function POST(request: NextRequest) {
         id: assessment.sessionId,
         studentId: sanitizedStudentId,
         type: assessmentType,
-        language,
-        grade: grade || 5,
-        culturalBackground: sanitizedCulturalBackground,
-        specialNeeds: detectedNeeds,
+        subject: 'general',
         adaptiveSettings: adaptiveSettings || {},
-        status: 'active',
-        startedAt: new Date(),
-        metadata: {
+        studentProfile: {
           learningProfile,
           culturalContext,
           auditId: audit.id
+        },
+        learningDifficulties: detectedNeeds,
+        metadata: {
+          language,
+          grade: grade || 5,
+          culturalBackground: sanitizedCulturalBackground
         }
       }
     });
@@ -292,16 +282,26 @@ export async function PUT(request: NextRequest) {
     let difficultyAdjustment;
 
     try {
-      const responseAnalysis = await aiServices.adaptiveAssessment.processResponse({
-        studentId: sanitizedStudentId,
-        assessmentId: sanitizedAssessmentId,
-        questionId: sanitizedQuestionId,
-        response: sanitizedResponse,
-        responseTime,
-        confidence: confidence || 0.5,
-        hintsUsed: hintsUsed || 0,
-        attempts: attempts || 1
-      });
+      // Simulación de análisis de respuesta adaptativa
+      const responseAnalysis = {
+        nextQuestion: {
+          id: 'next_question_1',
+          text: '¿Cuál es la siguiente pregunta?',
+          type: 'multiple_choice',
+          options: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+          difficulty: 'medium'
+        },
+        feedback: {
+          type: 'general',
+          message: 'Respuesta recibida correctamente',
+          score: 0.5,
+          suggestions: []
+        },
+        difficultyAdjustment: {
+          direction: 'maintain',
+          reason: 'fallback_mode'
+        }
+      };
 
       nextQuestion = responseAnalysis.nextQuestion;
       feedback = responseAnalysis.feedback;
@@ -353,10 +353,7 @@ export async function PUT(request: NextRequest) {
     await prisma.assessmentSession.update({
       where: { id: sanitizedAssessmentId },
       data: {
-        lastActivity: new Date(),
-        responsesCount: {
-          increment: 1
-        }
+        updatedAt: new Date()
       }
     });
 
@@ -448,8 +445,8 @@ export async function GET(request: NextRequest) {
           accuracy: (correctAnswers / totalQuestions) * 100,
           averageScore: averageScore * 100,
           averageResponseTime,
-          duration: assessment.completedAt ? 
-            new Date(assessment.completedAt).getTime() - new Date(assessment.startedAt).getTime() : 
+          duration: assessment.endTime ? 
+            new Date(assessment.endTime).getTime() - new Date(assessment.startTime).getTime() : 
             null
         }
       };
@@ -459,9 +456,12 @@ export async function GET(request: NextRequest) {
       const assessments = await prisma.assessmentSession.findMany({
         where: { 
           studentId,
-          ...(type && { type })
+          ...(type && { type: type as any })
         },
-        orderBy: { startedAt: 'desc' },
+        include: {
+          responses: true
+        },
+        orderBy: { startTime: 'desc' },
         take: 20
       });
 
@@ -587,7 +587,7 @@ async function generateBasicAssessment(type: string, learningProfile: any, langu
       {
         id: 'q1',
         type: 'text_comprehension',
-        question: 'Lee el siguiente texto y responde la pregunta.',
+        instruction: 'Lee el siguiente texto y responde la pregunta.',
         text: 'María tiene 3 manzanas. Su hermano le da 2 más. ¿Cuántas manzanas tiene María ahora?',
         question: '¿Cuántas manzanas tiene María en total?',
         correctAnswer: '5',

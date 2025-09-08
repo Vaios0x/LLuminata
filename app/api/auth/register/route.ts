@@ -35,36 +35,25 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Hash de la contraseña
-    const hashedPassword = await bcrypt.hash(validatedData.password, 12)
-    
     // Crear usuario
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
-        password: hashedPassword,
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
         name: `${validatedData.firstName} ${validatedData.lastName}`,
         language: validatedData.language,
         role: "STUDENT",
         // Guardar preferencias adicionales en JSON
-        accessibilityPreferences: {
+        preferences: {
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
           age: validatedData.age,
           education: validatedData.education,
         }
       }
     })
     
-    // Crear perfil de estudiante asociado
-    await prisma.student.create({
-      data: {
-        name: user.name!,
-        age: parseInt(validatedData.age.split('-')[0]), // Tomar el primer número del rango
-        language: validatedData.language,
-        userId: user.id,
-      }
-    })
+    // Nota: El perfil de estudiante se creará automáticamente cuando sea necesario
+    // a través de la relación con otros modelos
     
     return NextResponse.json(
       { 

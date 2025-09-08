@@ -202,7 +202,7 @@ export default function AssessmentPage() {
   const handleAnswer = (answer: string | string[]) => {
     const currentQuestion = assessment!.questions[currentQuestionIndex];
     const isCorrect = Array.isArray(currentQuestion.correctAnswer)
-      ? JSON.stringify(answer.sort()) === JSON.stringify(currentQuestion.correctAnswer.sort())
+      ? JSON.stringify(Array.isArray(answer) ? answer.sort() : [answer]) === JSON.stringify(currentQuestion.correctAnswer.sort())
       : answer === currentQuestion.correctAnswer;
 
     const userAnswer: UserAnswer = {
@@ -257,10 +257,13 @@ export default function AssessmentPage() {
     return await aiModelManager.auxiliary.generateRecommendations({
       needs: ['matemáticas'],
       behavior: {
-        score,
-        timeSpent,
-        accuracy: score / 100,
-        completionRate: 1
+        engagement: score / 100,
+        attention: score / 100,
+        frustration: (100 - score) / 100,
+        confidence: score / 100,
+        motivation: score / 100,
+        patterns: [],
+        recommendations: []
       },
       progress: score / 100,
       preferences: ['visual', 'auditory'],

@@ -394,8 +394,8 @@ export class CulturalIntegrationService {
   /**
    * Agrega contenido offline
    */
-  addOfflineContent(package: OfflineContentPackage): void {
-    this.offlineContent.set(package.id, package);
+  addOfflineContent(contentPackage: OfflineContentPackage): void {
+    this.offlineContent.set(contentPackage.id, contentPackage);
   }
 
   /**

@@ -99,7 +99,12 @@ export async function POST(request: NextRequest) {
         const competition = await gamificationService.createCompetition({
           ...competitionValidation.data,
           startDate: new Date(competitionValidation.data.startDate),
-          endDate: new Date(competitionValidation.data.endDate)
+          endDate: new Date(competitionValidation.data.endDate),
+          criteria: {
+            type: 'performance',
+            metrics: ['score', 'completion', 'accuracy'],
+            thresholds: { minimum: 0, target: 100 }
+          }
         });
 
         return NextResponse.json({

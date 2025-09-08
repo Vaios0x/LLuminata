@@ -189,20 +189,20 @@ export class EmotionService {
         'vergüenza': 'shame'
       },
       maya: {
-        'k'ux': 'joy',
-        'ch'u': 'sadness',
-        'k'as': 'anger',
-        'xib': 'fear',
-        'ch'up': 'surprise',
-        'tz'ak': 'disgust'
+        "k'ux": "joy",
+        "ch'u": "sadness",
+        "k'as": "anger",
+        "xib": "fear",
+        "ch'up": "surprise",
+        "tz'ak": "disgust"
       },
       nahuatl: {
-        'pāqui': 'joy',
-        'chōca': 'sadness',
-        'pīya': 'anger',
-        'mā': 'fear',
-        'tlamī': 'surprise',
-        'cualāni': 'disgust'
+        "pāqui": "joy",
+        "chōca": "sadness",
+        "pīya": "anger",
+        "mā": "fear",
+        "tlamī": "surprise",
+        "cualāni": "disgust"
       }
     };
 

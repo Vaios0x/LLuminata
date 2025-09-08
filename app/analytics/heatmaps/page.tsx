@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   MousePointer,
   Eye,
-  Click,
+  Clock,
   Scroll,
   Move,
   Target,
@@ -19,12 +19,10 @@ import {
   Settings,
   Filter,
   Calendar,
-  Clock,
   Users,
   Activity,
   BarChart3,
   PieChart,
-  HeatMap,
   Maximize2,
   Minimize2,
   RotateCcw,
@@ -72,24 +70,6 @@ import {
   Battery,
   BatteryCharging,
   WifiOff,
-  SignalHigh,
-  SignalMedium,
-  SignalLow,
-  SignalZero,
-  WifiHigh,
-  WifiMedium,
-  WifiLow,
-  WifiZero,
-  BatteryFull,
-  BatteryHigh,
-  BatteryMedium,
-  BatteryLow,
-  BatteryEmpty,
-  BatteryChargingFull,
-  BatteryChargingHigh,
-  BatteryChargingMedium,
-  BatteryChargingLow,
-  BatteryChargingEmpty,
   MapPin,
   Globe,
   Smartphone,
@@ -99,67 +79,9 @@ import {
   Lightbulb,
   GraduationCap,
   Trophy,
-  Star,
   Heart,
   MessageSquare,
-  Bookmark,
-  Zap,
-  CheckCircle2,
-  XCircle2,
-  AlertTriangle2,
-  Info2,
-  HelpCircle2,
-  Settings2,
-  Filter2,
-  Search2,
-  Plus2,
-  Minus2,
-  Edit2,
-  Trash22,
-  Copy2,
-  ExternalLink2,
-  Link2,
-  Unlink2,
-  Lock2,
-  Unlock2,
-  Shield2,
-  Key2,
-  Bell2,
-  Mail2,
-  Phone2,
-  Video2,
-  Image2,
-  FileText2,
-  File2,
-  Folder2,
-  FolderOpen2,
-  Database2,
-  Server2,
-  Cpu2,
-  HardDrive2,
-  Wifi2,
-  Signal2,
-  Battery2,
-  BatteryCharging2,
-  WifiOff2,
-  SignalHigh2,
-  SignalMedium2,
-  SignalLow2,
-  SignalZero2,
-  WifiHigh2,
-  WifiMedium2,
-  WifiLow2,
-  WifiZero2,
-  BatteryFull2,
-  BatteryHigh2,
-  BatteryMedium2,
-  BatteryLow2,
-  BatteryEmpty2,
-  BatteryChargingFull2,
-  BatteryChargingHigh2,
-  BatteryChargingMedium2,
-  BatteryChargingLow2,
-  BatteryChargingEmpty2
+  Bookmark
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -414,7 +336,7 @@ export default function HeatmapsPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="p-3 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg">
-              <HeatMap className="w-8 h-8 text-white" />
+              <Activity className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Mapas de Calor</h1>
@@ -639,7 +561,7 @@ export default function HeatmapsPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-2">
-                      <Click className="w-4 h-4 text-red-600" />
+                      <MousePointer className="w-4 h-4 text-red-600" />
                       <span className="text-sm font-medium">Clicks</span>
                     </div>
                     <span className="text-lg font-bold">{formatNumber(heatmapData.reduce((sum, item) => sum + item.clicks, 0))}</span>

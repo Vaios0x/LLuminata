@@ -4,7 +4,7 @@
  * Incluye alertas para maestros sobre estudiantes en riesgo
  */
 
-import * as tf from '@tensorflow/tfjs-node';
+import * as tf from '@tensorflow/tfjs';
 import { PrismaClient } from '@prisma/client';
 import { EmotionType, AlertType, AlertSeverity } from '@prisma/client';
 

@@ -156,6 +156,7 @@ model Assessment {
   // Relaciones
   student               Student   @relation(fields: [studentId], references: [id])
   users                 User[]
+  externalIntegrations  ExternalContentIntegration[]
 }
 
 // Nueva tabla para sesiones de evaluación adaptativa
@@ -977,6 +978,7 @@ model ExternalContentIntegration {
   externalContent ExternalContent @relation(fields: [externalContentId], references: [id], onDelete: Cascade)
   lesson         Lesson?          @relation(fields: [lessonId], references: [id], onDelete: SetNull)
   assessment     Assessment?      @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  specialNeeds   SpecialNeed[]    // Relación con SpecialNeed
 
   @@map("external_content_integrations")
 }
@@ -1344,7 +1346,9 @@ model Mentor {
   // Relaciones
   student               Student   @relation("MentorStudent", fields: [studentId], references: [id])
   mentees               Mentorship[]
-  sessions              MentorshipSession[]
+  sessions              MentorshipSession[] @relation("MentorSessions")
+  
+  @@unique([studentId])
   
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -1382,6 +1386,7 @@ model Mentorship {
 model MentorshipSession {
   id                    String   @id @default(cuid())
   mentorshipId          String
+  mentorId              String?
   title                 String
   description           String?
   scheduledAt           DateTime
@@ -1400,6 +1405,7 @@ model MentorshipSession {
   
   // Relaciones
   mentorship            Mentorship @relation(fields: [mentorshipId], references: [id], onDelete: Cascade)
+  mentor                Mentor?    @relation("MentorSessions", fields: [mentorId], references: [id], onDelete: SetNull)
   
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt

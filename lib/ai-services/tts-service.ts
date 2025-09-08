@@ -146,7 +146,7 @@ export class TTSService {
   /**
    * Obtiene configuración de voz para un idioma
    */
-  private getVoiceConfig(language: string, options: any): VoiceConfig {
+  getVoiceConfig(language: string, options: any): VoiceConfig {
     const baseConfig = VOICE_CONFIGS[language] || VOICE_CONFIGS['es-MX'];
     
     return {

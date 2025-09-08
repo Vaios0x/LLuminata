@@ -65,6 +65,47 @@ interface LazyVideoProps {
   loop?: boolean;
 }
 
+// Hook para intersection observer
+const useIntersectionObserver = (
+  ref: React.RefObject<HTMLElement>,
+  options: {
+    threshold?: number;
+    rootMargin?: string;
+    triggerOnce?: boolean;
+  } = {}
+) => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasTriggered, setHasTriggered] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const intersecting = entry.isIntersecting;
+        setIsIntersecting(intersecting);
+        
+        if (intersecting && options.triggerOnce && !hasTriggered) {
+          setHasTriggered(true);
+        }
+      },
+      {
+        threshold: options.threshold || 0.1,
+        rootMargin: options.rootMargin || '50px',
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref, options.threshold, options.rootMargin, options.triggerOnce, hasTriggered]);
+
+  return isIntersecting || hasTriggered;
+};
+
 // Componente de carga por defecto
 const DefaultFallback: React.FC<{ priority?: string }> = ({ priority = 'normal' }) => (
   <Card className="w-full h-32 animate-pulse">
@@ -99,106 +140,13 @@ const ErrorFallback: React.FC<{
             size="sm"
             className="border-red-300 text-red-700 hover:bg-red-100"
           >
-            Reintentar ({retryCount + 1}/{maxRetries})
+            Reintentar ({retryCount}/{maxRetries})
           </Button>
         )}
       </div>
     </CardContent>
   </Card>
 );
-
-/**
- * Hook para Intersection Observer
- */
-const useIntersectionObserver = (
-  ref: React.RefObject<Element>,
-  options: {
-    threshold?: number;
-    rootMargin?: string;
-    triggerOnce?: boolean;
-  } = {}
-) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [hasTriggered, setHasTriggered] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting(true);
-          if (options.triggerOnce) {
-            setHasTriggered(true);
-            observer.disconnect();
-          }
-        } else if (!options.triggerOnce) {
-          setIsIntersecting(false);
-        }
-      },
-      {
-        threshold: options.threshold || 0.1,
-        rootMargin: options.rootMargin || '50px',
-      }
-    );
-
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [ref, options.threshold, options.rootMargin, options.triggerOnce]);
-
-  return isIntersecting || hasTriggered;
-};
-
-/**
- * Hook para lazy loading con retry
- */
-const useLazyLoad = <T>(
-  loader: () => Promise<T>,
-  options: {
-    retryCount?: number;
-    retryDelay?: number;
-    onLoad?: (data: T) => void;
-    onError?: (error: Error) => void;
-  } = {}
-) => {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
-  const { retryCount: maxRetries = 3, retryDelay = 1000, onLoad, onError } = options;
-
-  const load = useCallback(async () => {
-    if (loading) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const result = await loader();
-      setData(result);
-      onLoad?.(result);
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error('Error desconocido');
-      setError(error);
-      onError?.(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [loader, loading, onLoad, onError]);
-
-  const retry = useCallback(() => {
-    if (retryCount < maxRetries) {
-      setRetryCount(prev => prev + 1);
-      setTimeout(load, retryDelay);
-    }
-  }, [retryCount, maxRetries, retryDelay, load]);
-
-  return { data, loading, error, retry, retryCount, load };
-};
 
 /**
  * Componente principal de lazy loading
@@ -333,7 +281,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   preload = false,
   priority = 'normal',
   placeholder,
-  blur = true
+  blur = false
 }) => {
   const ref = useRef<HTMLImageElement>(null);
   const isIntersecting = useIntersectionObserver(ref, {
@@ -342,10 +290,10 @@ export const LazyImage: React.FC<LazyImageProps> = ({
     triggerOnce: true,
   });
 
-  const [imageSrc, setImageSrc] = useState<string>(placeholder || '');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [imageSrc, setImageSrc] = useState<string>(placeholder || '');
   const maxRetries = 3;
 
   const loadImage = useCallback(async () => {

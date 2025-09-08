@@ -105,7 +105,7 @@ export type {
   PredictionConfig,
   PredictionModel,
   PredictionData,
-  PredictionResult,
+  PredictionResult as PredictionServiceResult,
   ModelMetrics,
   PredictionAlert
 } from './prediction-service';

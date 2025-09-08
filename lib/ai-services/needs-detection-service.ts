@@ -737,6 +737,112 @@ export class NeedsDetectionService {
   }
 
   /**
+   * Obtiene el perfil de accesibilidad de un estudiante
+   */
+  async getAccessibilityProfile(studentId: string): Promise<any> {
+    try {
+      // Intentar obtener perfil existente de la base de datos
+      const existingProfile = await this.prisma.accessibilityProfile.findUnique({
+        where: { studentId }
+      });
+
+      if (existingProfile) {
+        return existingProfile;
+      }
+
+      // Si no existe, crear perfil por defecto
+      const defaultProfile = {
+        visualAcuity: 'normal',
+        colorVision: 'normal',
+        hearing: 'normal',
+        motorCoordination: 'normal',
+        cognitiveProcessing: 'normal',
+        attentionSpan: 15,
+        memoryCapacity: 'normal',
+        languageProcessing: 'normal',
+        assistiveTechnology: [],
+        preferences: {},
+        knownDisabilities: []
+      };
+
+      // Guardar perfil por defecto
+      await this.prisma.accessibilityProfile.create({
+        data: {
+          studentId,
+          ...defaultProfile
+        }
+      });
+
+      return defaultProfile;
+    } catch (error) {
+      console.warn('Error obteniendo perfil de accesibilidad, retornando perfil por defecto:', error);
+      
+      // Retornar perfil por defecto si hay error
+      return {
+        visualAcuity: 'normal',
+        colorVision: 'normal',
+        hearing: 'normal',
+        motorCoordination: 'normal',
+        cognitiveProcessing: 'normal',
+        attentionSpan: 15,
+        memoryCapacity: 'normal',
+        languageProcessing: 'normal',
+        assistiveTechnology: [],
+        preferences: {},
+        knownDisabilities: []
+      };
+    }
+  }
+
+  /**
+   * Obtiene el perfil de aprendizaje de un estudiante
+   */
+  async getLearningProfile(studentId: string): Promise<any> {
+    try {
+      // Intentar obtener perfil existente de la base de datos
+      const existingProfile = await this.prisma.learningProfile.findUnique({
+        where: { studentId }
+      });
+
+      if (existingProfile) {
+        return existingProfile;
+      }
+
+      // Si no existe, crear perfil por defecto
+      const defaultProfile = {
+        learningStyle: 'visual',
+        pace: 'moderate',
+        strengths: ['atención visual', 'memoria visual'],
+        challenges: ['procesamiento auditivo'],
+        recommendations: ['Usar ayudas visuales', 'Proporcionar tiempo extra'],
+        culturalAdaptations: []
+      };
+
+      // Guardar perfil por defecto
+      await this.prisma.learningProfile.create({
+        data: {
+          studentId,
+          ...defaultProfile
+        }
+      });
+
+      return defaultProfile;
+    } catch (error) {
+      console.warn('Error obteniendo perfil de aprendizaje, retornando perfil por defecto:', error);
+      
+      // Retornar perfil por defecto si hay error
+      return {
+        learningStyle: 'visual',
+        pace: 'moderate',
+        strengths: ['atención visual', 'memoria visual'],
+        challenges: ['procesamiento auditivo'],
+        recommendations: ['Usar ayudas visuales', 'Proporcionar tiempo extra'],
+        culturalAdaptations: []
+      };
+    }
+  }
+
+  /**
    * Genera recomendaciones de aprendizaje
    */
   private generateLearningRecommendations(

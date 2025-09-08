@@ -444,9 +444,5 @@ export type {
 
 // Exportar servicios individuales para uso directo si es necesario
 export { 
-  aiModelManager,
-  ChatbotService,
-  SpeechRecognitionService,
-  NeedsDetectionService,
-  TTSService
+  aiModelManager
 };

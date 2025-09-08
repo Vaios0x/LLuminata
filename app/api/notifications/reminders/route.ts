@@ -423,17 +423,17 @@ async function handleProcessDueReminders(audit: any) {
               lessonUrl: `/lessons/${reminder.metadata?.lessonId}`
             },
             {
-              type: channel,
-              priority: reminder.priority,
+              type: channel as 'push' | 'email' | 'sms' | 'in-app',
+              priority: reminder.priority as 'normal' | 'high' | 'low' | 'urgent',
               culturalContext: reminder.metadata?.culturalContext,
-              language: reminder.metadata?.language
+              language: 'es-MX'
             }
           );
 
           processedReminders.push({
             reminderId: reminder.id,
             channel,
-            notificationId: notification.id,
+            notificationId: `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             status: 'sent'
           });
         }

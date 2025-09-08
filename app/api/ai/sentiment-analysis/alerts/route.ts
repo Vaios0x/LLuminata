@@ -22,14 +22,17 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const studentId = searchParams.get('studentId');
-    const teacherId = searchParams.get('teacherId');
+    let teacherId = searchParams.get('teacherId');
 
     // Si es maestro, usar su ID
     if (session.user.role === 'TEACHER' && !teacherId) {
       teacherId = session.user.id;
     }
 
-    const alerts = await sentimentAnalysisService.getUnresolvedAlerts(studentId, teacherId);
+    const alerts = await sentimentAnalysisService.getUnresolvedAlerts(
+      studentId ?? undefined, 
+      teacherId ?? undefined
+    );
 
     return NextResponse.json({
       success: true,

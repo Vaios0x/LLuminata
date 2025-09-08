@@ -104,13 +104,13 @@ import {
   Move,
   Play,
   Pause,
-  Stop,
+  Square,
   Volume2,
   VolumeX,
   Headphones,
   Speaker,
   Music,
-  Waveform,
+  Activity,
   Sliders,
   XCircle,
   Share
@@ -335,11 +335,11 @@ export default function CulturalAdaptationPage() {
             <span>Volver</span>
           </Button>
         </div>
-        <CulturalAdaptationPanel 
+                <CulturalAdaptationPanel
           userId={currentUser}
           onAdaptationChange={handleAdaptationChange}
           onSave={handleSaveSettings}
-          onCancel={() => setShowPanel(false)}
+          onReset={() => setShowPanel(false)}
         />
       </div>
     );

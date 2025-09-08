@@ -61,20 +61,6 @@ import {
   SignalMedium,
   SignalLow,
   SignalZero,
-  WifiHigh,
-  WifiMedium,
-  WifiLow,
-  WifiZero,
-  BatteryFull,
-  BatteryHigh,
-  BatteryMedium,
-  BatteryLow,
-  BatteryEmpty,
-  BatteryChargingFull,
-  BatteryChargingHigh,
-  BatteryChargingMedium,
-  BatteryChargingLow,
-  BatteryChargingEmpty,
   MapPin,
   Globe,
   Smartphone,
@@ -102,7 +88,6 @@ import {
   RotateCcw,
   Eye,
   MousePointer,
-  Click,
   Scroll,
   Move,
   Award,
@@ -133,18 +118,11 @@ import {
   MoveDown,
   MoveLeft,
   MoveRight,
-  RotateCcw2,
   RotateCw,
-  RotateCw2,
-  RefreshCw2,
-  RefreshCw3,
-  RefreshCw4,
-  RefreshCw5,
-  RefreshCw6,
-  RefreshCw7,
-  RefreshCw8,
-  RefreshCw9,
-  RefreshCw10
+
+
+
+
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

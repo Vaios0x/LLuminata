@@ -56,10 +56,10 @@ export async function GET(request: NextRequest) {
             used: Math.round(usage.arrayBuffers / 1024 / 1024), // MB
           },
           limits: {
-            heapSizeLimit: Math.round(usage.jsHeapSizeLimit / 1024 / 1024), // MB
+            heapSizeLimit: Math.round((usage as any).jsHeapSizeLimit / 1024 / 1024), // MB
           },
         },
-        warnings: [],
+        warnings: [] as string[],
       };
 
       // Agregar advertencias si es necesario
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
             },
             environment: 'browser',
           },
-          warnings: memoryUsage > 0.7 ? ['Uso de memoria alto (>70%)'] : [],
+          warnings: memoryUsage > 0.7 ? ['Uso de memoria alto (>70%)'] : [] as string[],
         };
       } else {
         memoryStatus = {

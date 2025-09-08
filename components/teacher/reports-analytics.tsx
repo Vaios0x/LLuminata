@@ -35,8 +35,6 @@ import {
   AlertCircle,
   XCircle,
   Clock3,
-  Target,
-  Award,
   Trophy,
   Lightbulb,
   Settings,

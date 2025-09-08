@@ -1,6 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
 import { loadLayersModel, LayersModel } from '@tensorflow/tfjs-layers';
-import * as speechCommands from '@tensorflow-models/speech-commands';
 
 export interface AudioFeatures {
   mfcc: number[][];              // Mel-frequency cepstral coefficients
@@ -39,7 +38,6 @@ export interface LanguageModel {
 
 export class SpeechRecognitionModel {
   private model: LayersModel | null = null;
-  private speechCommandsModel: speechCommands.SpeechCommandRecognizer | null = null;
   private isLoaded: boolean = false;
   private readonly modelPath: string = '/ml-models/speech-recognition-model.json';
   
@@ -151,10 +149,6 @@ export class SpeechRecognitionModel {
    */
   private async initializeModel(): Promise<void> {
     try {
-      // Cargar modelo de comandos de voz
-      this.speechCommandsModel = speechCommands.create('BROWSER_FFT');
-      await this.speechCommandsModel.ensureModelLoaded();
-      
       // Intentar cargar modelo personalizado
       this.model = await loadLayersModel(this.modelPath);
       this.isLoaded = true;

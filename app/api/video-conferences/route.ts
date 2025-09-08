@@ -251,10 +251,10 @@ export async function DELETE(request: NextRequest) {
 }
 
 /**
- * POST /api/video-conferences/[id]/join
- * Agrega un usuario a una videoconferencia
+ * PATCH /api/video-conferences/[id]/join
+ * Agrega o remueve un usuario de una videoconferencia
  */
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
