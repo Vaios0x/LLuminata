@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
             data: {
               studentId: item.data.studentId,
               lessonId: item.data.lessonId,
+              startedAt: new Date(item.data.startedAt || item.data.completedAt),
               completedAt: new Date(item.data.completedAt),
               timeSpent: item.data.timeSpent,
               score: item.data.score
