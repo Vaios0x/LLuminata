@@ -27,7 +27,7 @@ import {
   RotateCcw,
   Play,
   Pause,
-  Stop,
+  Square,
   Maximize,
   Minimize,
   ChevronDown,

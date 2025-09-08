@@ -36,7 +36,7 @@ import {
   RotateCcw,
   Play,
   Pause,
-  Stop,
+  Square,
   Timer,
   History,
   TrendingUp,
