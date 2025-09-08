@@ -29,7 +29,10 @@ export async function POST(request: NextRequest) {
               studentId: item.data.studentId,
               type: item.data.type,
               score: item.data.score,
-              details: item.data.details
+              details: item.data.details,
+              strengths: item.data.strengths || JSON.stringify([]),
+              weaknesses: item.data.weaknesses || JSON.stringify([]),
+              recommendations: item.data.recommendations || {}
             }
           });
           break;
