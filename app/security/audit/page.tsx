@@ -15,6 +15,7 @@ import {
   Activity,
   BarChart3,
   Download,
+  Share,
   RefreshCw,
   Eye,
   EyeOff,
