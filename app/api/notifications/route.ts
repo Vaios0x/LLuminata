@@ -246,7 +246,8 @@ async function handleSendNotification(data: any, audit: any) {
     message: sanitizeUserInput(notificationData.message),
     culturalContext: notificationData.culturalContext ? sanitizeUserInput(notificationData.culturalContext) : undefined,
     language: notificationData.language ? sanitizeUserInput(notificationData.language) : undefined,
-    scheduledFor: notificationData.scheduledFor ? new Date(notificationData.scheduledFor) : undefined
+    scheduledFor: notificationData.scheduledFor ? new Date(notificationData.scheduledFor) : undefined,
+    expiresAt: notificationData.expiresAt ? new Date(notificationData.expiresAt) : undefined
   };
 
   // Enviar notificación
@@ -275,12 +276,20 @@ async function handleSendTemplateNotification(data: any, audit: any) {
     sanitizedVariables[key] = sanitizeUserInput(value);
   });
 
+  // Sanitizar opciones
+  const sanitizedOptions = options ? {
+    ...options,
+    culturalContext: options.culturalContext ? sanitizeUserInput(options.culturalContext) : undefined,
+    language: options.language ? sanitizeUserInput(options.language) : undefined,
+    scheduledFor: options.scheduledFor ? new Date(options.scheduledFor) : undefined
+  } : undefined;
+
   // Enviar notificación con template
   const notificationId = await notificationSystem.sendTemplateNotification(
     templateId,
     userId,
     sanitizedVariables,
-    options
+    sanitizedOptions
   );
 
   return {
@@ -313,11 +322,17 @@ async function handleSendBulkNotification(data: any, audit: any) {
     language: user.language ? sanitizeUserInput(user.language) : undefined
   }));
 
+  // Sanitizar opciones
+  const sanitizedOptions = options ? {
+    ...options,
+    scheduledFor: options.scheduledFor ? new Date(options.scheduledFor) : undefined
+  } : undefined;
+
   // Enviar notificaciones masivas
   const notificationIds = await notificationSystem.sendBulkNotification(
     templateId,
     sanitizedUsers,
-    options
+    sanitizedOptions
   );
 
   return {
