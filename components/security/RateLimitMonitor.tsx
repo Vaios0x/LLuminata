@@ -61,7 +61,7 @@ import {
   ShieldAlert,
   Ban,
   Key,
-  KeyOff,
+  KeyRound,
   TimerOff,
   TimerReset,
   GaugeIcon,
