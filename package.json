@@ -83,7 +83,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.18.0",
+    "@anthropic-ai/sdk": "^0.61.0",
     "@auth/prisma-adapter": "^2.10.0",
     "@prisma/client": "^5.10.0",
     "@radix-ui/react-avatar": "^1.1.10",
