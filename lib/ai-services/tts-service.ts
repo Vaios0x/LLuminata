@@ -117,6 +117,10 @@ export class TTSService {
     } = {}
   ): Promise<ArrayBuffer> {
     const config = this.getVoiceConfig(language, options);
+    if (!config) {
+      throw new Error(`Idioma no soportado: ${language}`);
+    }
+    
     const cacheKey = this.generateCacheKey(text, config);
 
     // Verificar caché
@@ -405,10 +409,25 @@ export class TTSService {
   }
 
   /**
-   * Obtiene configuración de voz para un idioma
+   * Obtiene configuración de voz para un idioma con opciones personalizadas
    */
-  getVoiceConfig(language: string): VoiceConfig | null {
-    return VOICE_CONFIGS[language] || null;
+  getVoiceConfig(language: string, options: {
+    pitch?: number;
+    speed?: number;
+    gender?: 'male' | 'female' | 'neutral';
+    culturalContext?: string;
+  } = {}): VoiceConfig | null {
+    const baseConfig = VOICE_CONFIGS[language];
+    if (!baseConfig) return null;
+
+    // Crear configuración personalizada
+    return {
+      ...baseConfig,
+      pitch: options.pitch ?? baseConfig.pitch,
+      speed: options.speed ?? baseConfig.speed,
+      gender: options.gender ?? baseConfig.gender,
+      culturalContext: options.culturalContext ?? baseConfig.culturalContext
+    };
   }
 }
 
