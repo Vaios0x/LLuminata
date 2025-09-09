@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useCDN } from '@/lib/cdn-manager';
+import cdnManager from '@/lib/cdn-manager';
 import { useImageOptimizer } from '@/lib/image-optimizer';
 import { useRedisCache } from '@/lib/redis-cache';
 import { Card, CardContent } from './card';
@@ -66,7 +66,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   });
 
   // Hooks para optimización
-  const { getAsset } = useCDN();
+  const { getAsset } = cdnManager;
   const { optimize, generatePlaceholder } = useImageOptimizer();
   const { get: getFromCache, set: setToCache } = useRedisCache();
 
@@ -79,8 +79,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       setState(prev => ({ ...prev, loading: true, error: null, progress: 0 }));
 
       // 1. Verificar caché Redis
-      const cached = await getFromCache(uniqueCacheKey);
-      if (cached) {
+      const cached = await getFromCache<{ url: string }>(uniqueCacheKey);
+      if (cached && cached.url) {
         console.log('📦 Imagen encontrada en caché Redis');
         setState(prev => ({
           ...prev,
@@ -98,7 +98,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         width,
         height,
         quality,
-        format,
+        format: format === 'jpeg' ? 'jpg' : format,
         priority: priority ? 'high' : 'normal',
       });
 
@@ -398,7 +398,7 @@ export const LazyOptimizedImage: React.FC<OptimizedImageProps> = (props) => {
 // Hook para precargar imágenes
 export const usePreloadImage = (src: string) => {
   const [preloaded, setPreloaded] = useState(false);
-  const { getAsset } = useCDN();
+  const { getAsset } = cdnManager;
 
   const preload = useCallback(async () => {
     try {
@@ -428,7 +428,7 @@ export const useBackgroundImageOptimization = (src: string, options?: {
 
     setLoading(true);
     try {
-      const result = await optimize(src, options);
+      const result = await optimize(src, options ? { ...options, format: options.format === 'jpg' ? 'jpeg' : options.format } : undefined);
       setOptimizedSrc(result.url);
     } catch (error) {
       console.error('Error optimizando imagen en background:', error);

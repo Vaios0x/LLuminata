@@ -537,7 +537,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
                         <Button 
                           onClick={() => joinEvent(event.id)}
                           className="flex-1"
-                          disabled={event.maxParticipants && event.currentParticipants >= event.maxParticipants}
+                          disabled={!!event.maxParticipants && event.currentParticipants >= event.maxParticipants}
                         >
                           <Play className="w-4 h-4 mr-2" />
                           Participar

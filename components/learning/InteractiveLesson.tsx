@@ -578,7 +578,7 @@ export default function InteractiveLesson({
               <div>
                 <h5 className="font-medium mb-2">Ejemplos:</h5>
                 <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                  {currentStep.culturalAdaptations.examples.map((example, index) => (
+                  {currentStep.culturalAdaptations.examples.map((example: string, index: number) => (
                     <li key={index}>{example}</li>
                   ))}
                 </ul>

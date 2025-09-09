@@ -324,7 +324,7 @@ export function CulturalAdaptationPanel({
       
       const analysis = {
         culturalFit: Math.round(averageImpact),
-        coverage: Math.round((enabledAdaptations.length / currentContext?.adaptations.length || 1) * 100),
+        coverage: Math.round((enabledAdaptations.length / (currentContext?.adaptations?.length || 1)) * 100),
         recommendations: [
           'Considerar agregar más adaptaciones auditivas',
           'Optimizar para aprendizaje visual',
@@ -628,7 +628,7 @@ export function CulturalAdaptationPanel({
                 
                 <h4 className="font-medium mb-2">Fortalezas</h4>
                 <ul className="space-y-1">
-                  {analysisResults.strengths.map((strength, idx) => (
+                  {analysisResults.strengths.map((strength: string, idx: number) => (
                     <li key={idx} className="flex items-center gap-2 text-sm">
                       <CheckCircle className="w-4 h-4 text-green-600" />
                       {strength}
@@ -640,7 +640,7 @@ export function CulturalAdaptationPanel({
               <div>
                 <h4 className="font-medium mb-2">Recomendaciones</h4>
                 <ul className="space-y-1">
-                  {analysisResults.recommendations.map((rec, idx) => (
+                  {analysisResults.recommendations.map((rec: string, idx: number) => (
                     <li key={idx} className="flex items-center gap-2 text-sm">
                       <Lightbulb className="w-4 h-4 text-yellow-600" />
                       {rec}

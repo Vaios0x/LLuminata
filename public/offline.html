@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin Conexión - Lluminata</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 2rem;
+        }
+        
+        .icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .features h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .features ul {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features li::before {
+            content: "✓";
+            color: #4ade80;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📱</div>
+        
+        <h1>Sin Conexión</h1>
+        
+        <p>
+            No tienes conexión a internet, pero no te preocupes. 
+            Lluminata funciona perfectamente offline.
+        </p>
+        
+        <div class="features">
+            <h3>Funcionalidades Disponibles Offline:</h3>
+            <ul>
+                <li>Lecciones descargadas</li>
+                <li>Ejercicios interactivos</li>
+                <li>Evaluaciones guardadas</li>
+                <li>Progreso local</li>
+                <li>Contenido multimedia</li>
+                <li>Configuraciones personales</li>
+            </ul>
+        </div>
+        
+        <button class="retry-btn" onclick="retryConnection()">
+            🔄 Intentar Reconectar
+        </button>
+        
+        <div class="status" id="status">
+            Verificando conexión...
+        </div>
+    </div>
+    
+    <script>
+        let retryCount = 0;
+        const maxRetries = 5;
+        
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+        
+        function checkConnection() {
+            return fetch('/', { 
+                method: 'HEAD',
+                cache: 'no-cache',
+                mode: 'no-cors'
+            }).then(() => true).catch(() => false);
+        }
+        
+        async function retryConnection() {
+            retryCount++;
+            updateStatus(`Intentando reconectar... (${retryCount}/${maxRetries})`);
+            
+            const isConnected = await checkConnection();
+            
+            if (isConnected) {
+                updateStatus('¡Conexión restaurada! Redirigiendo...');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else if (retryCount < maxRetries) {
+                updateStatus(`Sin conexión. Intento ${retryCount} de ${maxRetries}`);
+                setTimeout(() => {
+                    updateStatus('Haz clic en "Intentar Reconectar" para volver a intentar');
+                }, 2000);
+            } else {
+                updateStatus('No se pudo establecer conexión. Continúa trabajando offline.');
+            }
+        }
+        
+        // Verificar conexión automáticamente cada 30 segundos
+        setInterval(async () => {
+            const isConnected = await checkConnection();
+            if (isConnected) {
+                updateStatus('¡Conexión restaurada! Redirigiendo...');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            }
+        }, 30000);
+        
+        // Verificar conexión al cargar la página
+        window.addEventListener('load', () => {
+            setTimeout(async () => {
+                const isConnected = await checkConnection();
+                if (isConnected) {
+                    updateStatus('¡Conexión restaurada! Redirigiendo...');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    updateStatus('Sin conexión. Puedes continuar trabajando offline.');
+                }
+            }, 1000);
+        });
+        
+        // Detectar cuando se restaura la conexión
+        window.addEventListener('online', () => {
+            updateStatus('¡Conexión restaurada! Redirigiendo...');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        });
+        
+        window.addEventListener('offline', () => {
+            updateStatus('Conexión perdida. Continuando en modo offline.');
+        });
+    </script>
+</body>
+</html>

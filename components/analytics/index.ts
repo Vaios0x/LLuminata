@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Componentes de Analytics Avanzados
 export { default as HeatmapVisualizer } from './HeatmapVisualizer';
 export { default as PredictiveAnalytics } from './PredictiveAnalytics';

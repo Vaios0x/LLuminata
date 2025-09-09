@@ -139,7 +139,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
 
   const { speak, isEnabled: screenReaderEnabled } = useScreenReader();
   const { getStyles } = useHighContrast();
-  const { isVoiceEnabled } = useVoiceControl();
+  const { isSupported } = useVoiceControl();
 
   const tutorialSteps: TutorialStep[] = [
     {

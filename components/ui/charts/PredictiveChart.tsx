@@ -398,7 +398,7 @@ const PredictiveChart: React.FC<PredictiveChartProps> = ({
         {/* Indicador de punto seleccionado */}
         {selectedPoint && (
           <div className="absolute top-2 right-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-md text-sm">
-            {selectedPoint.type === 'predicted' ? 'Predicción' : 'Dato'} - {selectedPoint.date}
+            {selectedPoint.predicted ? 'Predicción' : 'Dato'} - {selectedPoint.date}
           </div>
         )}
       </div>

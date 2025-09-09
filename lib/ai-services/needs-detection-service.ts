@@ -1,11 +1,11 @@
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import * as tf from '@tensorflow/tfjs';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, NeedType } from '@prisma/client';
 
 // Tipos de necesidades especiales
 export interface SpecialNeed {
-  type: 'DYSLEXIA' | 'ADHD' | 'DYSCALCULIA' | 'AUDITORY_PROCESSING' | 'VISUAL_PROCESSING' | 'LANGUAGE_DELAY' | 'MOTOR_SKILLS';
+  type: NeedType;
   severity: 'mild' | 'moderate' | 'severe';
   confidence: number;
   indicators: string[];
@@ -184,47 +184,50 @@ export class NeedsDetectionService {
       take: 10
     });
 
-    return assessments.map(assessment => ({
-      readingSpeed: assessment.readingSpeed || 0,
-      readingAccuracy: assessment.readingAccuracy || 0,
-      readingComprehension: assessment.comprehensionScore || 0,
-      readingErrors: {
-        substitutions: assessment.substitutionErrors || 0,
-        omissions: assessment.omissionErrors || 0,
-        insertions: assessment.insertionErrors || 0,
-        reversals: assessment.reversalErrors || 0,
-        transpositions: assessment.transpositionErrors || 0
-      },
-      mathAccuracy: assessment.mathAccuracy || 0,
-      mathSpeed: assessment.mathSpeed || 0,
-      mathErrors: {
-        calculation: assessment.calculationErrors || 0,
-        procedural: assessment.proceduralErrors || 0,
-        conceptual: assessment.conceptualErrors || 0,
-        visual: assessment.visualErrors || 0
-      },
-      attentionSpan: assessment.attentionSpan || 0,
-      responseTime: {
-        mean: assessment.avgResponseTime || 0,
-        variance: assessment.responseTimeVariance || 0,
-        outliers: assessment.responseTimeOutliers || 0
-      },
-      taskCompletion: assessment.taskCompletionRate || 0,
-      helpRequests: assessment.helpRequests || 0,
-      audioPreference: assessment.audioPreference || 0,
-      visualPreference: assessment.visualPreference || 0,
-      kinestheticPreference: assessment.kinestheticPreference || 0,
-      language: assessment.language || 'es-MX',
-      culturalBackground: assessment.culturalBackground || 'general',
-      socioeconomicContext: assessment.socioeconomicContext || 'rural',
-      previousEducation: assessment.previousEducation || 0,
-      timeOfDay: assessment.timeOfDay || 'morning',
-      sessionDuration: assessment.sessionDuration || 0,
-      breaksTaken: assessment.breaksTaken || 0,
-      deviceType: assessment.deviceType || 'mobile',
-      internetSpeed: assessment.internetSpeed || 0,
-      offlineUsage: assessment.offlineUsage || 0
-    }));
+    return assessments.map(assessment => {
+      const details = assessment.details as any;
+      return {
+        readingSpeed: details?.readingSpeed || 0,
+        readingAccuracy: details?.readingAccuracy || 0,
+        readingComprehension: details?.comprehensionScore || 0,
+        readingErrors: {
+          substitutions: details?.substitutionErrors || 0,
+          omissions: details?.omissionErrors || 0,
+          insertions: details?.insertionErrors || 0,
+          reversals: details?.reversalErrors || 0,
+          transpositions: details?.transpositionErrors || 0
+        },
+        mathAccuracy: details?.mathAccuracy || 0,
+        mathSpeed: details?.mathSpeed || 0,
+        mathErrors: {
+          calculation: details?.calculationErrors || 0,
+          procedural: details?.proceduralErrors || 0,
+          conceptual: details?.conceptualErrors || 0,
+          visual: details?.visualErrors || 0
+        },
+        attentionSpan: details?.attentionSpan || 0,
+        responseTime: {
+          mean: details?.avgResponseTime || 0,
+          variance: details?.responseTimeVariance || 0,
+          outliers: details?.responseTimeOutliers || 0
+        },
+        taskCompletion: details?.taskCompletionRate || 0,
+        helpRequests: details?.helpRequests || 0,
+        audioPreference: details?.audioPreference || 0,
+        visualPreference: details?.visualPreference || 0,
+        kinestheticPreference: details?.kinestheticPreference || 0,
+        language: details?.language || 'es-MX',
+        culturalBackground: details?.culturalBackground || 'general',
+        socioeconomicContext: details?.socioeconomicContext || 'rural',
+        previousEducation: details?.previousEducation || 0,
+        timeOfDay: details?.timeOfDay || 'morning',
+        sessionDuration: details?.sessionDuration || 0,
+        breaksTaken: details?.breaksTaken || 0,
+        deviceType: details?.deviceType || 'mobile',
+        internetSpeed: details?.internetSpeed || 0,
+        offlineUsage: details?.offlineUsage || 0
+      };
+    });
   }
 
   /**
@@ -275,7 +278,7 @@ export class NeedsDetectionService {
       const predictions = await prediction.array();
       
       // Interpretar predicciones
-      return this.interpretMLPredictions(predictions[0], data);
+      return this.interpretMLPredictions(predictions as number[], data);
     } catch (error) {
       console.warn('Error en análisis ML:', error);
       return [];
@@ -437,7 +440,7 @@ export class NeedsDetectionService {
     // Detección de preferencias sensoriales
     if (data.audioPreference > 0.8) {
       needs.push({
-        type: 'AUDITORY_PROCESSING',
+        type: 'LANGUAGE_DELAY',
         severity: 'mild',
         confidence: 0.7,
         indicators: ['Fuerte preferencia por contenido auditivo'],
@@ -457,7 +460,7 @@ export class NeedsDetectionService {
 
     if (data.visualPreference > 0.8) {
       needs.push({
-        type: 'VISUAL_PROCESSING',
+        type: 'VISUAL_IMPAIRMENT',
         severity: 'mild',
         confidence: 0.7,
         indicators: ['Fuerte preferencia por contenido visual'],
@@ -660,45 +663,28 @@ export class NeedsDetectionService {
           },
           create: {
             studentId: result.studentId,
-            type: need.type,
-            severity: need.severity,
+            type: need.type as NeedType,
+            severity: typeof need.severity === 'string' ? 
+              (need.severity === 'mild' ? 1 : need.severity === 'moderate' ? 2 : 3) : 
+              need.severity,
             detectionMethod: 'AI_ML',
-            recommendations: need.recommendations,
-            accommodations: need.accommodations,
-            confidence: need.confidence,
-            indicators: need.indicators
+            recommendations: need.recommendations
           },
           update: {
-            severity: need.severity,
-            recommendations: need.recommendations,
-            accommodations: need.accommodations,
-            confidence: need.confidence,
-            indicators: need.indicators,
-            updatedAt: new Date()
+            severity: typeof need.severity === 'string' ? 
+              (need.severity === 'mild' ? 1 : need.severity === 'moderate' ? 2 : 3) : 
+              need.severity,
+            recommendations: need.recommendations
           }
         });
       }
 
-      // Guardar perfil de aprendizaje
-      await this.prisma.learningProfile.upsert({
-        where: { studentId: result.studentId },
-        create: {
-          studentId: result.studentId,
-          learningStyle: result.learningProfile.learningStyle,
-          pace: result.learningProfile.pace,
-          strengths: result.learningProfile.strengths,
-          challenges: result.learningProfile.challenges,
-          recommendations: result.learningProfile.recommendations,
-          culturalAdaptations: result.culturalAdaptations
-        },
-        update: {
-          learningStyle: result.learningProfile.learningStyle,
-          pace: result.learningProfile.pace,
-          strengths: result.learningProfile.strengths,
-          challenges: result.learningProfile.challenges,
-          recommendations: result.learningProfile.recommendations,
-          culturalAdaptations: result.culturalAdaptations,
-          updatedAt: new Date()
+      // Guardar perfil de aprendizaje en el modelo Student
+      await this.prisma.student.update({
+        where: { id: result.studentId },
+        data: {
+          learningProfile: result.learningProfile,
+          culturalBackground: result.culturalAdaptations?.languageSupport?.[0] || null
         }
       });
 
@@ -742,12 +728,16 @@ export class NeedsDetectionService {
   async getAccessibilityProfile(studentId: string): Promise<any> {
     try {
       // Intentar obtener perfil existente de la base de datos
-      const existingProfile = await this.prisma.accessibilityProfile.findUnique({
-        where: { studentId }
+      // Buscar perfil existente en el modelo Student
+      const existingStudent = await this.prisma.student.findUnique({
+        where: { id: studentId }
       });
 
-      if (existingProfile) {
-        return existingProfile;
+      if (existingStudent && existingStudent.learningProfile) {
+        const profile = existingStudent.learningProfile as any;
+        if (profile.accessibility) {
+          return profile.accessibility;
+        }
       }
 
       // Si no existe, crear perfil por defecto
@@ -765,11 +755,14 @@ export class NeedsDetectionService {
         knownDisabilities: []
       };
 
-      // Guardar perfil por defecto
-      await this.prisma.accessibilityProfile.create({
+      // Guardar perfil por defecto en el modelo Student
+      await this.prisma.student.update({
+        where: { id: studentId },
         data: {
-          studentId,
-          ...defaultProfile
+          learningProfile: {
+            ...(existingStudent?.learningProfile as any || {}),
+            accessibility: defaultProfile
+          }
         }
       });
 
@@ -800,12 +793,12 @@ export class NeedsDetectionService {
   async getLearningProfile(studentId: string): Promise<any> {
     try {
       // Intentar obtener perfil existente de la base de datos
-      const existingProfile = await this.prisma.learningProfile.findUnique({
-        where: { studentId }
+      const existingStudent = await this.prisma.student.findUnique({
+        where: { id: studentId }
       });
 
-      if (existingProfile) {
-        return existingProfile;
+      if (existingStudent && existingStudent.learningProfile) {
+        return existingStudent.learningProfile;
       }
 
       // Si no existe, crear perfil por defecto
@@ -818,11 +811,11 @@ export class NeedsDetectionService {
         culturalAdaptations: []
       };
 
-      // Guardar perfil por defecto
-      await this.prisma.learningProfile.create({
+      // Guardar perfil por defecto en el modelo Student
+      await this.prisma.student.update({
+        where: { id: studentId },
         data: {
-          studentId,
-          ...defaultProfile
+          learningProfile: defaultProfile
         }
       });
 

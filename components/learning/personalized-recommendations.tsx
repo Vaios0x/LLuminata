@@ -395,7 +395,7 @@ export const PersonalizedRecommendations: React.FC<PersonalizedRecommendationsPr
               key={index}
               className={cn(
                 "cursor-pointer transition-all duration-200 hover:shadow-lg",
-                selectedRecommendation?.id === recommendation.id && "ring-2 ring-blue-500"
+                selectedRecommendation === recommendation && "ring-2 ring-blue-500"
               )}
               onClick={() => handleRecommendationClick(recommendation)}
             >

@@ -173,7 +173,7 @@ export const PushNotificationSubscriber: React.FC<PushNotificationSubscriberProp
       // Suscribirse
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: vapidKeyArray
+        applicationServerKey: vapidKeyArray as BufferSource
       });
 
       // Enviar suscripción al servidor

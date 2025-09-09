@@ -1,0 +1,46 @@
+name: Dependabot Auto-merge
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm run test
+    
+    - name: Auto-merge Dependabot PRs
+      uses: fastify/github-action-merge-dependabot@v3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        target: minor
+        merge-method: squash
+        merge-commit-message: 'chore: merge dependabot PR'
+        merge-commit-message-prefix: 'chore:'
+        merge-commit-message-suffix: 'to {{newVersion}}'
+        merge-commit-message-title: 'chore: update {{depName}}'
+        merge-commit-message-body: |
+          This PR updates {{depName}} from {{currentVersion}} to {{newVersion}}.
+          
+          ## Changes
+          - Updated {{depName}} to {{newVersion}}
+          
+          ## Testing
+          - [x] All tests pass
+          - [x] Build succeeds
+          - [x] No breaking changes

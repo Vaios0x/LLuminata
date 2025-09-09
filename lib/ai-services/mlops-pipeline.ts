@@ -181,7 +181,7 @@ export class MLOpsPipelineService extends EventEmitter {
       environment: 'development',
       metadata: fullMetadata,
       culturalCompliance: true,
-      neuroscienceValidation: fullMetadata.neuroscienceValidated
+      neuroscienceValidation: fullMetadata.neuroscienceValidated || false
     });
 
     console.log(`🤖 Modelo registrado: ${modelId}`);
@@ -865,14 +865,4 @@ export class MLOpsPipelineService extends EventEmitter {
 // Instancia singleton del servicio
 export const mlOpsPipelineService = new MLOpsPipelineService();
 
-// Exportar tipos útiles
-export type {
-  ModelMetadata,
-  ModelPerformanceMetrics,
-  ModelDriftMetrics,
-  DeploymentConfig,
-  ExperimentConfig,
-  ModelAudit,
-  RetrainingJob,
-  MLOpsAlert
-};
+// Todos los tipos necesarios ya están exportados como interfaces arriba

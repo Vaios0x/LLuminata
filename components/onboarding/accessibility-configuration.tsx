@@ -196,8 +196,8 @@ export const AccessibilityConfiguration: React.FC<AccessibilityConfigurationProp
   });
 
   const { speak, isEnabled: screenReaderEnabled } = useScreenReader();
-  const { getStyles, setHighContrast } = useHighContrast();
-  const { enableVoiceControl, isVoiceEnabled } = useVoiceControl();
+  const { getStyles, toggle: toggleHighContrast } = useHighContrast();
+  const { startListening, isSupported } = useVoiceControl();
 
   const totalSteps = 7;
 
@@ -275,11 +275,15 @@ export const AccessibilityConfiguration: React.FC<AccessibilityConfigurationProp
     try {
       // Aplicar configuraciones
       if (config.visual.contrast !== 'normal') {
-        setHighContrast(config.visual.contrast === 'high');
+        if (config.visual.contrast === 'high') {
+          toggleHighContrast();
+        }
       }
 
       if (config.motor.voiceControl) {
-        await enableVoiceControl();
+        if (isSupported) {
+          startListening();
+        }
       }
 
       // Simular guardado

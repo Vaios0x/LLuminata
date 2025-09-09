@@ -86,7 +86,7 @@ export function SecurityProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       
       // Validar datos con esquema
-      const validation = security.validateInput('auth.register', userData);
+      const validation = security.validateInput('auth', userData);
       if (!validation.isValid) {
         throw new Error(validation.errors.join(', '));
       }

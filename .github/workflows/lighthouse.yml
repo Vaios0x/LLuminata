@@ -1,0 +1,75 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 6 * * 1' # Every Monday at 6 AM
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build application
+      run: npm run build
+    
+    - name: Run Lighthouse CI
+      run: npm run lighthouse
+    
+    - name: Upload Lighthouse results
+      uses: actions/upload-artifact@v3
+      with:
+        name: lighthouse-results
+        path: .lighthouseci/
+    
+    - name: Comment PR with Lighthouse results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            const resultsPath = path.join('.lighthouseci', 'results.json');
+            if (fs.existsSync(resultsPath)) {
+              const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+              
+              let comment = '## 🚀 Lighthouse Performance Report\n\n';
+              comment += '| Metric | Score | Status |\n';
+              comment += '|--------|-------|--------|\n';
+              
+              const metrics = ['performance', 'accessibility', 'best-practices', 'seo', 'pwa'];
+              metrics.forEach(metric => {
+                const score = results[0]?.summary[metric] || 0;
+                const status = score >= 0.9 ? '✅' : score >= 0.8 ? '⚠️' : '❌';
+                comment += `| ${metric} | ${(score * 100).toFixed(0)} | ${status} |\n`;
+              });
+              
+              comment += '\n---\n';
+              comment += '*This report was generated automatically by Lighthouse CI.*';
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+          } catch (error) {
+            console.error('Error creating Lighthouse comment:', error);
+          }

@@ -101,9 +101,9 @@ export const EnhancedAdaptiveAssessment: React.FC<EnhancedAdaptiveAssessmentProp
   const [emotionalState, setEmotionalState] = useState<'frustrated' | 'confident' | 'confused' | 'engaged'>('engaged');
   
   const { speak, isEnabled: screenReaderEnabled } = useScreenReader();
-  const { isHighContrast } = useHighContrast();
-  const timerRef = useRef<NodeJS.Timeout>();
-  const questionTimerRef = useRef<NodeJS.Timeout>();
+  const { isEnabled: isHighContrast } = useHighContrast();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const questionTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Inicializar evaluación
   useEffect(() => {

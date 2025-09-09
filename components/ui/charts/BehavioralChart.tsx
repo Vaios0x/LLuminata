@@ -305,7 +305,7 @@ const BehavioralChart: React.FC<BehavioralChartProps> = ({
                 cx="50%"
                 cy="50%"
                 outerRadius={chartHeight / 3}
-                onClick={(data) => handleCategoryClick(data.category)}
+                onClick={(data) => handleCategoryClick(data.payload?.category || '')}
               >
                 {processedData.map((entry, index) => (
                   <Cell 
@@ -387,21 +387,21 @@ const BehavioralChart: React.FC<BehavioralChartProps> = ({
               <Bar
                 dataKey="averageValue"
                 fill="#3b82f6"
-                onClick={(data) => handleCategoryClick(data.category)}
+                onClick={(data) => handleCategoryClick(data.payload?.category || '')}
                 opacity={selectedCategory ? 0.6 : 1}
               />
               {showAttention && (
                 <Bar
                   dataKey="averageAttention"
                   fill="#10b981"
-                  onClick={(data) => handleCategoryClick(data.category)}
+                  onClick={(data) => handleCategoryClick(data.payload?.category || '')}
                 />
               )}
               {showEngagement && (
                 <Bar
                   dataKey="averageEngagement"
                   fill="#f59e0b"
-                  onClick={(data) => handleCategoryClick(data.category)}
+                  onClick={(data) => handleCategoryClick(data.payload?.category || '')}
                 />
               )}
             </BarChart>

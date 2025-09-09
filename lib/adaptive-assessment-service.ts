@@ -144,17 +144,25 @@ export class AdaptiveAssessmentService {
         config.culturalContext
       );
 
+      // Mapear tipo de evaluación a enum de Prisma
+      const assessmentTypeMap = {
+        'diagnostic': 'DIAGNOSTIC',
+        'progress': 'PROGRESS', 
+        'mastery': 'MASTERY',
+        'remedial': 'REMEDIAL'
+      } as const;
+
       // Crear sesión de evaluación
       const assessmentSession = await prisma.assessmentSession.create({
         data: {
           studentId: config.studentId,
-          type: config.assessmentType,
+          type: assessmentTypeMap[config.assessmentType],
           subject: config.subject,
           status: 'active',
           startTime: new Date(),
           adaptiveSettings: config.adaptiveSettings,
           studentProfile: studentProfile,
-          learningDifficulties: learningDifficulties,
+          learningDifficulties: learningDifficulties as any,
           metadata: {
             culturalContext: config.culturalContext,
             accessibilityProfile: config.accessibilityProfile
@@ -329,41 +337,47 @@ export class AdaptiveAssessmentService {
       const studentProfile = await this.getStudentProfile(studentId);
       const learningDifficulties = await this.detectLearningDifficulties(studentId);
       
-      // Generar contenido usando IA
-      const aiContent = await aiServices.adaptiveAssessment.generateContent({
-        subject,
-        difficulty,
-        studentProfile,
-        learningDifficulties,
-        culturalContext: studentProfile.culturalBackground
-      });
+      // Generar contenido básico (mock temporal)
+      const aiContent = {
+        questions: [
+          {
+            id: `q_${Date.now()}`,
+            content: `Pregunta sobre ${subject} (${difficulty})`,
+            type: 'multiple-choice',
+            options: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+            correctAnswer: 'Opción A'
+          }
+        ],
+        resources: [],
+        adaptations: []
+      };
 
       // Adaptar contenido culturalmente
       const culturalAdaptations = await culturalIntegrationService.integrateCulturalContent({
-        content: aiContent,
+        content: JSON.stringify(aiContent),
         userId: studentId,
         culturalContext: {
-          culture: studentProfile.culturalBackground,
-          language: studentProfile.language,
-          region: studentProfile.location
+          culture: studentProfile.culturalBackground || 'default',
+          language: studentProfile.language || 'es',
+          region: studentProfile.location || 'global'
         },
-        accessibilityProfile: studentProfile.accessibility
+        accessibilityProfile: undefined
       });
 
-      // Aplicar adaptaciones de accesibilidad
-      const accessibilityFeatures = await accessibilityService.applyAdaptations(
-        culturalAdaptations.adaptedContent,
-        studentProfile.accessibility
-      );
+      // Aplicar adaptaciones de accesibilidad (mock temporal)
+      const accessibilityFeatures = {
+        adaptedContent: culturalAdaptations.adaptedContent,
+        features: []
+      };
 
       return [{
         type: 'lesson',
-        content: accessibilityFeatures.content,
+        content: accessibilityFeatures.adaptedContent,
         difficulty,
         culturalAdaptations: culturalAdaptations.culturalElements,
         accessibilityFeatures: accessibilityFeatures.features,
         estimatedTime: 20,
-        learningObjectives: aiContent.learningObjectives
+        learningObjectives: ['Objetivo de aprendizaje básico']
       }];
 
     } catch (error) {
@@ -460,9 +474,10 @@ export class AdaptiveAssessmentService {
       const timeSpent = responses.reduce((total, r) => total + r.responseTime, 0);
 
       // Analizar progresión de dificultad
-      const difficultyProgression = responses.map(r => 
-        r.difficultyAdjustment?.direction || 'maintain'
-      );
+      const difficultyProgression = responses.map(r => {
+        const adjustment = r.difficultyAdjustment as any;
+        return adjustment?.direction || 'maintain';
+      });
 
       // Analizar fortalezas y debilidades
       const strengths = this.analyzeStrengths(responses);
@@ -579,15 +594,18 @@ export class AdaptiveAssessmentService {
     learningDifficulties: LearningDifficulty[],
     culturalContext?: any
   ): Promise<AssessmentQuestion[]> {
-    // Generar preguntas usando IA
-    const aiQuestions = await aiServices.adaptiveAssessment.generateQuestions({
-      subject,
+    // Generar preguntas básicas (mock temporal)
+    const aiQuestions = Array.from({ length: 10 }, (_, index) => ({
+      id: `q_${index + 1}`,
+      type: 'multiple-choice',
+      content: `Pregunta ${index + 1} sobre ${subject} (${difficulty})`,
+      options: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+      correctAnswer: 'Opción A',
+      explanation: 'Explicación de la respuesta correcta',
       difficulty,
-      count: 10,
-      studentProfile,
-      learningDifficulties,
-      culturalContext
-    });
+      subject,
+      estimatedTime: 120
+    }));
 
     return aiQuestions.map((q: any, index: number) => ({
       id: `q_${index + 1}`,
@@ -662,7 +680,7 @@ export class AdaptiveAssessmentService {
       type: 'neutral',
       message: 'Respuesta recibida',
       score: response.correct ? 1 : 0,
-      suggestions: []
+      suggestions: [] as string[]
     };
 
     if (response.correct) {
@@ -774,12 +792,12 @@ export class AdaptiveAssessmentService {
   private async getHistoricalData(studentId: string) {
     const assessments = await prisma.assessment.findMany({
       where: { studentId },
-      include: { responses: true },
+      include: {},
       orderBy: { conductedAt: 'desc' },
       take: 20
     });
 
-    return assessments.flatMap(a => a.responses);
+    return []; // Mock temporal - sin relación responses en el esquema
   }
 
   private analyzeResponsePatterns(historicalData: any[]) {

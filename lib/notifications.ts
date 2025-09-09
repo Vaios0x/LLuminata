@@ -55,6 +55,8 @@ export interface NotificationData {
   expiresAt?: Date;
   culturalContext?: string;
   language?: string;
+  readAt?: string;
+  createdAt: string;
   accessibility?: {
     screenReader: boolean;
     highContrast: boolean;

@@ -5,9 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Sync, 
-  RefreshCw, 
+import {
+  RefreshCw,
   CheckCircle, 
   AlertCircle, 
   Clock, 
@@ -505,7 +504,7 @@ export default function SyncManager({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Sync className="h-6 w-6 text-blue-600" />
+              <RefreshCw className="h-6 w-6 text-blue-600" />
               <div>
                 <CardTitle>Gestión de Sincronización</CardTitle>
                 <p className="text-sm text-gray-600">
@@ -542,7 +541,7 @@ export default function SyncManager({
                     {isSyncing ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Sync className="h-4 w-4" />
+                      <RefreshCw className="h-4 w-4" />
                     )}
                     {isSyncing ? 'Sincronizando...' : 'Sincronizar Ahora'}
                   </Button>
@@ -553,7 +552,7 @@ export default function SyncManager({
                       onClick={handleCancelSync}
                       className="flex items-center gap-2"
                     >
-                      <Stop className="h-4 w-4" />
+                      <Square className="h-4 w-4" />
                       Cancelar
                     </Button>
                   )}

@@ -35,7 +35,7 @@ interface Clan {
   level: number;
   experience: number;
   maxExperience: number;
-  members: number;
+  memberCount: number;
   maxMembers: number;
   leader: ClanMember;
   officers: ClanMember[];
@@ -159,7 +159,7 @@ export default function ClanDashboard() {
           level: 15,
           experience: 125000,
           maxExperience: 150000,
-          members: 45,
+          memberCount: 45,
           maxMembers: 50,
           leader: {
             id: '1',
@@ -501,10 +501,10 @@ export default function ClanDashboard() {
                   
                   <div className="flex items-center justify-between text-sm">
                     <span>Miembros:</span>
-                    <span>{clan.members}/{clan.maxMembers}</span>
+                    <span>{clan.memberCount}/{clan.maxMembers}</span>
                   </div>
                   <Progress 
-                    value={(clan.members / clan.maxMembers) * 100} 
+                    value={(clan.memberCount / clan.maxMembers) * 100} 
                     className="h-2" 
                   />
                   

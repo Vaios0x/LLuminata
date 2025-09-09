@@ -50,7 +50,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
   
   const { getUserNotifications, markAsRead, deleteNotification, getStats } = useNotifications();
   const notificationRef = useRef<HTMLDivElement>(null);
-  const autoCloseTimeoutRef = useRef<NodeJS.Timeout>();
+  const autoCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Cargar notificaciones
   const loadNotifications = useCallback(async () => {

@@ -65,7 +65,6 @@ import {
   TimerOff,
   TimerReset,
   GaugeIcon,
-  Gauge,
   ActivitySquare,
   BarChart,
   PieChart,

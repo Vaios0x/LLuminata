@@ -680,13 +680,13 @@ export const CulturalLessonCatalog: React.FC<CulturalLessonCatalogProps> = ({
 
                     <div className="flex items-center space-x-2">
                       {lesson.accessibility.hasAudio && (
-                        <Volume2 className="w-4 h-4 text-green-500" title="Incluye audio" />
+                        <Volume2 className="w-4 h-4 text-green-500" aria-label="Incluye audio" />
                       )}
                       {lesson.accessibility.hasVisualAids && (
-                        <Eye className="w-4 h-4 text-blue-500" title="Incluye ayudas visuales" />
+                        <Eye className="w-4 h-4 text-blue-500" aria-label="Incluye ayudas visuales" />
                       )}
                       {lesson.accessibility.hasSignLanguage && (
-                        <Mic className="w-4 h-4 text-purple-500" title="Incluye lengua de señas" />
+                        <Mic className="w-4 h-4 text-purple-500" aria-label="Incluye lengua de señas" />
                       )}
                     </div>
                   </div>

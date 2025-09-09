@@ -31,7 +31,6 @@ import {
   ArrowRight,
   ArrowLeft,
   Volume1,
-  Volume3,
   Repeat,
   SkipForward,
   SkipBack,
@@ -41,7 +40,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useScreenReader } from '@/components/accessibility/screen-reader';
 import { useHighContrast } from '@/components/accessibility/high-contrast';
-import { culturalContentService, CulturalLesson, CulturalLessonSection } from '@/lib/cultural-content-service';
+import { culturalContentService, CulturalLesson as CulturalLessonType, CulturalLessonSection } from '@/lib/cultural-content-service';
 
 interface CulturalLessonProps {
   lessonId: string;
@@ -82,7 +81,7 @@ export const CulturalLesson: React.FC<CulturalLessonProps> = ({
   enableAudio = true,
   enableVisualAids = true
 }) => {
-  const [lesson, setLesson] = useState<CulturalLesson | null>(null);
+  const [lesson, setLesson] = useState<CulturalLessonType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [state, setState] = useState<LessonState>({

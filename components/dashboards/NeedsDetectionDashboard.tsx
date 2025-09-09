@@ -35,7 +35,6 @@ import {
   Monitor,
   Zap,
   Activity,
-  Target,
   Award,
   Bookmark,
   FileText,

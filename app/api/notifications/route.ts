@@ -247,7 +247,8 @@ async function handleSendNotification(data: any, audit: any) {
     culturalContext: notificationData.culturalContext ? sanitizeUserInput(notificationData.culturalContext) : undefined,
     language: notificationData.language ? sanitizeUserInput(notificationData.language) : undefined,
     scheduledFor: notificationData.scheduledFor ? new Date(notificationData.scheduledFor) : undefined,
-    expiresAt: notificationData.expiresAt ? new Date(notificationData.expiresAt) : undefined
+    expiresAt: notificationData.expiresAt ? new Date(notificationData.expiresAt) : undefined,
+    createdAt: new Date().toISOString()
   };
 
   // Enviar notificación

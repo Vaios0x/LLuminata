@@ -164,7 +164,7 @@ export const LazyLoader: React.FC<LazyLoaderProps> = ({
   priority = 'normal'
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const isIntersecting = useIntersectionObserver(ref, {
+  const isIntersecting = useIntersectionObserver(ref as React.RefObject<HTMLElement>, {
     threshold,
     rootMargin,
     triggerOnce: true,
@@ -284,7 +284,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   blur = false
 }) => {
   const ref = useRef<HTMLImageElement>(null);
-  const isIntersecting = useIntersectionObserver(ref, {
+  const isIntersecting = useIntersectionObserver(ref as React.RefObject<HTMLElement>, {
     threshold,
     rootMargin,
     triggerOnce: true,
@@ -400,7 +400,8 @@ export const LazyVideo: React.FC<LazyVideoProps> = ({
   loop = false
 }) => {
   const ref = useRef<HTMLVideoElement>(null);
-  const isIntersecting = useIntersectionObserver(ref, {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isIntersecting = useIntersectionObserver(containerRef as React.RefObject<HTMLElement>, {
     threshold,
     rootMargin,
     triggerOnce: true,
@@ -473,7 +474,7 @@ export const LazyVideo: React.FC<LazyVideoProps> = ({
   }
 
   return (
-    <div ref={ref} className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative ${className}`}>
       <video
         ref={ref}
         src={src}
@@ -567,11 +568,11 @@ export const LoadingProgress: React.FC<{
 };
 
 // Exportar componentes lazy comunes
-export const LazyDashboard = lazy(() => import('../dashboard/dashboard-widget'));
-export const LazyChatbot = lazy(() => import('../ai/chatbot-widget'));
-export const LazyAnalytics = lazy(() => import('../dashboard/analytics-widget'));
-export const LazyAssessment = lazy(() => import('../learning/assessment-widget'));
-export const LazyLesson = lazy(() => import('../learning/lesson-widget'));
-export const LazyOfflineContent = lazy(() => import('../offline/offline-content-manager'));
+// export const LazyDashboard = lazy(() => import('../dashboard/features-dashboard').then(module => ({ default: module.FeaturesDashboard })));
+// export const LazyChatbot = lazy(() => import('../ai/chatbot').then(module => ({ default: module.Chatbot })));
+// export const LazyAnalytics = lazy(() => import('../analytics/RealTimeMetrics').then(module => ({ default: module.RealTimeMetrics })));
+// export const LazyAssessment = lazy(() => import('../learning/enhanced-adaptive-assessment').then(module => ({ default: module.EnhancedAdaptiveAssessment })));
+// export const LazyLesson = lazy(() => import('../learning/interactive-lesson').then(module => ({ default: module.InteractiveLesson })));
+// export const LazyOfflineContent = lazy(() => import('../offline/OfflineContentManager').then(module => ({ default: module.OfflineContentManager })));
 
 export default LazyLoader;

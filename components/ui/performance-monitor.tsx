@@ -98,8 +98,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       if ('PerformanceObserver' in window) {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          const fidEntry = entries[0];
-          if (fidEntry) {
+          const fidEntry = entries[0] as PerformanceEventTiming;
+          if (fidEntry && 'processingStart' in fidEntry) {
             resolve(fidEntry.processingStart - fidEntry.startTime);
             observer.disconnect();
           }
@@ -116,10 +116,11 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     return new Promise<number>((resolve) => {
       if ('PerformanceObserver' in window) {
         let clsValue = 0;
-        const observer = new PerformanceObserver((list) => {
+        const observer = new PerformanceObserver((list) => {      
           for (const entry of list.getEntries()) {
-            if (!entry.hadRecentInput) {
-              clsValue += (entry as any).value;
+            const layoutShiftEntry = entry as PerformanceEntry & { hadRecentInput?: boolean; value?: number };
+            if (!layoutShiftEntry.hadRecentInput) {
+              clsValue += layoutShiftEntry.value || 0;
             }
           }
         });

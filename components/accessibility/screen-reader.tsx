@@ -8,6 +8,7 @@ interface ScreenReaderContextType {
   speak: (text: string, priority?: 'high' | 'low') => void;
   stop: () => void;
   isEnabled: boolean;
+  isSpeaking: boolean;
   toggle: () => void;
   speed: number;
   setSpeed: (speed: number) => void;
@@ -112,6 +113,7 @@ export const ScreenReaderProvider: React.FC<ScreenReaderProviderProps> = ({
     speak,
     stop,
     isEnabled,
+    isSpeaking,
     toggle,
     speed,
     setSpeed,

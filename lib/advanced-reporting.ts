@@ -193,7 +193,7 @@ export class AdvancedReporting {
     // Intentar obtener del caché
     const cached = await redisCache.get(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return typeof cached === 'string' ? JSON.parse(cached) : cached as RegionalReportData;
     }
 
     // Obtener datos de estudiantes en la región
@@ -242,13 +242,13 @@ export class AdvancedReporting {
 
     const lessonsCompleted = students.reduce((sum, s) => sum + s.completedLessons.length, 0);
     const assessmentsPassed = students.reduce((sum, s) => sum + s.assessments.filter(a => a.score >= 70).length, 0);
-    const averageScore = students.reduce((sum, s) => sum + s.assessments.reduce((acc, a) => acc + a.score, 0), 0) / 
+    const averageScore = students.reduce((sum, s) => sum + s.assessments.reduce((acc: number, a: any) => acc + a.score, 0), 0) / 
                         students.reduce((sum, s) => sum + s.assessments.length, 0) || 0;
     const completionRate = totalUsers > 0 ? lessonsCompleted / (totalUsers * 10) : 0; // Asumiendo 10 lecciones por estudiante
 
     // Calcular engagement basado en análisis de sentimientos
     const engagementScore = students.reduce((sum, s) => {
-      const avgSentiment = s.sentimentAnalyses.reduce((acc, sa) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
+      const avgSentiment = s.sentimentAnalyses.reduce((acc: number, sa: any) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
       return sum + (avgSentiment + 1) / 2; // Normalizar de -1,1 a 0,1
     }, 0) / totalUsers || 0;
 
@@ -323,7 +323,7 @@ export class AdvancedReporting {
     
     const cached = await redisCache.get(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return typeof cached === 'string' ? JSON.parse(cached) : cached as any;
     }
 
     // Obtener datos para el análisis
@@ -449,7 +449,7 @@ export class AdvancedReporting {
     
     const cached = await redisCache.get(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return typeof cached === 'string' ? JSON.parse(cached) : cached as any;
     }
 
     const regions = await prisma.student.groupBy({
@@ -467,7 +467,7 @@ export class AdvancedReporting {
     for (const region of regions) {
       const report = await this.generateRegionalReport({
         region: region.location,
-        period,
+        period: period as "monthly" | "quarterly" | "yearly",
         startDate,
         endDate,
       });
@@ -528,7 +528,7 @@ export class AdvancedReporting {
     
     const cached = await redisCache.get(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return typeof cached === 'string' ? JSON.parse(cached) : cached as any;
     }
 
     const students = await prisma.student.findMany({
@@ -604,7 +604,7 @@ export class AdvancedReporting {
     if (totalStudents === 0) return 0;
 
     const avgLessonsCompleted = students.reduce((sum, s) => sum + s.completedLessons.length, 0) / totalStudents;
-    const avgScore = students.reduce((sum, s) => sum + s.assessments.reduce((acc, a) => acc + a.score, 0), 0) / 
+    const avgScore = students.reduce((sum, s) => sum + s.assessments.reduce((acc: number, a: any) => acc + a.score, 0), 0) / 
                     students.reduce((sum, s) => sum + s.assessments.length, 0) || 0;
     const specialNeedsDetected = students.filter(s => s.specialNeeds.length > 0).length;
 
@@ -619,7 +619,7 @@ export class AdvancedReporting {
     const familyEngagement = students.filter(s => s.family).length / totalStudents;
     const teacherStudentRatio = totalTeachers > 0 ? totalStudents / totalTeachers : 0;
     const avgSentiment = students.reduce((sum, s) => {
-      const studentSentiment = s.sentimentAnalyses.reduce((acc, sa) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
+      const studentSentiment = s.sentimentAnalyses.reduce((acc: number, sa: any) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
       return sum + (studentSentiment + 1) / 2;
     }, 0) / totalStudents;
 
@@ -648,7 +648,7 @@ export class AdvancedReporting {
     const culturalBackgroundUsage = students.filter(s => s.culturalBackground).length / totalStudents;
     const localLanguageUsage = students.filter(s => s.language !== 'es-MX').length / totalStudents;
     const avgSentiment = students.reduce((sum, s) => {
-      const studentSentiment = s.sentimentAnalyses.reduce((acc, sa) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
+      const studentSentiment = s.sentimentAnalyses.reduce((acc: number, sa: any) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
       return sum + (studentSentiment + 1) / 2;
     }, 0) / totalStudents;
 
@@ -683,7 +683,7 @@ export class AdvancedReporting {
     const totalStudents = students.length;
     if (totalStudents === 0) return 0;
 
-    const avgScore = students.reduce((sum, s) => sum + s.assessments.reduce((acc, a) => acc + a.score, 0), 0) / 
+    const avgScore = students.reduce((sum, s) => sum + s.assessments.reduce((acc: number, a: any) => acc + a.score, 0), 0) / 
                     students.reduce((sum, s) => sum + s.assessments.length, 0) || 0;
     const completionRate = students.reduce((sum, s) => sum + s.completedLessons.length, 0) / (totalStudents * 20) || 0;
 
@@ -706,7 +706,7 @@ export class AdvancedReporting {
     if (totalStudents === 0) return 0;
 
     const avgSentiment = students.reduce((sum, s) => {
-      const studentSentiment = s.sentimentAnalyses.reduce((acc, sa) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
+      const studentSentiment = s.sentimentAnalyses.reduce((acc: number, sa: any) => acc + sa.sentimentScore, 0) / s.sentimentAnalyses.length || 0;
       return sum + (studentSentiment + 1) / 2;
     }, 0) / totalStudents;
 

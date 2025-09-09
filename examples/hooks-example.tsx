@@ -59,7 +59,7 @@ const HooksExample: React.FC = () => {
     userInventory,
     availableOffers,
     userOffers,
-    transactions,
+    userTransactions,
     loading: tradingLoading,
     error: tradingError,
     createOffer,
@@ -68,7 +68,7 @@ const HooksExample: React.FC = () => {
   } = useTrading();
 
   const {
-    userPreferences,
+    preferences,
     culturalAdaptation,
     availableThemes,
     loading: personalizationLoading,
@@ -81,7 +81,7 @@ const HooksExample: React.FC = () => {
   // Hooks de Analytics
   const {
     heatmapData,
-    configurations,
+    heatmapConfigs,
     activeSessions,
     loading: heatmapLoading,
     error: heatmapError,
@@ -92,9 +92,9 @@ const HooksExample: React.FC = () => {
   } = useHeatmap();
 
   const {
-    predictionModels,
+    models,
     predictions,
-    configurations: predictionConfigs,
+    configs: predictionConfigs,
     insights,
     loading: predictionsLoading,
     error: predictionsError,
@@ -107,7 +107,7 @@ const HooksExample: React.FC = () => {
   const {
     experiments,
     results,
-    statistics,
+    stats: abTestingStats,
     loading: abTestingLoading,
     error: abTestingError,
     createExperiment,
@@ -118,7 +118,7 @@ const HooksExample: React.FC = () => {
 
   const {
     metrics,
-    configurations: realTimeConfigs,
+    configs: realTimeConfigs,
     alerts,
     dashboards,
     loading: realTimeLoading,
@@ -175,14 +175,15 @@ const HooksExample: React.FC = () => {
       await createEvent({
         name: 'Evento de Aprendizaje',
         description: 'Un evento especial para aprender',
-        type: 'LEARNING',
-        startDate: new Date(),
-        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 días
-        rewards: {
-          points: 100,
-          experience: 50,
-          badges: ['event_participant']
-        }
+        type: 'LESSON_COMPLETED',
+        category: 'ACADEMIC',
+        points: 100,
+        metadata: {
+          lessonId: 'lesson-123'
+        },
+        timestamp: new Date(),
+        isRead: false,
+        isClaimed: false
       });
       console.log('Evento creado exitosamente');
     } catch (error) {
@@ -193,13 +194,7 @@ const HooksExample: React.FC = () => {
   // Ejemplo de uso de trading
   const handleCreateOffer = async () => {
     try {
-      await createOffer({
-        itemId: 'item_1',
-        quantity: 5,
-        price: 100,
-        type: 'SELL',
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 horas
-      });
+      await createOffer('item_1', 5, 100, 'POINTS');
       console.log('Oferta creada exitosamente');
     } catch (error) {
       console.error('Error al crear oferta:', error);
@@ -211,13 +206,11 @@ const HooksExample: React.FC = () => {
     try {
       await updatePreferences({
         learningStyle: 'VISUAL',
-        difficultyLevel: 'INTERMEDIATE',
-        accessibilityFeatures: {
-          screenReader: true,
-          highContrast: false,
-          largeText: false,
-          voiceNavigation: true
-        }
+        contentDifficulty: 'MEDIUM',
+        screenReader: true,
+        highContrast: false,
+        largeText: false,
+        voiceNavigation: true
       });
       console.log('Preferencias actualizadas exitosamente');
     } catch (error) {
@@ -255,13 +248,54 @@ const HooksExample: React.FC = () => {
       await createExperiment({
         name: 'Test de Interfaz',
         description: 'Probando nueva interfaz de usuario',
-        hypothesis: 'La nueva interfaz mejora la retención',
+        status: 'DRAFT',
+        type: 'UI',
+        goal: {
+          metric: 'retention_rate',
+          target: 0.8,
+          direction: 'INCREASE'
+        },
         variants: [
-          { name: 'Control', description: 'Interfaz actual' },
-          { name: 'Variante A', description: 'Nueva interfaz' }
+          { 
+            id: 'variant-1',
+            experimentId: 'exp-1',
+            name: 'Control', 
+            description: 'Interfaz actual',
+            type: 'CONTROL' as const,
+            configuration: {},
+            isActive: true,
+            createdAt: new Date()
+          },
+          { 
+            id: 'variant-2',
+            experimentId: 'exp-1',
+            name: 'Variante A', 
+            description: 'Nueva interfaz',
+            type: 'VARIANT' as const,
+            configuration: {},
+            isActive: true,
+            createdAt: new Date()
+          }
         ],
-        metrics: ['retention_rate', 'time_on_page'],
-        targetAudience: 'all_users'
+        trafficAllocation: {
+          control: 50,
+          variants: { 'variant-2': 50 }
+        },
+        targeting: {
+          userSegments: ['all_users'],
+          devices: ['desktop', 'mobile'],
+          locations: ['global'],
+          customRules: {}
+        },
+        schedule: {
+          startDate: new Date(),
+          timezone: 'UTC'
+        },
+        sampleSize: {
+          required: 1000,
+          current: 0,
+          confidence: 0.95
+        }
       });
       console.log('Experimento creado exitosamente');
     } catch (error) {
@@ -446,7 +480,7 @@ const HooksExample: React.FC = () => {
             <p className="text-red-500">Error: {predictionsError}</p>
           ) : (
             <div>
-              <p>Modelos disponibles: {predictionModels.length}</p>
+              <p>Modelos disponibles: {models.length}</p>
               <button
                 onClick={handleMakePrediction}
                 className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"

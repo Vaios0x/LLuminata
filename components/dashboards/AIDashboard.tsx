@@ -30,7 +30,6 @@ import {
   RefreshCw,
   PieChart,
   LineChart,
-  Scatter,
   Calendar,
   MapPin,
   Globe,

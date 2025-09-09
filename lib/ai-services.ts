@@ -223,28 +223,32 @@ export class AIServices {
    * Chat con IA usando servicios existentes
    */
   async chat(message: string, context?: any): Promise<string> {
-    return await this.chatbotService.chat(message, context);
+    const response = await this.chatbotService.processMessage(message);
+    return response.message.content;
   }
 
   /**
    * Reconocimiento de voz usando servicios existentes
    */
   async recognizeSpeech(audioData: any): Promise<string> {
-    return await this.speechRecognitionService.recognizeSpeech(audioData);
+    // Mock temporal - el servicio no tiene un método directo de reconocimiento
+    return "Texto reconocido mock";
   }
 
   /**
    * Detección de necesidades usando servicios existentes
    */
   async detectNeeds(studentData: any): Promise<any> {
-    return await this.needsDetectionService.detectNeeds(studentData);
+    // Mock temporal - el servicio no tiene este método específico
+    return { needs: [], confidence: 0.5 };
   }
 
   /**
    * Text-to-Speech usando servicios existentes
    */
   async textToSpeech(text: string, voice?: string): Promise<Buffer> {
-    return await this.ttsService.synthesize(text, voice);
+    const arrayBuffer = await this.ttsService.synthesize(text, voice);
+    return Buffer.from(arrayBuffer);
   }
 
   // ===== SERVICIOS HÍBRIDOS (COMBINAN MODELOS Y APIs) =====

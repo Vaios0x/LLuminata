@@ -29,7 +29,6 @@ import {
   PieChart,
   LineChart,
   AreaChart,
-  Scatter,
   Globe,
   Smartphone,
   Monitor,
@@ -84,19 +83,9 @@ import {
   SignalLow,
   SignalZero,
   WifiHigh,
-  WifiMedium,
   WifiLow,
   WifiZero,
-  BatteryFull,
-  BatteryHigh,
-  BatteryMedium,
-  BatteryLow,
-  BatteryEmpty,
-  BatteryChargingFull,
-  BatteryChargingHigh,
-  BatteryChargingMedium,
-  BatteryChargingLow,
-  BatteryChargingEmpty
+  BatteryFull
 } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';

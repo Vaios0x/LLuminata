@@ -45,17 +45,7 @@ import {
   CheckCircle,
   AlertTriangle,
   Clock,
-  Filter,
-  Search,
-  Target,
-  Award,
-  Bookmark,
-  FileText,
-  Video,
-  Headphones,
-  Mic,
-  MousePointer,
-  MousePointerClick
+  Search
 } from 'lucide-react';
 
 interface CulturalContext {

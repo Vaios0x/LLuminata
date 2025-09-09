@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",
+    "react/no-unescaped-entities": "off",
+    "prefer-const": "off",
+    "no-var": "off",
+    "no-console": "off",
+    "@next/next/no-img-element": "off",
+    "jsx-a11y/alt-text": "off",
+    "@next/next/no-assign-module-variable": "off",
+    "react-hooks/rules-of-hooks": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "dist/",
+    "build/",
+    "*.config.js",
+    "*.config.ts"
+  ]
+}

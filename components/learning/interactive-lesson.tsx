@@ -99,7 +99,7 @@ export const InteractiveLesson: React.FC<InteractiveLessonProps> = ({
         sections: [
           {
             id: 'intro',
-            type: 'text',
+            type: 'text' as const,
             title: 'Introducción',
             content: {
               text: 'Hoy aprenderemos a contar en maya. Los números mayas son muy importantes en nuestra cultura.',
@@ -116,7 +116,7 @@ export const InteractiveLesson: React.FC<InteractiveLessonProps> = ({
           },
           {
             id: 'numbers-1-5',
-            type: 'interactive',
+            type: 'interactive' as const,
             title: 'Números del 1 al 5',
             content: {
               numbers: [
@@ -137,7 +137,7 @@ export const InteractiveLesson: React.FC<InteractiveLessonProps> = ({
           },
           {
             id: 'practice-1-5',
-            type: 'quiz',
+            type: 'quiz' as const,
             title: 'Práctica: Números del 1 al 5',
             content: {
               questions: [

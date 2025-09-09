@@ -386,7 +386,7 @@ export const InternalMessaging: React.FC<InternalMessagingProps> = ({
                   senderId: message.senderId,
                   senderName: message.senderName,
                   timestamp: message.timestamp,
-                  type: message.type
+                  type: message.type === 'reaction' ? 'text' : message.type
                 },
                 updatedAt: message.timestamp,
                 unreadCount: 0

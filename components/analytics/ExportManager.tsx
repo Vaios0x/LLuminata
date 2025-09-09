@@ -80,7 +80,6 @@ import {
   LineChart,
   PieChart,
   AreaChart,
-  Scatter,
   Globe,
   Smartphone,
   Monitor,
@@ -331,7 +330,7 @@ export const ExportManager: React.FC<ExportManagerProps> = ({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending': return <FileClock className="w-4 h-4" />;
-      case 'processing': return <FileSettings className="w-4 h-4" />;
+      case 'processing': return <Settings className="w-4 h-4" />;
       case 'completed': return <FileCheck className="w-4 h-4" />;
       case 'failed': return <FileX className="w-4 h-4" />;
       case 'cancelled': return <FileMinus className="w-4 h-4" />;
@@ -356,7 +355,7 @@ export const ExportManager: React.FC<ExportManagerProps> = ({
       case 'analytics': return <BarChart3 className="w-4 h-4" />;
       case 'reports': return <FileText className="w-4 h-4" />;
       case 'data': return <Database className="w-4 h-4" />;
-      case 'custom': return <FileSettings className="w-4 h-4" />;
+      case 'custom': return <Settings className="w-4 h-4" />;
       default: return <File className="w-4 h-4" />;
     }
   };

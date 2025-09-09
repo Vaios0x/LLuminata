@@ -244,8 +244,8 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
                   fill={getColor(entry.normalizedValue)}
                   r={getPointSize(entry.normalizedValue)}
                   opacity={focusedPoint === index ? 0.8 : 1}
-                  stroke={selectedPoint?.index === index ? '#000' : 'none'}
-                  strokeWidth={selectedPoint?.index === index ? 2 : 0}
+                  stroke={selectedPoint === entry ? '#000' : 'none'}
+                  strokeWidth={selectedPoint === entry ? 2 : 0}
                 />
               ))}
             </Scatter>

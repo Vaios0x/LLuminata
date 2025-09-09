@@ -28,6 +28,7 @@ import {
   FileText,
   Link,
   Download,
+  Presentation,
   Heart,
   Award,
   Target,
@@ -39,7 +40,8 @@ import {
   Zap,
   RefreshCw,
   Settings,
-  MoreHorizontal
+  MoreHorizontal,
+  AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

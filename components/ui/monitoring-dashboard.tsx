@@ -14,10 +14,7 @@ import {
   useAnalytics, 
   getSessionData 
 } from '@/lib/monitoring/user-analytics';
-import { 
-  captureException, 
-  addBreadcrumb 
-} from '@/lib/monitoring/error-tracking';
+import { errorTracker } from '@/lib/monitoring/error-tracking';
 
 // Tipos para el dashboard
 interface MonitoringDashboardProps {
@@ -108,13 +105,13 @@ export function MonitoringDashboard({
       setStats(currentStats);
       setLastRefresh(new Date());
       
-      addBreadcrumb({
+      errorTracker.addBreadcrumb({
         message: 'Dashboard stats updated',
         category: 'monitoring',
         level: 'info',
       });
     } catch (error) {
-      captureException(error as Error, { context: 'monitoring-dashboard' });
+      errorTracker.captureException(error as Error, { context: 'monitoring-dashboard' });
     } finally {
       setIsLoading(false);
     }
@@ -375,7 +372,7 @@ function AnalyticsTab() {
                     <span className="event-category">{event.category}</span>
                     <span className="event-action">{event.action}</span>
                     <span className="event-time">
-                      {new Date(event.timestamp).toLocaleTimeString()}
+                      {event.timestamp ? new Date(event.timestamp).toLocaleTimeString() : 'N/A'}
                     </span>
                   </div>
                   {event.label && (
@@ -402,7 +399,7 @@ function ErrorsTab() {
       <div className="errors-header">
         <h3>Errores y Alertas</h3>
         <button 
-          onClick={() => captureException(new Error('Test error'), { context: 'dashboard-test' })}
+          onClick={() => errorTracker.captureException(new Error('Test error'), { context: 'dashboard-test' })}
           className="test-error"
         >
           🧪 Probar Error

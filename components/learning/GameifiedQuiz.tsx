@@ -249,7 +249,7 @@ export default function GameifiedQuiz({
         culturalBackground: 'maya',
         gameElements: [
           {
-            type: 'streak',
+            type: 'streak' as const,
             name: 'Racha de Aciertos',
             description: 'Respuestas correctas consecutivas',
             icon: '🔥',
@@ -260,7 +260,7 @@ export default function GameifiedQuiz({
             condition: '3 respuestas correctas seguidas'
           },
           {
-            type: 'bonus',
+            type: 'bonus' as const,
             name: 'Bonus Cultural',
             description: 'Respuesta correcta con contexto cultural',
             icon: '🌟',
@@ -271,7 +271,7 @@ export default function GameifiedQuiz({
             condition: 'Respuesta correcta en preguntas culturales'
           },
           {
-            type: 'powerup',
+            type: 'powerup' as const,
             name: 'Poder de Tiempo',
             description: 'Tiempo extra para la siguiente pregunta',
             icon: '⚡',

@@ -1,189 +1,36 @@
 version: '3.8'
 
 services:
-  # Aplicación principal
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: lluminata-app
-    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://inclusive:inclusive123@postgres:5432/inclusive_ai_coach
-      - DIRECT_URL=postgresql://inclusive:inclusive123@postgres:5432/inclusive_ai_coach
-      - REDIS_URL=redis://redis:6379
-      - NEXTAUTH_URL=https://lluminata.com
-      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DATABASE_URL=postgresql://postgres:password@db:5432/lluminata_prod
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - lluminata-network
-    volumes:
-      - app-logs:/app/logs
-      - app-uploads:/app/uploads
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  # Base de datos PostgreSQL
-  postgres:
-    image: postgres:15-alpine
-    container_name: lluminata-postgres
+      - db
+      - redis
     restart: unless-stopped
-    environment:
-      - POSTGRES_DB=inclusive_ai_coach
-      - POSTGRES_USER=inclusive
-      - POSTGRES_PASSWORD=inclusive123
-      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    ports:
-      - "5432:5432"
-    networks:
-      - lluminata-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U inclusive -d inclusive_ai_coach"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  # Redis para cache y sesiones
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=lluminata_prod
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
   redis:
     image: redis:7-alpine
-    container_name: lluminata-redis
+    volumes:
+      - redis_data:/data
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass redis123
-    volumes:
-      - redis-data:/data
-    ports:
-      - "6379:6379"
-    networks:
-      - lluminata-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
-  # Nginx como reverse proxy
-  nginx:
-    image: nginx:alpine
-    container_name: lluminata-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
-      - nginx-logs:/var/log/nginx
-    depends_on:
-      - app
-    networks:
-      - lluminata-network
-
-  # Prometheus para monitoreo
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: lluminata-prometheus
-    restart: unless-stopped
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-    networks:
-      - lluminata-network
-
-  # Grafana para dashboards
-  grafana:
-    image: grafana/grafana:latest
-    container_name: lluminata-grafana
-    restart: unless-stopped
-    ports:
-      - "3001:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_USERS_ALLOW_SIGN_UP=false
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
-    depends_on:
-      - prometheus
-    networks:
-      - lluminata-network
-
-  # Backup automático
-  backup:
-    image: postgres:15-alpine
-    container_name: lluminata-backup
-    restart: "no"
-    environment:
-      - PGPASSWORD=inclusive123
-    volumes:
-      - backup-data:/backups
-      - ./scripts/backup-postgresql.sh:/backup.sh
-    command: ["/bin/sh", "-c", "chmod +x /backup.sh && /backup.sh"]
-    depends_on:
-      - postgres
-    networks:
-      - lluminata-network
-
-  # Certbot para SSL automático
-  certbot:
-    image: certbot/certbot
-    container_name: lluminata-certbot
-    restart: "no"
-    volumes:
-      - ./nginx/ssl:/etc/letsencrypt
-      - ./nginx/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email admin@lluminata.com -d lluminata.com --agree-tos
-    depends_on:
-      - nginx
-    networks:
-      - lluminata-network
 
 volumes:
-  postgres-data:
-    driver: local
-  redis-data:
-    driver: local
-  prometheus-data:
-    driver: local
-  grafana-data:
-    driver: local
-  backup-data:
-    driver: local
-  app-logs:
-    driver: local
-  app-uploads:
-    driver: local
-  nginx-logs:
-    driver: local
-
-networks:
-  lluminata-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
+  postgres_data:
+  redis_data:

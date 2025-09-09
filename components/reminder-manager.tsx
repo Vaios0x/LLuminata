@@ -282,7 +282,7 @@ export default function ReminderManager() {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <span className="ml-2">{getText('cargando_recordatorios', 'Cargando recordatorios...')}</span>
+        <span className="ml-2">{getText('cargando_recordatorios')}</span>
       </div>
     );
   }
@@ -293,20 +293,20 @@ export default function ReminderManager() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className={`text-2xl font-bold ${isLargeText ? 'text-3xl' : ''}`}>
-            {getText('gestor_recordatorios', 'Gestor de Recordatorios')}
+            {getText('gestor_recordatorios')}
           </h1>
           <p className="text-gray-600 mt-1">
-            {getText('descripcion_recordatorios', 'Gestiona recordatorios automáticos para lecciones, evaluaciones y reuniones')}
+            {getText('descripcion_recordatorios')}
           </p>
         </div>
         <Button 
           onClick={() => setShowForm(true)}
           className="flex items-center gap-2"
           tabIndex={0}
-          aria-label={getText('crear_recordatorio', 'Crear nuevo recordatorio')}
+          aria-label={getText('crear_recordatorio')}
         >
           <Plus className="h-4 w-4" />
-          {getText('nuevo_recordatorio', 'Nuevo Recordatorio')}
+          {getText('nuevo_recordatorio')}
         </Button>
       </div>
 
@@ -316,8 +316,8 @@ export default function ReminderManager() {
           <CardHeader>
             <CardTitle>
               {editingReminder 
-                ? getText('editar_recordatorio', 'Editar Recordatorio')
-                : getText('crear_recordatorio', 'Crear Recordatorio')
+                ? getText('editar_recordatorio')
+                : getText('crear_recordatorio')
               }
             </CardTitle>
           </CardHeader>
@@ -325,7 +325,7 @@ export default function ReminderManager() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  {getText('tipo', 'Tipo')}
+                  {getText('tipo')}
                 </label>
                 <select
                   value={formData.type}
@@ -333,16 +333,16 @@ export default function ReminderManager() {
                   className="w-full p-2 border rounded-md"
                   tabIndex={0}
                 >
-                  <option value="lesson">{getText('leccion', 'Lección')}</option>
-                  <option value="assessment">{getText('evaluacion', 'Evaluación')}</option>
-                  <option value="meeting">{getText('reunion', 'Reunión')}</option>
-                  <option value="deadline">{getText('fecha_limite', 'Fecha Límite')}</option>
+                  <option value="lesson">{getText('leccion')}</option>
+                  <option value="assessment">{getText('evaluacion')}</option>
+                  <option value="meeting">{getText('reunion')}</option>
+                  <option value="deadline">{getText('fecha_limite')}</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  {getText('prioridad', 'Prioridad')}
+                  {getText('prioridad')}
                 </label>
                 <select
                   value={formData.priority}
@@ -350,44 +350,44 @@ export default function ReminderManager() {
                   className="w-full p-2 border rounded-md"
                   tabIndex={0}
                 >
-                  <option value="low">{getText('baja', 'Baja')}</option>
-                  <option value="normal">{getText('normal', 'Normal')}</option>
-                  <option value="high">{getText('alta', 'Alta')}</option>
-                  <option value="urgent">{getText('urgente', 'Urgente')}</option>
+                  <option value="low">{getText('baja')}</option>
+                  <option value="normal">{getText('normal')}</option>
+                  <option value="high">{getText('alta')}</option>
+                  <option value="urgent">{getText('urgente')}</option>
                 </select>
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium mb-1">
-                  {getText('titulo', 'Título')}
+                  {getText('titulo')}
                 </label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   className="w-full p-2 border rounded-md"
-                  placeholder={getText('titulo_placeholder', 'Ej: Lección de Matemáticas Maya')}
+                  placeholder={getText('titulo_placeholder')}
                   tabIndex={0}
                 />
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium mb-1">
-                  {getText('descripcion', 'Descripción')}
+                  {getText('descripcion')}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   className="w-full p-2 border rounded-md"
                   rows={3}
-                  placeholder={getText('descripcion_placeholder', 'Descripción del recordatorio...')}
+                  placeholder={getText('descripcion_placeholder')}
                   tabIndex={0}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  {getText('fecha_programada', 'Fecha Programada')}
+                  {getText('fecha_programada')}
                 </label>
                 <input
                   type="datetime-local"
@@ -400,7 +400,7 @@ export default function ReminderManager() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  {getText('contexto_cultural', 'Contexto Cultural')}
+                  {getText('contexto_cultural')}
                 </label>
                 <select
                   value={formData.culturalContext}
@@ -408,11 +408,11 @@ export default function ReminderManager() {
                   className="w-full p-2 border rounded-md"
                   tabIndex={0}
                 >
-                  <option value="general">{getText('general', 'General')}</option>
-                  <option value="maya">{getText('maya', 'Maya')}</option>
-                  <option value="náhuatl">{getText('nahuatl', 'Náhuatl')}</option>
-                  <option value="zapoteco">{getText('zapoteco', 'Zapoteco')}</option>
-                  <option value="mixteco">{getText('mixteco', 'Mixteco')}</option>
+                  <option value="general">{getText('general')}</option>
+                  <option value="maya">{getText('maya')}</option>
+                  <option value="náhuatl">{getText('nahuatl')}</option>
+                  <option value="zapoteco">{getText('zapoteco')}</option>
+                  <option value="mixteco">{getText('mixteco')}</option>
                 </select>
               </div>
             </div>
@@ -424,8 +424,8 @@ export default function ReminderManager() {
                 tabIndex={0}
               >
                 {editingReminder 
-                  ? getText('actualizar', 'Actualizar')
-                  : getText('crear', 'Crear')
+                  ? getText('actualizar')
+                  : getText('crear')
                 }
               </Button>
               <Button 
@@ -437,7 +437,7 @@ export default function ReminderManager() {
                 }}
                 tabIndex={0}
               >
-                {getText('cancelar', 'Cancelar')}
+                {getText('cancelar')}
               </Button>
             </div>
           </CardContent>
@@ -448,13 +448,13 @@ export default function ReminderManager() {
       <Tabs defaultValue="active" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="active" tabIndex={0}>
-            {getText('activos', 'Activos')} ({reminders.filter(r => r.status === 'active').length})
+            {getText('activos')} ({reminders.filter(r => r.status === 'active').length})
           </TabsTrigger>
           <TabsTrigger value="paused" tabIndex={0}>
-            {getText('pausados', 'Pausados')} ({reminders.filter(r => r.status === 'paused').length})
+            {getText('pausados')} ({reminders.filter(r => r.status === 'paused').length})
           </TabsTrigger>
           <TabsTrigger value="completed" tabIndex={0}>
-            {getText('completados', 'Completados')} ({reminders.filter(r => r.status === 'completed').length})
+            {getText('completados')} ({reminders.filter(r => r.status === 'completed').length})
           </TabsTrigger>
         </TabsList>
 
@@ -468,7 +468,7 @@ export default function ReminderManager() {
                       <span className="text-2xl">{getTypeIcon(reminder.type)}</span>
                       <h3 className="font-semibold">{reminder.title}</h3>
                       <Badge className={getPriorityColor(reminder.priority)}>
-                        {getText(reminder.priority, reminder.priority)}
+                        {getText(reminder.priority)}
                       </Badge>
                     </div>
                     
@@ -495,7 +495,7 @@ export default function ReminderManager() {
                     {reminder.culturalContext && reminder.culturalContext !== 'general' && (
                       <div className="mt-2">
                         <Badge variant="outline">
-                          {getText(reminder.culturalContext, reminder.culturalContext)}
+                          {getText(reminder.culturalContext)}
                         </Badge>
                       </div>
                     )}
@@ -522,7 +522,7 @@ export default function ReminderManager() {
                         setShowForm(true);
                       }}
                       tabIndex={0}
-                      aria-label={getText('editar_recordatorio', 'Editar recordatorio')}
+                      aria-label={getText('editar_recordatorio')}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -531,7 +531,7 @@ export default function ReminderManager() {
                       size="sm"
                       onClick={() => handleDeleteReminder(reminder.id)}
                       tabIndex={0}
-                      aria-label={getText('eliminar_recordatorio', 'Eliminar recordatorio')}
+                      aria-label={getText('eliminar_recordatorio')}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -546,7 +546,7 @@ export default function ReminderManager() {
               <CardContent className="p-8 text-center">
                 <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">
-                  {getText('no_recordatorios_activos', 'No hay recordatorios activos')}
+                  {getText('no_recordatorios_activos')}
                 </p>
               </CardContent>
             </Card>
@@ -559,7 +559,7 @@ export default function ReminderManager() {
               <CardContent className="p-8 text-center">
                 <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">
-                  {getText('no_recordatorios_pausados', 'No hay recordatorios pausados')}
+                  {getText('no_recordatorios_pausados')}
                 </p>
               </CardContent>
             </Card>
@@ -572,7 +572,7 @@ export default function ReminderManager() {
               <CardContent className="p-8 text-center">
                 <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">
-                  {getText('no_recordatorios_completados', 'No hay recordatorios completados')}
+                  {getText('no_recordatorios_completados')}
                 </p>
               </CardContent>
             </Card>

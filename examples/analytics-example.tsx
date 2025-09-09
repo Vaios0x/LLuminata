@@ -53,21 +53,11 @@ import {
   SignalLow,
   SignalZero,
   WifiHigh,
-  WifiMedium,
   WifiLow,
   WifiZero,
   Battery,
   BatteryCharging,
   BatteryFull,
-  BatteryHigh,
-  BatteryMedium,
-  BatteryLow,
-  BatteryEmpty,
-  BatteryChargingFull,
-  BatteryChargingHigh,
-  BatteryChargingMedium,
-  BatteryChargingLow,
-  BatteryChargingEmpty,
   RotateCcw,
   Share2,
   Play,
@@ -243,7 +233,6 @@ export const AnalyticsExample: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <AnalyticsDashboard 
-                    userId={userId}
                     refreshInterval={30000}
                   />
                 </CardContent>
@@ -258,8 +247,7 @@ export const AnalyticsExample: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ProgressReport 
-                    userId={userId}
+                  <ProgressReport
                     refreshInterval={30000}
                   />
                 </CardContent>
@@ -274,8 +262,7 @@ export const AnalyticsExample: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <RegionalAnalysis 
-                    userId={userId}
+                  <RegionalAnalysis
                     refreshInterval={30000}
                   />
                 </CardContent>
@@ -290,8 +277,7 @@ export const AnalyticsExample: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <EngagementMetrics 
-                    userId={userId}
+                  <EngagementMetrics
                     refreshInterval={30000}
                   />
                 </CardContent>
@@ -309,8 +295,7 @@ export const AnalyticsExample: React.FC = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <AdminDashboard 
-                      userId={userId}
+                    <AdminDashboard
                       refreshInterval={30000}
                     />
                   </CardContent>

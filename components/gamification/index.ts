@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Componentes de Gamificación Avanzada
 export { default as CompetitionBoard } from './CompetitionBoard';
 export { default as ClanSystem } from './ClanSystem';

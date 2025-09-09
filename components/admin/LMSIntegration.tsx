@@ -21,7 +21,6 @@ import {
   ExternalLink,
   Download,
   Upload,
-  Sync,
   Globe,
   Shield,
   Activity,
@@ -50,12 +49,12 @@ interface LMSConnection {
   type: string;
   config: any;
   status: 'active' | 'inactive' | 'error';
-  lastSync: Date;
+  lastRefreshCw: Date;
   syncStatus: 'idle' | 'syncing' | 'error';
   errorMessage?: string;
 }
 
-interface LMSSyncResult {
+interface LMSRefreshCwResult {
   success: boolean;
   syncedUsers: number;
   syncedCourses: number;
@@ -75,13 +74,13 @@ interface LMSGrade {
   feedback?: string;
   submittedAt: Date;
   gradedAt?: Date;
-  lastSync: Date;
+  lastRefreshCw: Date;
 }
 
 export const LMSIntegration = () => {
   const [connections, setConnections] = useState<LMSConnection[]>([]);
   const [selectedConnection, setSelectedConnection] = useState<string>('');
-  const [syncStatus, setSyncStatus] = useState<LMSSyncResult | null>(null);
+  const [syncStatus, setRefreshCwStatus] = useState<LMSRefreshCwResult | null>(null);
   const [grades, setGrades] = useState<LMSGrade[]>([]);
   const [loading, setLoading] = useState(false);
   const [showNewConnection, setShowNewConnection] = useState(false);
@@ -99,8 +98,8 @@ export const LMSIntegration = () => {
     }
   });
 
-  const { announce } = useScreenReader();
-  const { highContrastStyles } = useHighContrastStyles();
+  const { speak } = useScreenReader();
+  const { getStyles } = useHighContrastStyles();
 
   // Cargar conexiones al montar el componente
   useEffect(() => {
@@ -115,11 +114,11 @@ export const LMSIntegration = () => {
       
       if (data.success) {
         setConnections(data.connections);
-        announce('Conexiones LMS cargadas');
+        speak('Conexiones LMS cargadas');
       }
     } catch (error) {
       console.error('Error cargando conexiones:', error);
-      announce('Error al cargar conexiones LMS');
+      speak('Error al cargar conexiones LMS');
     } finally {
       setLoading(false);
     }
@@ -128,7 +127,7 @@ export const LMSIntegration = () => {
   const syncConnection = async (connectionId: string) => {
     try {
       setLoading(true);
-      announce('Iniciando sincronización...');
+      speak('Iniciando sincronización...');
       
       const response = await fetch('/api/lms/sync', {
         method: 'POST',
@@ -139,15 +138,15 @@ export const LMSIntegration = () => {
       const data = await response.json();
       
       if (data.success) {
-        setSyncStatus(data.result);
-        announce(`Sincronización completada: ${data.result.syncedUsers} usuarios, ${data.result.syncedCourses} cursos, ${data.result.syncedGrades} calificaciones`);
+        setRefreshCwStatus(data.result);
+        speak(`Sincronización completada: ${data.result.syncedUsers} usuarios, ${data.result.syncedCourses} cursos, ${data.result.syncedGrades} calificaciones`);
         loadConnections(); // Recargar estado
       } else {
-        announce('Error en la sincronización');
+        speak('Error en la sincronización');
       }
     } catch (error) {
       console.error('Error sincronizando:', error);
-      announce('Error al sincronizar');
+      speak('Error al sincronizar');
     } finally {
       setLoading(false);
     }
@@ -161,11 +160,11 @@ export const LMSIntegration = () => {
       
       if (data.success) {
         setGrades(data.grades);
-        announce(`${data.total} calificaciones cargadas`);
+        speak(`${data.total} calificaciones cargadas`);
       }
     } catch (error) {
       console.error('Error cargando calificaciones:', error);
-      announce('Error al cargar calificaciones');
+      speak('Error al cargar calificaciones');
     } finally {
       setLoading(false);
     }
@@ -198,13 +197,13 @@ export const LMSIntegration = () => {
           }
         });
         loadConnections();
-        announce('Conexión LMS creada exitosamente');
+        speak('Conexión LMS creada exitosamente');
       } else {
-        announce(`Error: ${data.error}`);
+        speak(`Error: ${data.error}`);
       }
     } catch (error) {
       console.error('Error creando conexión:', error);
-      announce('Error al crear conexión');
+      speak('Error al crear conexión');
     } finally {
       setLoading(false);
     }
@@ -219,7 +218,7 @@ export const LMSIntegration = () => {
     }
   };
 
-  const getSyncStatusColor = (status: string) => {
+  const getRefreshCwStatusColor = (status: string) => {
     switch (status) {
       case 'idle': return 'bg-blue-100 text-blue-800';
       case 'syncing': return 'bg-yellow-100 text-yellow-800';
@@ -240,7 +239,7 @@ export const LMSIntegration = () => {
   };
 
   return (
-    <div className="space-y-6" style={highContrastStyles}>
+    <div className="space-y-6" style={getStyles()}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -293,7 +292,7 @@ export const LMSIntegration = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Sync className="h-5 w-5 text-yellow-600" />
+              <RefreshCw className="h-5 w-5 text-yellow-600" />
               <div>
                 <p className="text-sm font-medium text-gray-600">Sincronizando</p>
                 <p className="text-2xl font-bold text-gray-900">
@@ -327,7 +326,7 @@ export const LMSIntegration = () => {
             Conexiones
           </TabsTrigger>
           <TabsTrigger value="sync" tabIndex={0} aria-label="Ver sincronización">
-            <Sync className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 mr-2" />
             Sincronización
           </TabsTrigger>
           <TabsTrigger value="grades" tabIndex={0} aria-label="Ver calificaciones">
@@ -391,7 +390,7 @@ export const LMSIntegration = () => {
                           <Badge className={getStatusColor(connection.status)}>
                             {connection.status}
                           </Badge>
-                          <Badge className={getSyncStatusColor(connection.syncStatus)}>
+                          <Badge className={getRefreshCwStatusColor(connection.syncStatus)}>
                             {connection.syncStatus}
                           </Badge>
                         </div>
@@ -399,8 +398,8 @@ export const LMSIntegration = () => {
                       
                       <div className="mt-3 flex items-center justify-between">
                         <div className="text-sm text-gray-600">
-                          Última sincronización: {connection.lastSync ? 
-                            new Date(connection.lastSync).toLocaleString() : 'Nunca'
+                          Última sincronización: {connection.lastRefreshCw ? 
+                            new Date(connection.lastRefreshCw).toLocaleString() : 'Nunca'
                           }
                         </div>
                         
@@ -507,7 +506,7 @@ export const LMSIntegration = () => {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <Sync className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                  <RefreshCw className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                   <p className="text-gray-600">No hay sincronizaciones recientes</p>
                   <p className="text-sm text-gray-500">
                     Ejecuta una sincronización para ver el estado aquí
@@ -593,7 +592,7 @@ export const LMSIntegration = () => {
                           )}
                           
                           <div className="mt-2 text-xs text-gray-500">
-                            Sincronizado: {new Date(grade.lastSync).toLocaleString()}
+                            Sincronizado: {new Date(grade.lastRefreshCw).toLocaleString()}
                           </div>
                         </div>
                       ))}
@@ -716,10 +715,10 @@ export const LMSIntegration = () => {
                   <label className="block text-sm font-medium mb-1">Token de Acceso</label>
                   <input
                     type="password"
-                    value={newConnection.config.token}
+                    value={newConnection.config.apiKey}
                     onChange={(e) => setNewConnection({
                       ...newConnection,
-                      config: { ...newConnection.config, token: e.target.value }
+                      config: { ...newConnection.config, apiKey: e.target.value }
                     })}
                     className="w-full p-2 border rounded"
                     tabIndex={0}

@@ -14,6 +14,7 @@ interface VoiceCommand {
 
 interface VoiceControlContextType {
   isListening: boolean;
+  isSupported: boolean;
   startListening: () => void;
   stopListening: () => void;
   toggleListening: () => void;
@@ -51,12 +52,12 @@ export const VoiceControlProvider: React.FC<VoiceControlProviderProps> = ({
   const [confidence, setConfidence] = useState(0);
   const [isSupported, setIsSupported] = useState(false);
   
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Verificar soporte del navegador
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     setIsSupported(!!SpeechRecognition);
     
     if (SpeechRecognition) {
@@ -83,7 +84,7 @@ export const VoiceControlProvider: React.FC<VoiceControlProviderProps> = ({
       console.log('🎤 Reconocimiento de voz detenido');
     };
 
-    recognition.onresult = (event) => {
+    recognition.onresult = (event: any) => {
       const last = event.results.length - 1;
       const transcript = event.results[last][0].transcript.toLowerCase().trim();
       const confidence = event.results[last][0].confidence;
@@ -109,7 +110,7 @@ export const VoiceControlProvider: React.FC<VoiceControlProviderProps> = ({
       }
     };
 
-    recognition.onerror = (event) => {
+    recognition.onerror = (event: any) => {
       console.error('Error en reconocimiento de voz:', event.error);
       setIsListening(false);
     };
@@ -158,6 +159,7 @@ export const VoiceControlProvider: React.FC<VoiceControlProviderProps> = ({
 
   const value: VoiceControlContextType = {
     isListening,
+    isSupported,
     startListening,
     stopListening,
     toggleListening,

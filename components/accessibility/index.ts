@@ -1,9 +1,35 @@
 // Componentes de Accesibilidad
-export { default as HighContrast } from './high-contrast';
-export { default as ScreenReader } from './screen-reader';
-export { default as AccessibilityPanel } from './accessibility-panel';
-export { default as VoiceControl } from './voice-control';
+export { 
+  HighContrastProvider, 
+  HighContrastControls, 
+  HighContrastWrapper, 
+  useHighContrast, 
+  useHighContrastStyles 
+} from './high-contrast';
+
+export { 
+  ScreenReaderProvider, 
+  ScreenReaderControls, 
+  useScreenReader, 
+  useScreenReaderAnnouncement, 
+  ScreenReaderAnnouncer 
+} from './screen-reader';
+
+export { 
+  AccessibilityPanel, 
+  AccessibilityHelp, 
+  useAccessibilityPanel 
+} from './accessibility-panel';
+
+export { 
+  VoiceControlProvider, 
+  VoiceControlPanel, 
+  useVoiceControl, 
+  useVoiceCommands, 
+  NavigationVoiceCommands 
+} from './voice-control';
+
 export { default as BrailleDisplay } from './BrailleDisplay';
 
 // Hook de accesibilidad
-export { default as useAccessibility } from '../../lib/hooks/useAccessibility';
+export { useAccessibility } from '../../lib/hooks/useAccessibility';

@@ -87,7 +87,7 @@ export class SpeechRecognitionService {
     }
     
     // Registrar comandos específicos del usuario
-    this.registerUserSpecificCommands();
+    // this.registerUserSpecificCommands();
   }
 
   /**
@@ -96,7 +96,7 @@ export class SpeechRecognitionService {
   private initializeRecognition(): void {
     if (typeof window === 'undefined') return;
 
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     this._isSupported = !!SpeechRecognition;
 
     if (!this._isSupported) {

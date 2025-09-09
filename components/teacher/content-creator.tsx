@@ -141,7 +141,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
       {
         id: '1',
         name: 'Lección Interactiva',
-        type: 'lesson',
+        type: 'lesson' as const,
         description: 'Lección con elementos interactivos y multimedia',
         icon: <BookOpen className="w-6 h-6" />,
         culturalAdaptation: true,
@@ -152,7 +152,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
       {
         id: '2',
         name: 'Evaluación Adaptativa',
-        type: 'quiz',
+        type: 'quiz' as const,
         description: 'Evaluación que se adapta al nivel del estudiante',
         icon: <Target className="w-6 h-6" />,
         culturalAdaptation: true,
@@ -163,7 +163,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
       {
         id: '3',
         name: 'Video Cultural',
-        type: 'video',
+        type: 'video' as const,
         description: 'Video con contenido cultural relevante',
         icon: <Video className="w-6 h-6" />,
         culturalAdaptation: true,
@@ -174,7 +174,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
       {
         id: '4',
         name: 'Actividad Interactiva',
-        type: 'interactive',
+        type: 'interactive' as const,
         description: 'Actividad interactiva con elementos culturales',
         icon: <Code className="w-6 h-6" />,
         culturalAdaptation: true,
@@ -185,7 +185,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
       {
         id: '5',
         name: 'Contenido Cultural',
-        type: 'cultural',
+        type: 'cultural' as const,
         description: 'Contenido específico de una cultura',
         icon: <Globe className="w-6 h-6" />,
         culturalAdaptation: true,
@@ -196,7 +196,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
       {
         id: '6',
         name: 'Contenido Personalizado',
-        type: 'lesson',
+        type: 'lesson' as const,
         description: 'Contenido completamente personalizable',
         icon: <Palette className="w-6 h-6" />,
         culturalAdaptation: true,
@@ -391,7 +391,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
               {
                 id: '1',
                 name: 'Lección Interactiva',
-                type: 'lesson',
+                type: 'lesson' as const,
                 description: 'Lección con elementos interactivos y multimedia',
                 icon: <BookOpen className="w-6 h-6" />,
                 culturalAdaptation: true,
@@ -402,7 +402,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
               {
                 id: '2',
                 name: 'Evaluación Adaptativa',
-                type: 'quiz',
+                type: 'quiz' as const,
                 description: 'Evaluación que se adapta al nivel del estudiante',
                 icon: <Target className="w-6 h-6" />,
                 culturalAdaptation: true,
@@ -413,7 +413,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
               {
                 id: '3',
                 name: 'Video Cultural',
-                type: 'video',
+                type: 'video' as const,
                 description: 'Video con contenido cultural relevante',
                 icon: <Video className="w-6 h-6" />,
                 culturalAdaptation: true,
@@ -424,7 +424,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
               {
                 id: '4',
                 name: 'Actividad Interactiva',
-                type: 'interactive',
+                type: 'interactive' as const,
                 description: 'Actividad interactiva con elementos culturales',
                 icon: <Code className="w-6 h-6" />,
                 culturalAdaptation: true,
@@ -435,7 +435,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
               {
                 id: '5',
                 name: 'Contenido Cultural',
-                type: 'cultural',
+                type: 'cultural' as const,
                 description: 'Contenido específico de una cultura',
                 icon: <Globe className="w-6 h-6" />,
                 culturalAdaptation: true,
@@ -446,7 +446,7 @@ export const ContentCreator: React.FC<ContentCreatorProps> = ({
               {
                 id: '6',
                 name: 'Contenido Personalizado',
-                type: 'lesson',
+                type: 'lesson' as const,
                 description: 'Contenido completamente personalizable',
                 icon: <Palette className="w-6 h-6" />,
                 culturalAdaptation: true,

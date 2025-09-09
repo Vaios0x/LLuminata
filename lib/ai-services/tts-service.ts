@@ -143,20 +143,6 @@ export class TTSService {
     }
   }
 
-  /**
-   * Obtiene configuración de voz para un idioma
-   */
-  getVoiceConfig(language: string, options: any): VoiceConfig {
-    const baseConfig = VOICE_CONFIGS[language] || VOICE_CONFIGS['es-MX'];
-    
-    return {
-      ...baseConfig,
-      pitch: options.pitch ?? baseConfig.pitch,
-      speed: options.speed ?? baseConfig.speed,
-      gender: options.gender ?? baseConfig.gender,
-      culturalContext: options.culturalContext ?? baseConfig.culturalContext
-    };
-  }
 
   /**
    * Preprocesa texto según contexto cultural

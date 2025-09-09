@@ -7,8 +7,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAnalytics, usePageTracking, useErrorTracking, usePerformanceTracking } from '@/lib/hooks/use-analytics';
-import { AdminDashboard } from '@/components/dashboard/admin-dashboard';
-import { ProgressReport } from '@/components/dashboard/progress-report';
+import { AdminDashboard } from '@/components/analytics/admin-dashboard';
+import { ProgressReport } from '@/components/analytics/progress-report';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,7 +42,6 @@ export const LessonComponent: React.FC<{ lessonId: string; userId: string }> = (
   const handleLessonStart = async () => {
     await trackLearningEvent('lesson_start', {
       lessonId,
-      timestamp: new Date().toISOString(),
       difficulty: 2
     });
   };
@@ -56,8 +55,7 @@ export const LessonComponent: React.FC<{ lessonId: string; userId: string }> = (
       lessonId,
       score: finalScore,
       timeSpent: 1200, // 20 minutos
-      difficulty: 2,
-      completed: true
+      difficulty: 2
     });
   };
 
@@ -275,7 +273,7 @@ export const AnalyticsPage: React.FC<{ userId: string }> = ({ userId }) => {
         </TabsContent>
 
         <TabsContent value="progress" className="space-y-6">
-          <ProgressReport userId={userId} />
+          <ProgressReport />
         </TabsContent>
 
         <TabsContent value="admin" className="space-y-6">
@@ -317,10 +315,9 @@ export const useLessonAnalytics = (lessonId: string, userId: string) => {
   }, [trackEvent, lessonId]);
 
   const trackLessonProgress = useCallback(async (progress: number) => {
-    await trackLearningEvent('lesson_progress', {
+    await trackLearningEvent('lesson_start', {
       lessonId,
-      progress,
-      timestamp: new Date().toISOString()
+      score: progress
     });
   }, [trackLearningEvent, lessonId]);
 

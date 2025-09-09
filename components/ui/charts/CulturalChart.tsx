@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, Treemap, TreemapItem } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, Treemap } from 'recharts';
 import { cn } from '@/lib/utils';
 
 interface CulturalDataPoint {
@@ -98,6 +98,7 @@ const CulturalChart: React.FC<CulturalChartProps> = ({
 
     const grouped = data.reduce((acc, point) => {
       const key = point[focus];
+      if (!key) return acc;
       if (!acc[key]) {
         acc[key] = {
           [focus]: key,
@@ -337,7 +338,7 @@ const CulturalChart: React.FC<CulturalChartProps> = ({
                 cx="50%"
                 cy="50%"
                 outerRadius={chartHeight / 3}
-                onClick={(data) => handleCultureClick(data[focus])}
+                onClick={(data) => handleCultureClick(data.payload?.[focus] || '')}
               >
                 {processedData.map((entry, index) => (
                   <Cell 
@@ -397,28 +398,28 @@ const CulturalChart: React.FC<CulturalChartProps> = ({
               <Bar
                 dataKey="averageValue"
                 fill="#3b82f6"
-                onClick={(data) => handleCultureClick(data[focus])}
+                onClick={(data) => handleCultureClick(data.payload?.[focus] || '')}
                 opacity={selectedCulture ? 0.6 : 1}
               />
               {showAdaptation && (
                 <Bar
                   dataKey="averageAdaptation"
                   fill="#10b981"
-                  onClick={(data) => handleCultureClick(data[focus])}
+                  onClick={(data) => handleCultureClick(data.payload?.[focus] || '')}
                 />
               )}
               {showEngagement && (
                 <Bar
                   dataKey="averageEngagement"
                   fill="#f59e0b"
-                  onClick={(data) => handleCultureClick(data[focus])}
+                  onClick={(data) => handleCultureClick(data.payload?.[focus] || '')}
                 />
               )}
               {showAccessibility && (
                 <Bar
                   dataKey="averageAccessibility"
                   fill="#8b5cf6"
-                  onClick={(data) => handleCultureClick(data[focus])}
+                  onClick={(data) => handleCultureClick(data.payload?.[focus] || '')}
                 />
               )}
             </BarChart>

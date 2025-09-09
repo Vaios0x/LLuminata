@@ -1404,13 +1404,4 @@ interface BiasAnalysisResult {
 // Instancia singleton del servicio
 export const abTestingFramework = new ABTestingFramework();
 
-// Exportar tipos útiles
-export type {
-  ExperimentConfig,
-  ExperimentVariant,
-  ExperimentResult,
-  StatisticalAnalysis,
-  CulturalAnalysis,
-  NeuroscienceAnalysis,
-  BiasAnalysisResult
-};
+// Todos los tipos necesarios ya están exportados como interfaces arriba

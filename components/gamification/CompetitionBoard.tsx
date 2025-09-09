@@ -423,7 +423,7 @@ export const CompetitionBoard: React.FC<CompetitionBoardProps> = ({
                         <Button 
                           onClick={() => joinCompetition(competition.id)}
                           className="flex-1"
-                          disabled={competition.maxParticipants && competition.currentParticipants >= competition.maxParticipants}
+                          disabled={!!competition.maxParticipants && competition.currentParticipants >= competition.maxParticipants}
                         >
                           Unirse
                         </Button>

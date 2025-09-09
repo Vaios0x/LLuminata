@@ -11,28 +11,5 @@
   "endOfLine": "lf",
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
-  "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css",
-  "embeddedLanguageFormatting": "auto",
-  "overrides": [
-    {
-      "files": "*.json",
-      "options": {
-        "printWidth": 120
-      }
-    },
-    {
-      "files": "*.md",
-      "options": {
-        "printWidth": 100,
-        "proseWrap": "always"
-      }
-    },
-    {
-      "files": "*.yml",
-      "options": {
-        "printWidth": 120
-      }
-    }
-  ]
+  "proseWrap": "preserve"
 }

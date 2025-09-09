@@ -6,7 +6,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import { PrismaClient } from '@prisma/client';
-import { culturalAdaptationModel } from '../ml-models/cultural-adaptation-model';
+import { culturalAdaptationModel } from '../../ml-models/cultural-adaptation-model';
 import { needsDetectionService } from './needs-detection-service';
 
 const prisma = new PrismaClient();
@@ -378,14 +378,14 @@ export class HybridRecommendationEngine {
       const userEmbedding = tf.layers.embedding({
         inputDim: 10000,
         outputDim: 256,
-        embeddings_regularizer: tf.regularizers.l2({ l2: 0.001 }),
+        embeddingsRegularizer: tf.regularizers.l2({ l2: 0.001 }),
         name: 'user_emb_neural'
       }).apply(userInput) as tf.SymbolicTensor;
       
       const itemEmbedding = tf.layers.embedding({
         inputDim: 5000,
         outputDim: 256,
-        embeddings_regularizer: tf.regularizers.l2({ l2: 0.001 }),
+        embeddingsRegularizer: tf.regularizers.l2({ l2: 0.001 }),
         name: 'item_emb_neural'
       }).apply(itemInput) as tf.SymbolicTensor;
       
@@ -1671,7 +1671,7 @@ export class HybridRecommendationEngine {
         validationSplit: 0.2,
         callbacks: [
           tf.callbacks.earlyStopping({ patience: 5 }),
-          tf.callbacks.reduceLROnPlateau({ factor: 0.5, patience: 3 })
+          tf.callbacks.earlyStopping({ patience: 3 })
         ]
       }
     );
